@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hfw.basesystem.mapper.GenMapper">
+
+    <select id="tableList" resultType="com.hfw.basesystem.gen.Table">
+        select table_name,table_comment from information_schema.tables
+        where table_schema=#{dbName}
+        <if test="tableLike!=null and tableLike!=''">
+            and table_name like concat('%',#{tableLike},'%')
+        </if>
+    </select>
+
+    <select id="table" resultType="com.hfw.basesystem.gen.Table">
+        select table_name,table_comment from information_schema.tables where table_schema=#{dbName} and table_name=#{tableName}
+    </select>
+
+    <select id="tableColumn"  resultType="com.hfw.basesystem.gen.Column">
+        select column_name,ordinal_position,is_nullable,data_type,character_maximum_length,column_key,column_comment,column_default
+        from information_schema.`columns`
+        where table_schema=#{dbName} and table_name=#{tableName}
+        order by ordinal_position
+    </select>
+
+</mapper>

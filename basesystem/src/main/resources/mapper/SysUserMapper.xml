@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hfw.basesystem.mapper.SysUserMapper">
+
+    <select id="list" resultType="com.hfw.basesystem.entity.SysUser">
+        select
+            id
+            ,account
+            ,phone
+            ,nickname
+            ,avatar
+            ,email
+            ,gender
+            ,state
+            ,system_flag
+            ,creator
+            ,create_time
+            ,updator
+            ,update_time
+            ,remark
+        from sys_user
+        <where>
+            <if test="id!=null">
+                and id=#{id}
+            </if>
+            <if test="account!=null and account!=''">
+                and account=#{account}
+            </if>
+            <if test="account_like!=null and account_like!=''">
+                and account like concat('%',#{account_like},'%')
+            </if>
+            <if test="phone!=null and phone!=''">
+                and phone=#{phone}
+            </if>
+            <if test="phone_like!=null and phone_like!=''">
+                and phone like concat('%',#{phone_like},'%')
+            </if>
+            <if test="nickname!=null and nickname!=''">
+                and nickname=#{nickname}
+            </if>
+            <if test="nickname_like!=null and nickname_like!=''">
+                and nickname like concat('%',#{nickname_like},'%')
+            </if>
+            <if test="gender!=null">
+                and gender=#{gender}
+            </if>
+            <if test="state!=null">
+                and state=#{state}
+            </if>
+            <if test="systemFlag!=null">
+                and system_flag=#{systemFlag}
+            </if>
+            <if test="createTime_lt!=null">
+                and create_time &lt;= #{createTime_lt}
+            </if>
+            <if test="createTime_gt!=null">
+                and create_time &gt;= #{createTime_gt}
+            </if>
+            <if test="updateTime_lt!=null">
+                and update_time &lt;= #{updateTime_lt}
+            </if>
+            <if test="updateTime_gt!=null">
+                and update_time &gt;= #{updateTime_gt}
+            </if>
+        </where>
+        <if test="sortByField!=null and sortByWay!=null">
+            order by ${sortByField} ${sortByWay}
+        </if>
+    </select>
+
+    <select id="authList" resultType="com.hfw.basesystem.entity.SysAuth">
+        select a.* from sys_user_role ur
+        join sys_role_auth ra on ur.role_id=ra.role_id
+        join sys_auth a on ra.auth_id=a.id
+        where ur.user_id=#{userId}
+        and a.auth_type in(1,3,4)
+        and a.code is not null
+    </select>
+    
+    <select id="webMenuButtons" resultType="com.alibaba.fastjson2.JSONObject">
+        select p.web_code,p.code, GROUP_CONCAT(c.web_code) buttons from (
+            select a.* from sys_user_role ur
+             join sys_role_auth ra on ur.role_id=ra.role_id
+             join sys_auth a on ra.auth_id=a.id
+             join sys_role r on r.id=ur.role_id
+            where a.state=1 and r.state=1
+            and ur.user_id=#{userId}
+            and a.auth_type=1
+            and a.web_code is not null
+        ) p
+        left join
+        (
+            select a.* from sys_user_role ur
+                                join sys_role_auth ra on ur.role_id=ra.role_id
+                                join sys_auth a on ra.auth_id=a.id
+                                join sys_role r on r.id=ur.role_id
+            where a.state=1 and r.state=1
+              and ur.user_id=#{userId}
+              and a.auth_type=3
+              and a.web_code is not null
+        ) c on p.id=c.parent_id
+        group by p.web_code, p.code
+    </select>
+
+    <select id="webMenus" resultType="com.hfw.basesystem.vo.MenuVO">
+        select DISTINCT a.* from sys_user_role ur
+        join sys_role_auth ra on ur.role_id=ra.role_id
+        join sys_auth a on ra.auth_id=a.id
+        join sys_role r on r.id=ur.role_id
+        where a.state=1 and r.state=1
+        and ur.user_id=#{userId}
+        and auth_type in (1,2)
+        order by isnull(a.sort), a.sort
+    </select>
+
+    <select id="adminWebMenus" resultType="com.hfw.basesystem.vo.MenuVO">
+        select * from sys_auth where state=1 and auth_type in (1,2)
+    </select>
+
+</mapper>

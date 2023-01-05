@@ -1,0 +1,19 @@
+package com.hfw.basesystem.service;
+
+import java.util.List;
+
+/**
+ * 通用服务
+ * @author zyh
+ * @date 2022-12-08
+ */
+public interface CommonService<T> {
+    List<T> list(T t);
+    T detail(Class<T> clazz, Long id);
+    Long count(T t);
+    int add(T t);
+    int edit(T t);
+    int update(T t, T cond);
+    int del(Class<T> clazz, Long id);
+    int dels(Class<T> clazz, List<Long> ids);
+}

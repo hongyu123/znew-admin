@@ -1,0 +1,9 @@
+﻿#忽略class
+target/
+*.class
+
+#忽略idea
+.idea
+*.iml
+
+log/*

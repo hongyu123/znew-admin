@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hfw.admin.mapper.AppUserMapper">
+
+    <select id="list" resultType="com.hfw.model.entity.AppUser">
+        select
+            id
+            ,nickname
+            ,photo
+            ,phone
+            ,gender
+            ,birth
+            ,address
+            ,address_detail
+            ,tags
+            ,focus_num
+            ,fans_num
+            ,integral
+            ,works_num
+            ,role
+            ,state
+            ,message_on
+            ,sys_message_on
+            ,im_message_on
+            ,openid
+            ,apple_id
+            ,im_id, comment
+        from app_user
+        <where>
+            <if test="id!=null">
+                and id=#{id}
+            </if>
+            <if test="nickname!=null and nickname!=''">
+                and nickname=#{nickname}
+            </if>
+            <if test="nickname_like!=null and nickname_like!=''">
+                and nickname like concat('%',#{nickname_like},'%')
+            </if>
+            <if test="phone!=null and phone!=''">
+                and phone=#{phone}
+            </if>
+            <if test="phone_like!=null and phone_like!=''">
+                and phone like concat('%',#{phone_like},'%')
+            </if>
+            <if test="gender!=null">
+                and gender=#{gender}
+            </if>
+            <if test="birth!=null">
+                and birth=#{birth}
+            </if>
+            <if test="birth_lt!=null">
+                and birth &lt;= #{birth_lt}
+            </if>
+            <if test="birth_gt!=null">
+                and birth &gt;= #{birth_gt}
+            </if>
+            <if test="role!=null">
+                and role=#{role}
+            </if>
+            <if test="state!=null">
+                and state=#{state}
+            </if>
+        </where>
+        <if test="sortByField!=null and sortByWay!=null">
+            order by ${sortByField} ${sortByWay}
+        </if>
+    </select>
+
+</mapper>

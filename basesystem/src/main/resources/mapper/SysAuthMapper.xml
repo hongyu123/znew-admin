@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hfw.basesystem.mapper.SysAuthMapper">
+
+    <select id="list" resultType="com.hfw.basesystem.entity.SysAuth">
+        select
+            id
+            ,parent_id
+            ,name
+            ,code
+            ,web_code
+            ,auth_type
+            ,sort
+            ,icon
+            ,path
+            ,component
+            ,frame_flag
+            ,frame_url
+            ,cache_flag
+            ,show_flag
+            ,state
+            ,creator
+            ,create_time
+            ,updator
+            ,update_time
+            ,remark
+        from sys_auth
+        <where>
+            <if test="id!=null">
+                and id=#{id}
+            </if>
+            <if test="parentId!=null">
+                and parent_id=#{parentId}
+            </if>
+            <if test="name!=null and name!=''">
+                and name=#{name}
+            </if>
+            <if test="name_like!=null and name_like!=''">
+                and name like concat('%',#{name_like},'%')
+            </if>
+            <if test="code!=null and code!=''">
+                and code=#{code}
+            </if>
+            <if test="authType!=null">
+                and auth_type=#{authType}
+            </if>
+            <if test="frameFlag!=null">
+                and frame_flag=#{frameFlag}
+            </if>
+            <if test="cacheFlag!=null">
+                and cache_flag=#{cacheFlag}
+            </if>
+            <if test="showFlag!=null">
+                and show_flag=#{showFlag}
+            </if>
+            <if test="state!=null">
+                and state=#{state}
+            </if>
+        </where>
+        <if test="sortByField!=null and sortByWay!=null">
+            order by ${sortByField} ${sortByWay}
+        </if>
+    </select>
+
+    <select id="children" resultType="com.hfw.basesystem.dto.SysAuthDTO">
+        select a.*,t.children_nums
+            from sys_auth a
+            join(
+                select p.id,count(c.id) children_nums from sys_auth p left join sys_auth c on p.id=c.parent_id
+                where p.parent_id=#{parentId}
+                group by p.id
+            ) t on a.id=t.id
+            order by ISNULL(a.sort),a.sort
+    </select>
+
+    <select id="treeList" resultType="com.hfw.basesystem.dto.SysAuthDTO">
+        select * from sys_auth
+        <where>
+            <if test="state!=null">
+                and state=#{state}
+            </if>
+        </where>
+        order by isnull(sort),sort
+    </select>
+
+</mapper>
