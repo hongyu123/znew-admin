@@ -49,7 +49,7 @@
       </el-form-item>
       <el-form-item label="权限类型" prop="authType">
         <el-select v-model="drawerProps.rowData!.authType" placeholder="请选择权限类型" clearable>
-          <el-option v-for="item in sysAuthEnum" :key="item.value" :label="item.desc" :value="item.value" />
+          <el-option v-for="item in sysAuthEnum" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
         <el-form-item label="包含权限" prop="containsCode" v-show="drawerProps.rowData!.authType=='button'">
           <el-input

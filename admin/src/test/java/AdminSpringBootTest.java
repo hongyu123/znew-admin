@@ -21,10 +21,6 @@ public class AdminSpringBootTest {
     @Test
     //代码生成
     public void gen() throws Exception {
-        //genService.genAll("entertainment");
-        genService.gen("app_advice");
-        genService.gen("app_article");
-        genService.gen("app_version");
     }
 
 }

@@ -1,0 +1,43 @@
+package com.hfw.basesystem.service.impl;
+
+import com.hfw.basesystem.entity.SysGenColumn;
+import com.hfw.basesystem.mybatis.CommonDao;
+import com.hfw.basesystem.service.SysGenTableService;
+import com.hfw.basesystem.mapper.SysGenTableMapper;
+import com.hfw.basesystem.entity.SysGenTable;
+import com.hfw.common.entity.PageResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+/**
+ * 表单生成记录服务实现
+ * @author 
+ * @date 2023-01-04
+ */
+@Service
+public class SysGenTableServiceImpl implements SysGenTableService {
+
+    @Autowired
+    private SysGenTableMapper sysGenTableMapper;
+    @Autowired
+    private CommonDao commonDao;
+
+    @Override
+    public PageResult<SysGenTable> page(SysGenTable sysGenTable) {
+        PageResult<SysGenTable> page = new PageResult<>(sysGenTable);
+        page.startPage();
+        List<SysGenTable> list = sysGenTableMapper.list(sysGenTable);
+        page.setList(list);
+        return page;
+    }
+
+    @Override
+    public SysGenTable detail(Long id){
+        SysGenTable sysGenTable = commonDao.findByPk(SysGenTable.class, id);
+        List<SysGenColumn> columnList = commonDao.list(new SysGenColumn().setTableName(sysGenTable.getTableName()));
+        sysGenTable.setColumnList(columnList);
+        return sysGenTable;
+    }
+
+}

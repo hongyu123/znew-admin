@@ -67,7 +67,7 @@
       <#elseif c.formType=='file'>
         <UploadFile v-model:fileUrl="drawerProps.rowData!.${c.property}" accept=".txt"></UploadFile>
       <#elseif c.formType=='fileInput'>
-        <UploadFile v-model:fileUrl="drawerProps.rowData!.${c.property}" accept=".txt"></UploadFile>
+        <FileInput v-model:fileUrl="drawerProps.rowData!.${c.property}" accept=".txt"></FileInput>
       <#elseif c.formType=='map'>
         <el-input v-model="drawerProps.rowData!.${c.property}" maxlength="${c.maxlength}" disabled placeholder="请选择地址" clearable>
           <template #append><el-button @click="amapVisible = true">选择</el-button></template>
@@ -99,7 +99,8 @@ import { ElMessage, FormInstance } from "element-plus";
 <#if richtext>import WangEditor from "@/components/WangEditor/index.vue";</#if>
 <#if picture>import UploadImg from "@/components/Upload/Img.vue";</#if>
 <#if pictures>import UploadImgMultiple from "@/components/Upload/ImgMultiple.vue";</#if>
-<#if fileInput>import UploadFile from "@/components/Upload/File.vue";</#if>
+<#if file>import UploadFile from "@/components/Upload/File.vue";</#if>
+<#if fileInput>import FileInput from "@/components/Upload/FileInput.vue";</#if>
 <#if map>import MapContainer from "@/components/amap/MapContainer.vue";</#if>
 
 const rules = reactive({

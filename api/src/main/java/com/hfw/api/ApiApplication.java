@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author zyh
  * @date 2022-04-08
  */
-@SpringBootApplication(scanBasePackages = {"com.hfw.api","com.hfw.basesystem","com.hfw.service"})
+@SpringBootApplication(scanBasePackages = {"com.hfw.api","com.hfw.basesystem","com.hfw.model"})
 @MapperScan(basePackages = {"com.hfw.basesystem.mapper","com.hfw.service.mapper","com.hfw.api.mapper"})
 public class ApiApplication {
 

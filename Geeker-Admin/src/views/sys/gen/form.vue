@@ -30,11 +30,13 @@
           </el-select>
           <el-switch v-model="element.listFlag" active-text="列表" :active-value="1" :inactive-value="0"></el-switch>
           <el-switch v-model="element.searchFlag" active-text="查询" :active-value="1" :inactive-value="0"></el-switch>
+          <el-switch v-model="element.required" active-text="必填" :active-value="1" :inactive-value="0"></el-switch>
         </el-form-item>
       </template>
     </draggable>
     <el-form-item>
-      <el-button type="primary" @click="handleSubmit">表单生成</el-button>
+      <el-button type="primary" @click="handleGenFormToPath">配置路径生成</el-button>
+      <el-button type="primary" @click="handleGenFormToProject">项目路径生成</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -42,19 +44,34 @@
 <script setup lang="ts" name="Draggable">
 import { ref, onMounted } from "vue";
 import { ElMessage } from "element-plus";
+import { useRoute } from "vue-router";
 import draggable from "vuedraggable/src/vuedraggable";
-import { formInfo, genForm } from "@/api/sys/gen";
+import { formInfo, detail, genFormToPath, genFormToProject } from "@/api/sys/gen";
 
+const route = useRoute();
 let genTable = ref({ tableName: "", columnList: [] });
-
 onMounted(() => {
-  formInfo({ tableName: "sys_demo" }).then(res => {
-    genTable.value = res.data;
-  });
+  if (route.query.id) {
+    detail(route.query.id).then(res => {
+      genTable.value = res.data;
+    });
+  } else if (route.query.tableName) {
+    formInfo({ tableName: route.query.tableName }).then(res => {
+      genTable.value = res.data;
+    });
+  }
 });
 
-const handleSubmit = () => {
-  genForm(genTable.value).then(res => {
+const handleGenFormToPath = () => {
+  genFormToPath(genTable.value).then(res => {
+    ElMessage({
+      type: "success",
+      message: res.message
+    });
+  });
+};
+const handleGenFormToProject = () => {
+  genFormToProject(genTable.value).then(res => {
     ElMessage({
       type: "success",
       message: res.message

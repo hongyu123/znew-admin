@@ -47,13 +47,13 @@ public class SysGenColumn extends BaseEntity {
     /** 表单类型 **/
     @NotBlank(message = "表单类型不能为空", groups = ValidGroup.Add.class)
     @Length(max = 100,message = "表单类型最多100字符")
-    private String formType = "input";
+    private String formType;
 
     /** 必填 */
-    private Integer required = 0;
+    private Integer required;
 
     /** 是否列表 **/
-    private Integer listFlag = 1;
+    private Integer listFlag;
 
     /** 是否搜索 **/
     private Integer searchFlag;

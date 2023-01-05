@@ -10,6 +10,7 @@
       <template #operation="scope">
         <el-button type="primary" link @click="handleGenToPath(scope.row)">配置路径生成</el-button>
         <el-button type="primary" link @click="handleGenToProject(scope.row)">项目路径生成</el-button>
+        <el-button type="primary" link @click="formGen(scope.row)">表单生成</el-button>
       </template>
     </ProTable>
 
@@ -19,6 +20,7 @@
 
 <script setup lang="tsx" name="AppVersion">
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { ColumnProps } from "@/components/ProTable/interface";
 import ProTable from "@/components/ProTable/index.vue";
 import EditModelForm from "@/views/sys/appVersion/edit.vue";
@@ -47,7 +49,7 @@ const columns: ColumnProps[] = [
     prop: "tableComment",
     label: "注释"
   },
-  { prop: "operation", label: "操作", fixed: "right", width: 300 }
+  { prop: "operation", label: "操作", fixed: "right", width: 400 }
 ];
 
 //配置路径生成
@@ -73,5 +75,11 @@ const handleBatchGenToPath = async (ids: string[]) => {
 };
 const handleBatchGenToProject = async (ids: string[]) => {
   await useHandleData(batchGenToProject, ids, "项目路径批量生成");
+};
+
+//表单生成
+const router = useRouter();
+const formGen = (row: any) => {
+  router.push(`/sys/formGen?tableName=${row.tableName}`);
 };
 </script>

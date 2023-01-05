@@ -16,7 +16,7 @@ let addr: any = ref({});
 let marker: any;
 const initMap = () => {
   AMapLoader.load({
-    key: "ea302ddcf2337c2e6ffca3959e1fc404", // 申请好的Web端开发者Key，首次调用 load 时必填
+    key: "1e8884bf03341405ec3a8df0c31e2529", // 申请好的Web端开发者Key，首次调用 load 时必填
     version: "2.0", // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
     plugins: ["AMap.PlaceSearch", "AMap.AutoComplete", "AMap.Geocoder"] // 需要使用的的插件列表，如比例尺'AMap.Scale'等
   })
@@ -85,7 +85,7 @@ const initMap = () => {
 
 onMounted(() => {
   window._AMapSecurityConfig = {
-    securityJsCode: "663d93afea9f7d0a3617cece55ce9638"
+    securityJsCode: "9d838728cd140a360034a0d784277001"
   };
   initMap();
 });

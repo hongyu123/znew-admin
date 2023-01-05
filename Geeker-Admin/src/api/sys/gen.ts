@@ -20,6 +20,16 @@ export const batchGenToProject = (params: string[]) => {
 export const formInfo = (params: object) => {
   return http.get<ApiResult>("/gen/formInfo", params);
 };
-export const genForm = (params: object) => {
-  return http.post<ApiResult>("/gen/genForm", params);
+export const genFormToPath = (params: object) => {
+  return http.post<ApiResult>("/gen/genFormToPath", params);
+};
+export const genFormToProject = (params: object) => {
+  return http.post<ApiResult>("/gen/genFormToProject", params);
+};
+
+export const page = (params: object) => {
+  return http.get<PageResult>("/sysGenTable/page", params);
+};
+export const detail = (id: any) => {
+  return http.get<ApiResult>("/sysGenTable/detail", { id });
 };

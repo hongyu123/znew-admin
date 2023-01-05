@@ -82,29 +82,4 @@ public interface GenService {
      */
     void genFormToProject(SysGenTable table) throws Exception;
 
-
-
-    /**
-     * 代码生成
-     * @param tableName
-     * @throws Exception
-     */
-    void gen(String tableName) throws Exception;
-    /**
-     * 代码生成
-     * @throws Exception
-     */
-    void gen(Table table) throws Exception;
-    /**
-     * 所有表代码生成
-     * @throws Exception
-     */
-    void genAll(String dbName) throws Exception;
-
-    /**
-     * vue增删改仅list页面生成
-     * @param tableName
-     * @param queryFields
-     */
-    void genList(String tableName,String queryFields) throws Exception;
 }

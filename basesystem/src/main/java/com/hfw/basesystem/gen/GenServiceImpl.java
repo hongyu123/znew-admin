@@ -9,23 +9,16 @@ import com.hfw.common.support.GeneralException;
 import com.hfw.common.util.StrUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -204,6 +197,8 @@ public class GenServiceImpl implements GenService {
         Table table = this.tableColumnInfo(tableName);
         List<SysGenColumn> formColumns = table.getColumnList().stream().map(c -> {
             SysGenColumn column = new SysGenColumn();
+            column.setFormType("input");
+            column.setListFlag(1);
             column.setColumnName(c.getColumnName());
             column.setLabel(c.getColumnComment().replaceFirst("\\(.+\\)",""));
             column.setProperty(StrUtil.lineToHump(c.getColumnName()));
@@ -241,6 +236,7 @@ public class GenServiceImpl implements GenService {
         return genTable;
     }
 
+
     @Autowired
     private CommonDao commonDao;
 
@@ -269,6 +265,15 @@ public class GenServiceImpl implements GenService {
             }
         }
     }
+    //保存生成记录
+    private void saveGenFormRecord(SysGenTable table){
+        //table.setId(null);
+        table.getColumnList().forEach( c->c.setId(null));
+        //commonDao.delete(new SysGenTable().setTableName(table.getTableName()));
+        commonDao.delete(new SysGenColumn().setTableName(table.getTableName()));
+        //commonDao.insert(table);
+        commonDao.insertBatch(table.getColumnList());
+    }
 
     @Override
     public void genFormToPath(SysGenTable table) throws Exception{
@@ -294,12 +299,7 @@ public class GenServiceImpl implements GenService {
             template.process(table, out);
         }
         //保存生成记录
-        table.setId(null);
-        table.getColumnList().forEach( c->c.setId(null));
-        commonDao.delete(new SysGenTable().setTableName(table.getTableName()));
-        commonDao.delete(new SysGenColumn().setTableName(table.getTableName()));
-        commonDao.insert(table);
-        commonDao.insertBatch(table.getColumnList());
+        this.saveGenFormRecord(table);
     }
     @Override
     public void genFormToProject(SysGenTable table) throws Exception{
@@ -310,139 +310,22 @@ public class GenServiceImpl implements GenService {
         configuration.setDefaultEncoding("utf-8");
         configuration.setClassicCompatible(true);
         //模板
-        String outDir = genProperty.getPath()+File.separator+table.getBeanName()+File.separator;
+        String outDir = "./Geeker-Admin/src/views/"+table.getBeanName();
         Files.createDirectories(Paths.get(outDir));
         Template template = configuration.getTemplate("api.ts.ftl");
-        try(Writer out = new FileWriter(outDir+table.getBeanName()+".ts")){
+        try(Writer out = new FileWriter("./Geeker-Admin/src/api/modules/"+table.getBeanName()+".ts")){
             template.process(table, out);
         }
         template = configuration.getTemplate("index.vue.ftl");
-        try(Writer out = new FileWriter(outDir+"index.vue")){
+        try(Writer out = new FileWriter("./Geeker-Admin/src/views/"+table.getBeanName()+"/index.vue")){
             template.process(table, out);
         }
         template = configuration.getTemplate("edit.vue.ftl");
-        try(Writer out = new FileWriter(outDir+"edit.vue")){
+        try(Writer out = new FileWriter("./Geeker-Admin/src/views/"+table.getBeanName()+"/edit.vue")){
             template.process(table, out);
         }
         //保存生成记录
-        table.setId(null);
-        table.getColumnList().forEach( c->c.setId(null));
-        commonDao.delete(new SysGenTable().setTableName(table.getTableName()));
-        commonDao.delete(new SysGenColumn().setTableName(table.getTableName()));
-        commonDao.insert(table);
-        commonDao.insertBatch(table.getColumnList());
+        this.saveGenFormRecord(table);
     }
 
-
-
-
-
-    @Override
-    public void gen(String tableName) throws IOException, TemplateException {
-        /*Table table = genMapper.table(dbName,tableName);
-        if(table==null){
-            throw new GeneralException(tableName+"表名不存在!");
-        }
-        this.tableInfo(table);
-        this.gen(table);*/
-    }
-
-
-    @Override
-    public void gen(Table table) throws IOException, TemplateException {
-        Configuration configuration = new Configuration(Configuration.getVersion());
-        //模板路径
-        configuration.setDirectoryForTemplateLoading(new File(getClass().getClassLoader().getResource("gen").getPath()));
-        configuration.setDefaultEncoding("utf-8");
-        configuration.setClassicCompatible(true);
-        //模板
-        String outDir = genProperty.getPath()+File.separator+table.getBeanName()+File.separator;
-        //String outDir = genPath+File.separator+"entity"+File.separator;
-        Files.createDirectories(Paths.get(outDir));
-        //输出文件
-        Template template = configuration.getTemplate("entity.java.ftl");
-        try(Writer out = new FileWriter(outDir+table.getClassName()+".java")){
-            template.process(table, out);
-        }
-        template = configuration.getTemplate("entityDTO.java.ftl");
-        try(Writer out = new FileWriter(outDir+table.getClassName()+"DTO.java")){
-            template.process(table, out);
-        }
-        template = configuration.getTemplate("mapper.java.ftl");
-        try(Writer out = new FileWriter(outDir+table.getClassName()+"Mapper.java")){
-            template.process(table, out);
-        }
-        template = configuration.getTemplate("mapper.xml.ftl");
-        try(Writer out = new FileWriter(outDir+table.getClassName()+"Mapper.xml")){
-            template.process(table, out);
-        }
-        template = configuration.getTemplate("service.java.ftl");
-        try(Writer out = new FileWriter(outDir+table.getClassName()+"Service.java")){
-            template.process(table, out);
-        }
-        template = configuration.getTemplate("serviceimpl.java.ftl");
-        try(Writer out = new FileWriter(outDir+table.getClassName()+"ServiceImpl.java")){
-            template.process(table, out);
-        }
-        template = configuration.getTemplate("controller.java.ftl");
-        try(Writer out = new FileWriter(outDir+table.getClassName()+"Controller.java")){
-            template.process(table, out);
-        }
-        template = configuration.getTemplate("api.ts.ftl");
-        try(Writer out = new FileWriter(outDir+table.getBeanName()+".ts")){
-            template.process(table, out);
-        }
-        template = configuration.getTemplate("index.vue.ftl");
-        try(Writer out = new FileWriter(outDir+"index.vue")){
-            template.process(table, out);
-        }
-        template = configuration.getTemplate("edit.vue.ftl");
-        try(Writer out = new FileWriter(outDir+"edit.vue")){
-            template.process(table, out);
-        }
-    }
-
-    @Override
-    public void genAll(String dbName) throws IOException, TemplateException {
-//        List<Table> tableList = genMapper.tableList(dbName);
-//        for(Table table : tableList){
-//            this.tableInfo(table);
-//            this.gen(table);
-//        }
-    }
-
-    public void genList(String tableName,String queryFields) throws Exception{
-        Table table = genMapper.table(genProperty.getDb(),tableName);
-        if(table==null){
-            throw new GeneralException(tableName+"表名不存在!");
-        }
-        //this.tableInfo(table);
-        List<Column> queryList = new ArrayList<>();
-        queryFields = StrUtil.lineToHump(queryFields);
-        for(Column column : table.getColumnList()){
-            if(queryFields.indexOf(column.getColumnName())>=0){
-                queryList.add(column);
-            }
-        }
-        Configuration configuration = new Configuration(Configuration.getVersion());
-        //模板路径
-        configuration.setDirectoryForTemplateLoading(new File(getClass().getClassLoader().getResource("gen").getPath()));
-        configuration.setDefaultEncoding("utf-8");
-        configuration.setClassicCompatible(true);
-        //模板
-        Template template = configuration.getTemplate("onlylist.ftl");
-        String outDir = genProperty.getPath()+"/"+table.getBeanName()+"/";
-        Files.createDirectories(Paths.get(outDir));
-        //输出文件
-        Map<String,Object> data = new HashMap<>();
-        data.put("table",table);
-        data.put("queryList",queryList);
-        try(Writer out = new FileWriter(outDir+"list.vue")){
-            template.process(data, out);
-        }
-        template = configuration.getTemplate("api.ftl");
-        try(Writer out = new FileWriter(outDir+table.getBeanName()+".js")){
-            template.process(data, out);
-        }
-    }
 }

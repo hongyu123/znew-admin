@@ -62,14 +62,21 @@ public class GenController {
         return ApiResult.success();
     }
 
+    //根据表名获取表单配置信息
     @GetMapping("/formInfo")
     public ApiResult formGenTableInfo(@RequestParam String tableName){
         return ApiResult.data( genService.formGenTableInfo(tableName) );
     }
-
-    @PostMapping("/genForm")
-    public ApiResult genForm(@RequestBody SysGenTable table) throws Exception {
+    //表单生成到配置路径
+    @PostMapping("/genFormToPath")
+    public ApiResult genFormToPath(@RequestBody SysGenTable table) throws Exception {
         genService.genFormToPath(table);
+        return ApiResult.success();
+    }
+    //表单生成到项目路径
+    @PostMapping("/genFormToProject")
+    public ApiResult genFormToProject(@RequestBody SysGenTable table) throws Exception {
+        genService.genFormToProject(table);
         return ApiResult.success();
     }
 
