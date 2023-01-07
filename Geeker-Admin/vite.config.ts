@@ -112,6 +112,16 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       // 	resolvers: [ElementPlusResolver()]
       // }),
     ],
+    // 强制预构建插件包
+    optimizeDeps: {
+      include: [
+        `monaco-editor/esm/vs/language/json/json.worker`,
+        `monaco-editor/esm/vs/language/css/css.worker`,
+        `monaco-editor/esm/vs/language/html/html.worker`,
+        `monaco-editor/esm/vs/language/typescript/ts.worker`,
+        `monaco-editor/esm/vs/editor/editor.worker`
+      ]
+    },
     // * 打包去除 console.log && debugger
     esbuild: {
       pure: viteEnv.VITE_DROP_CONSOLE ? ["console.log", "debugger"] : []

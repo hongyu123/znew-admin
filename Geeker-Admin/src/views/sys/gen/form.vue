@@ -35,9 +35,12 @@
       </template>
     </draggable>
     <el-form-item>
+      <el-button type="primary" icon="View" @click="preview">预览</el-button>
       <el-button type="primary" @click="handleGenFormToPath">配置路径生成</el-button>
       <el-button type="primary" @click="handleGenFormToProject">项目路径生成</el-button>
     </el-form-item>
+
+    <FormPreview ref="formPreviewRef" />
   </el-form>
 </template>
 
@@ -46,6 +49,8 @@ import { ref, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import { useRoute } from "vue-router";
 import draggable from "vuedraggable/src/vuedraggable";
+import FormPreview from "@/views/sys/gen/FormPreview.vue";
+
 import { formInfo, detail, genFormToPath, genFormToProject } from "@/api/sys/gen";
 
 const route = useRoute();
@@ -77,5 +82,10 @@ const handleGenFormToProject = () => {
       message: res.message
     });
   });
+};
+
+const formPreviewRef = ref();
+const preview = () => {
+  formPreviewRef.value.acceptParams(genTable.value);
 };
 </script>

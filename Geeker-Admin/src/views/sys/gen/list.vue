@@ -10,10 +10,12 @@
     >
       <!-- 表格操作 -->
       <template #operation="scope">
-        <el-button type="primary" link @click="preview(scope.row)">预览</el-button>
+        <el-button type="primary" icon="View" link @click="preview(scope.row)">预览</el-button>
         <el-button type="primary" link @click="formGen(scope.row)">表单生成</el-button>
       </template>
     </ProTable>
+
+    <FormPreview ref="formPreviewRef" />
   </div>
 </template>
 
@@ -22,6 +24,8 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { ColumnProps } from "@/components/ProTable/interface";
 import ProTable from "@/components/ProTable/index.vue";
+import FormPreview from "@/views/sys/gen/FormPreview.vue";
+
 import { page } from "@/api/sys/gen";
 
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
@@ -48,8 +52,9 @@ const columns: ColumnProps[] = [
 ];
 
 //预览
-const preview = async (row: any) => {
-  console.log(row);
+const formPreviewRef = ref();
+const preview = (row: any) => {
+  formPreviewRef.value.acceptTableName(row.id);
 };
 
 //表单生成

@@ -63,6 +63,15 @@ public interface GenService {
     void genToProject(String tableName) throws Exception;
 
     /**
+     * java代码生成预览
+     * @param tableName
+     * @param templateName
+     * @return
+     * @throws Exception
+     */
+    String javaCode(String tableName, String templateName) throws Exception;
+
+    /**
      * 表单生成信息
      * @param tableName
      * @return
@@ -82,4 +91,12 @@ public interface GenService {
      */
     void genFormToProject(SysGenTable table) throws Exception;
 
+    /**
+     * 表单生成代码预览
+     * @param table
+     * @param templateName
+     * @return
+     * @throws Exception
+     */
+    String formCode(SysGenTable table, String templateName) throws Exception;
 }

@@ -1,6 +1,8 @@
 import com.alibaba.fastjson2.JSON;
 import com.hfw.model.entity.AppUser;
 
+import java.util.UUID;
+
 /**
  * @author zyh
  * @date 2022-11-26
@@ -8,8 +10,7 @@ import com.hfw.model.entity.AppUser;
 public class ApiTest {
 
     public static void main(String[] args) throws Exception {
-        String s = "性别xxx";
-        s = s.replaceAll("\\(.+\\)","");
-        System.out.println(s);
+        System.out.println("mysql_"+ UUID.randomUUID().toString());
+        System.out.println("redis_"+ UUID.randomUUID().toString());
     }
 }

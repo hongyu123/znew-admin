@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -191,6 +192,27 @@ public class GenServiceImpl implements GenService {
             template.process(table, out);
         }
     }
+    @Override
+    public String javaCode(String tableName, String templateName) throws Exception{
+        Table table = this.tableColumnInfo(tableName);
+        if(table==null){
+            throw new GeneralException(tableName+"表名不存在!");
+        }
+        Configuration configuration = new Configuration(Configuration.getVersion());
+        //模板路径
+        configuration.setDirectoryForTemplateLoading(new File(getClass().getClassLoader().getResource("gen").getPath()));
+        configuration.setDefaultEncoding("utf-8");
+        configuration.setClassicCompatible(true);
+        //模板
+        String outDir = genProperty.getPath()+File.separator+table.getBeanName()+File.separator;
+        Files.createDirectories(Paths.get(outDir));
+        //输出文件
+        Template template = configuration.getTemplate(templateName+".ftl");
+        try(StringWriter out = new StringWriter()){
+            template.process(table, out);
+            return out.toString();
+        }
+    }
 
     @Override
     public SysGenTable formGenTableInfo(String tableName){
@@ -327,5 +349,21 @@ public class GenServiceImpl implements GenService {
         //保存生成记录
         this.saveGenFormRecord(table);
     }
-
+    @Override
+    public String formCode(SysGenTable table, String templateName) throws Exception{
+        this.genTableSet(table);
+        Configuration configuration = new Configuration(Configuration.getVersion());
+        //模板路径
+        configuration.setDirectoryForTemplateLoading(new File(getClass().getClassLoader().getResource("gen").getPath()));
+        configuration.setDefaultEncoding("utf-8");
+        configuration.setClassicCompatible(true);
+        //模板
+        String outDir = genProperty.getPath()+File.separator+table.getBeanName()+File.separator;
+        Files.createDirectories(Paths.get(outDir));
+        Template template = configuration.getTemplate(templateName+".ftl");
+        try(StringWriter out = new StringWriter()){
+            template.process(table, out);
+            return out.toString();
+        }
+    }
 }

@@ -33,3 +33,14 @@ export const page = (params: object) => {
 export const detail = (id: any) => {
   return http.get<ApiResult>("/sysGenTable/detail", { id });
 };
+
+export const javaCode = (tableName: string, templateName: string) => {
+  return http.get<ApiResult>("/gen/javaCode", { tableName, templateName }, { headers: { noLoading: true } });
+};
+
+export const formCode = (params: object, templateName: string) => {
+  return http.post<ApiResult>(`/gen/formCode/${templateName}`, params, { headers: { noLoading: true } });
+};
+export const tableFormCode = (id: string, templateName: string) => {
+  return http.get<ApiResult>("/gen/formCode", { id, templateName }, { headers: { noLoading: true } });
+};

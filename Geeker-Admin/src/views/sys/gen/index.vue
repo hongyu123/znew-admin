@@ -8,13 +8,14 @@
       </template>
       <!-- 表格操作 -->
       <template #operation="scope">
+        <el-button type="primary" icon="View" link @click="preview(scope.row)">预览</el-button>
         <el-button type="primary" link @click="handleGenToPath(scope.row)">配置路径生成</el-button>
         <el-button type="primary" link @click="handleGenToProject(scope.row)">项目路径生成</el-button>
         <el-button type="primary" link @click="formGen(scope.row)">表单生成</el-button>
       </template>
     </ProTable>
 
-    <EditModelForm ref="editModelFormRef" />
+    <JavaPreview ref="javaPreviewRef" />
   </div>
 </template>
 
@@ -23,7 +24,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { ColumnProps } from "@/components/ProTable/interface";
 import ProTable from "@/components/ProTable/index.vue";
-import EditModelForm from "@/views/sys/appVersion/edit.vue";
+import JavaPreview from "@/views/sys/gen/JavaPreview.vue";
 import { tablePage, genToPath, genToProject, batchGenToPath, batchGenToProject } from "@/api/sys/gen";
 import { ElMessage } from "element-plus";
 import { useHandleData } from "@/hooks/useHandleData";
@@ -81,5 +82,11 @@ const handleBatchGenToProject = async (ids: string[]) => {
 const router = useRouter();
 const formGen = (row: any) => {
   router.push(`/sys/formGen?tableName=${row.tableName}`);
+};
+
+//预览
+const javaPreviewRef = ref();
+const preview = (row: any) => {
+  javaPreviewRef.value.acceptParams(row.tableName);
 };
 </script>
