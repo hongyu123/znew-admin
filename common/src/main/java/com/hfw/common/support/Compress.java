@@ -9,7 +9,7 @@ import java.util.zip.*;
 
 /**
  * 压缩工具
- * @author zyh
+ * @author farkle
  * @date 2022-04-06
  */
 public class Compress {

@@ -8,7 +8,7 @@ import com.hfw.common.entity.BaseEntity;
 
 /**
 * 系统角色-权限
-* @author zyh
+* @author farkle
 * @date 2022-12-14
 */
 @Data

@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 
 /**
 * 系统登录日志
-* @author zyh
+* @author farkle
 * @date 2022-12-17
 */
 @Data

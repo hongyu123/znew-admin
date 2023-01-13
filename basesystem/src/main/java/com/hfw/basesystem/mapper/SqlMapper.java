@@ -39,8 +39,8 @@ public interface SqlMapper {
 
     /**
      * 支持sql预处理，防sql拼接
-     * 使用示例1：mapper.execute(Paramap.create().put("sql", "update t_app_user set nickname=#{name},status=#{status} where id=#{id}").put("name", "zyh").put("status", 0).put("id", -1));
-     * 使用示例2：mapper.execute(new Sql("update t_app_user set nickname=#{p1},status=#{p2} where id=#{p3}","zyh",0,-1));
+     * 使用示例1：mapper.execute(Paramap.create().put("sql", "update t_app_user set nickname=#{name},status=#{status} where id=#{id}").put("name", "farkle").put("status", 0).put("id", -1));
+     * 使用示例2：mapper.execute(new Sql("update t_app_user set nickname=#{p1},status=#{p2} where id=#{p3}","farkle",0,-1));
      *
      * @param params
      * @return

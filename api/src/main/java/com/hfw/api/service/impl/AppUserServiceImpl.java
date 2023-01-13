@@ -2,22 +2,26 @@ package com.hfw.api.service.impl;
 
 import com.hfw.api.dto.AppUserEditDTO;
 import com.hfw.api.dto.EditPhoneParam;
+import com.hfw.api.mapper.AppUserMapper;
 import com.hfw.api.service.AppUserService;
 import com.hfw.api.support.LoginUser;
+import com.hfw.basesystem.entity.AppUserExt;
 import com.hfw.basesystem.enums.SmsCodeEnum;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.service.AppService;
 import com.hfw.basesystem.service.impl.RedisAuth;
+import com.hfw.common.enums.EnableState;
 import com.hfw.common.support.GeneralException;
 import com.hfw.common.support.ParamMap;
 import com.hfw.common.support.jackson.ApiResult;
-import com.hfw.model.entity.AppUser;
+import com.hfw.basesystem.entity.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 /**
- * @author zyh
+ * @author farkle
  * @date 2022-11-26
  */
 @Service
@@ -28,12 +32,56 @@ public class AppUserServiceImpl implements AppUserService {
     private AppService appService;
     @Autowired
     private RedisAuth redisAuth;
+    @Autowired
+    private AppUserMapper appUserMapper;
 
     @Override
     public AppUser userInfo(Long id){
         AppUser user = commonDao.findByPk(AppUser.class, id);
         return user;
     }
+
+    @Override
+    public AppUser loginByPhone(String phone){
+        AppUser appUser = commonDao.findOne(new AppUser().setPhone(phone));
+        if(appUser==null){
+            appUser = new AppUser().setPhone(phone).setEnableState(EnableState.Enable);
+            commonDao.insert(appUser);
+        }
+        return appUser;
+    }
+
+    @Override
+    public AppUser findByExt(AppUserExt ext){
+        return appUserMapper.findByExt(ext);
+    }
+
+    @Transactional
+    @Override
+    public void save(AppUser appUser, AppUserExt ext){
+        commonDao.insert(appUser);
+        ext.setUserId(appUser.getId());
+        commonDao.insert(ext);
+    }
+
+    @Transactional
+    @Override
+    public AppUser loginByExt(AppUser userInfo, AppUserExt ext){
+        AppUser appUser = this.findByExt(ext);
+        if(appUser==null){
+            appUser = userInfo;
+            this.save(appUser, ext);
+        }
+        return appUser;
+    }
+
+    @Transactional
+    @Override
+    public AppUser loginByExt(AppUserExt ext){
+        return this.loginByExt(new AppUser().setEnableState(EnableState.Enable), ext);
+    }
+
+
     @Override
     public ApiResult validPhone(String code){
         LoginUser loginUser = LoginUser.getLoginUser();
@@ -59,7 +107,7 @@ public class AppUserServiceImpl implements AppUserService {
         AppUser user = new AppUser().setId(loginUser.getId()).setPhone(editPhone.getPhone());
         commonDao.updateByPk(user);
         loginUser.setPhone(editPhone.getPhone());
-        //authService.store(loginUser);TODO:
+        redisAuth.update(loginUser.getId(), loginUser);
         return ApiResult.success();
     }
 
@@ -76,7 +124,7 @@ public class AppUserServiceImpl implements AppUserService {
         if( StringUtils.hasText(dto.getAvatar()) ){
             loginUser.setAvatar(dto.getAvatar());
         }
-        //authService.store(loginUser);TODO:
+        redisAuth.update(loginUser.getId(), loginUser);
         return loginUser;
     }
 

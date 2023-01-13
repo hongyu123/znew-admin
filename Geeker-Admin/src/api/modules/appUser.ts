@@ -7,8 +7,8 @@ export const page = (params: object) => {
 export const detail = (id: number) => {
   return http.get<ApiResult>("/appUser/detail", { id });
 };
-export const save = (params: object) => {
-  return http.post<ApiResult>("/appUser/save", params);
+export const add = (params: object) => {
+  return http.post<ApiResult>("/appUser/add", params);
 };
 export const edit = (params: object) => {
   return http.post<ApiResult>("/appUser/edit", params);

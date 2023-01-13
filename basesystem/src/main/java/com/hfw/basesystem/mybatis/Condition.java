@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * 条件
- * @author zyh
+ * @author farkle
  * @date 2022-06-10
  */
 public class Condition<T> {

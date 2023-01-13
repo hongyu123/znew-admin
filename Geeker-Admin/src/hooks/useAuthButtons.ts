@@ -19,7 +19,7 @@ export const useAuthButtons = () => {
     const currentPageRoles = authStore.authButtonListGet[nowKey.value] ?? {};
     // 未获取接口数据前，设为空对象，否则报错
     return (param: string): boolean => {
-      return currentPageRoles == "*" || Object.values(currentPageRoles).includes(param);
+      return currentPageRoles == "*" || Object.values(currentPageRoles.split(",")).includes(param);
     };
   });
 

@@ -89,8 +89,7 @@ const columns: ColumnProps[] = [
     prop: "logoutType",
     label: "登出类型",
     search: { el: "select" },
-    enum: LogoutType,
-    fieldNames: { label: "desc", value: "value" }
+    enum: LogoutType
   }
   // {
   //   prop: "logoutTime",

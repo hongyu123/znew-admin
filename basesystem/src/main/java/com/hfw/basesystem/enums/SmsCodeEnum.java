@@ -2,7 +2,7 @@ package com.hfw.basesystem.enums;
 
 /**
  * 短信验证码类型
- * @author zyh
+ * @author farkle
  * @date 2022-12-28
  */
 public enum SmsCodeEnum {

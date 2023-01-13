@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 /**
  * 提供链式put的Map工具类
- * @author zyh
+ * @author farkle
  * @date 2022-04-06
  */
 public class ParamMap  extends HashMap<String, Object> {

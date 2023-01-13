@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 /**
 * 系统图文内容
-* @author zyh
+* @author farkle
 * @date 2022-11-25
 */
 @Data

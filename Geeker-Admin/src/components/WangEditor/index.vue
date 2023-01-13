@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<RichEditorProps>(), {
       MENU_CONF: {}
     };
   },
-  height: "500px",
+  height: "400px",
   mode: "default",
   hideToolBar: false,
   disabled: false

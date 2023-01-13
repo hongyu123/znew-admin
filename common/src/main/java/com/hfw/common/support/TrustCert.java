@@ -6,7 +6,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 /**
- * @author zyh
+ * @author farkle
  * @date 2022-10-02
  */
 public class TrustCert {

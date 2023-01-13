@@ -9,13 +9,17 @@
       :model="drawerProps.rowData"
       :hide-required-asterisk="drawerProps.isView"
     >
+      <el-form-item label="文章类型" prop="type">
+        <el-select v-model="drawerProps.rowData!.type" placeholder="请选择" clearable>
+          <el-option v-for="item in appArticleEnums" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="标题" prop="title">
         <el-input
           v-model="drawerProps.rowData!.title"
           maxlength="255"
           show-word-limit
           placeholder="请填写标题"
-          :disabled="drawerProps.rowData!.type=='system'"
           clearable
         ></el-input>
       </el-form-item>
@@ -27,6 +31,9 @@
           placeholder="请填写简介"
           clearable
         ></el-input>
+      </el-form-item>
+      <el-form-item label="图片" prop="picture" v-show="drawerProps.rowData!.type!='system'">
+        <UploadImg v-model:imageUrl="drawerProps.rowData!.picture"></UploadImg>
       </el-form-item>
       <el-form-item label="内容类型" prop="contentType" v-show="drawerProps.rowData!.type!='system'">
         <el-radio-group v-model="drawerProps.rowData!.contentType">
@@ -43,9 +50,18 @@
           clearable
         ></el-input>
       </el-form-item>
-      <el-form-item label="图文内容" prop="content" v-show="drawerProps.rowData!.contentType=='content'">
-        <WangEditor :disabled="drawerProps.isView" height="400px" v-model:value="drawerProps.rowData!.content" />
+      <el-form-item label="图文详情" prop="content" v-show="drawerProps.rowData!.contentType=='content'">
+        <WangEditor :disabled="drawerProps.isView" v-model:value="drawerProps.rowData!.content" />
       </el-form-item>
+      <!-- <el-form-item label="文章位置" prop="location">
+        <el-input
+          v-model="drawerProps.rowData!.location"
+          maxlength="255"
+          show-word-limit
+          placeholder="请填写"
+          clearable
+        ></el-input>
+      </el-form-item> -->
     </el-form>
     <template #footer>
       <el-button @click="drawerVisible = false">取消</el-button>
@@ -55,15 +71,13 @@
 </template>
 
 <script setup lang="ts" name="EditModelForm">
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import { ElMessage, FormInstance } from "element-plus";
 import WangEditor from "@/components/WangEditor/index.vue";
-import { detail } from "@/api/sys/appArticle";
+import UploadImg from "@/components/Upload/Img.vue";
 
-const rules = reactive({
-  title: [{ required: true, message: "请填写标题", trigger: "change" }],
-  contentType: [{ required: true, message: "请填写内容类型(图文/超链接)", trigger: "change" }]
-});
+import { detail } from "@/api/sys/appArticle";
+import { AppArticleType } from "@/api/modules/enum";
 
 interface DrawerProps {
   title: string;
@@ -80,6 +94,27 @@ const drawerProps = ref<DrawerProps>({
   title: ""
 });
 
+const clinkUrlRequired = computed(() => {
+  if (drawerProps.value.rowData && drawerProps.value.rowData.contentType == "link") {
+    return true;
+  }
+  return false;
+});
+const contentRequired = computed(() => {
+  if (drawerProps.value.rowData && drawerProps.value.rowData.contentType == "content") {
+    return true;
+  }
+  return false;
+});
+
+const rules = reactive({
+  type: [{ required: true, message: "请填写文章类型", trigger: "change" }],
+  title: [{ required: true, message: "请填写标题", trigger: "change" }],
+  contentType: [{ required: true, message: "请填写内容类型", trigger: "change" }],
+  content: [{ required: contentRequired, message: "请填写图文详情", trigger: "change" }],
+  linkUrl: [{ required: clinkUrlRequired, message: "请填写超链接", trigger: "change" }]
+});
+
 // 接收父组件传过来的参数
 const acceptParams = (params: DrawerProps): void => {
   drawerProps.value = params;
@@ -88,6 +123,8 @@ const acceptParams = (params: DrawerProps): void => {
     detail(params.rowData.id).then(res => {
       drawerProps.value.rowData = res.data;
     });
+  } else {
+    drawerProps.value.rowData!.contentType = "content";
   }
 };
 
@@ -106,6 +143,13 @@ const handleSubmit = () => {
     }
   });
 };
+
+const appArticleEnums = ref<any[]>([]);
+onMounted(() => {
+  AppArticleType().then(res => {
+    appArticleEnums.value = res.data;
+  });
+});
 
 defineExpose({
   acceptParams

@@ -20,8 +20,8 @@
       <div class="table-header">
         <div class="header-button-lf">
           <el-button type="primary" :icon="CirclePlus" @click="openEditForm('新增')">新增</el-button>
-          <el-button type="primary" plain :icon="CirclePlus" @click="expand(tableData)">展开</el-button>
-          <el-button type="primary" plain :icon="CirclePlus" @click="collapse(tableData)">折叠</el-button>
+          <el-button type="primary" plain icon="ArrowDownBold" @click="expand(tableData)">展开</el-button>
+          <el-button type="primary" plain icon="ArrowUpBold" @click="collapse(tableData)">折叠</el-button>
         </div>
         <div class="header-button-ri">
           <el-button :icon="Refresh" circle @click="loadTreeData"> </el-button>

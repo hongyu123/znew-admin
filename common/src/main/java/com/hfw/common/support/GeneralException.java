@@ -2,7 +2,7 @@ package com.hfw.common.support;
 
 /**
  * 通用异常
- * @author zyh
+ * @author farkle
  * @date 2022-04-06
  */
 public class GeneralException extends RuntimeException{

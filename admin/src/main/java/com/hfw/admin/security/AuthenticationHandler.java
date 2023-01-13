@@ -16,7 +16,7 @@ import java.io.IOException;
 
 /**
  * 没有认证通过或授权失败处理
- * @author zyh
+ * @author farkle
  * @date 2022-04-12
  */
 @Component

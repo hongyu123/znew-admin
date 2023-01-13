@@ -1,11 +1,11 @@
 package com.hfw.admin.service;
 
 import com.hfw.common.entity.PageResult;
-import com.hfw.model.entity.AppUser;
+import com.hfw.basesystem.entity.AppUser;
 
 /**
  * app用户Service
- * @author zyh
+ * @author farkle
  * @date 2022-12-11
  */
 public interface AppUserService {

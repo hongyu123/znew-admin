@@ -1,7 +1,7 @@
 package com.hfw.basesystem.mybatis;
 
 /**
- * @author zyh
+ * @author farkle
  * @date 2022-06-10
  */
 @FunctionalInterface

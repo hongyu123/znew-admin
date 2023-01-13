@@ -4,7 +4,7 @@ import com.hfw.common.enums.IEnum;
 
 /**
  * 权限类型
- * @author zyh
+ * @author farkle
  * @date 2022-12-14
  */
 public enum SysAuthEnum implements IEnum {

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * admin配置
- * @author zyh
+ * @author farkle
  * @date 2022-12-16
  */
 @Configuration

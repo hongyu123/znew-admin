@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 /**
  * FTP客户端
  * 待完善,连接池
- * @author zyh
+ * @author farkle
  * @date 2022-04-07
  */
 @Data

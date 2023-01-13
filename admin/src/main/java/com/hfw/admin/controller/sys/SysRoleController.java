@@ -1,5 +1,6 @@
 package com.hfw.admin.controller.sys;
 
+import com.hfw.admin.log.AdminLog;
 import com.hfw.admin.security.LoginUser;
 import com.hfw.basesystem.dto.SysRoleDTO;
 import com.hfw.basesystem.dto.SysUserRoleDTO;
@@ -18,7 +19,7 @@ import java.util.List;
 
 /**
  * 系统角色控制器
- * @author zyh
+ * @author farkle
  * @date 2022-12-14
  */
 @RestController
@@ -40,6 +41,7 @@ public class SysRoleController {
         return ApiResult.data( sysRoleService.detail(id) );
     }
 
+    @AdminLog("新增系统角色")
     @PostMapping("/save")
     public ApiResult save(@RequestBody @Validated(ValidGroup.Add.class) SysRoleDTO dto){
         dto.setCreator(LoginUser.getLoginUser().getUsername());
@@ -48,6 +50,7 @@ public class SysRoleController {
         return ApiResult.success();
     }
 
+    @AdminLog("编辑系统角色")
     @PostMapping("/edit")
     public ApiResult edit(@RequestBody @Validated(ValidGroup.Update.class) SysRoleDTO dto){
         dto.setUpdator(LoginUser.getLoginUser().getUsername());
@@ -56,6 +59,7 @@ public class SysRoleController {
         return ApiResult.success();
     }
 
+    @AdminLog("删除系统角色")
     @PostMapping("/del")
     public ApiResult del(@RequestBody @Validated(ValidGroup.Del.class) SysRole sysRole){
         sysRoleService.del(sysRole.getId());
@@ -78,13 +82,15 @@ public class SysRoleController {
     public PageResult users(SysUserRoleDTO dto){
         return sysRoleService.users(dto);
     }
-    //角色授权用户
+
+    @AdminLog("角色授权用户")
     @PostMapping("/addUsers")
     public ApiResult addUsers(@RequestBody @Validated SysUserRoleDTO dto){
         sysRoleService.addUsers(dto);
         return ApiResult.success();
     }
-    //角色取消授权用户
+
+    @AdminLog("角色取消授权用户")
     @PostMapping("/delUsers")
     public ApiResult delUsers(@RequestBody @Validated SysUserRoleDTO dto){
         sysRoleService.delUsers(dto);

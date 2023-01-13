@@ -4,7 +4,7 @@ import com.hfw.admin.mapper.AppUserMapper;
 import com.hfw.admin.service.AppUserService;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.common.entity.PageResult;
-import com.hfw.model.entity.AppUser;
+import com.hfw.basesystem.entity.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * app用户服务实现
- * @author zyh
+ * @author farkle
  * @date 2022-12-11
  */
 @Service

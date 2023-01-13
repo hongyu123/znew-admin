@@ -1,5 +1,6 @@
 package com.hfw.admin.controller.sys;
 
+import com.hfw.admin.log.AdminLog;
 import com.hfw.basesystem.dto.AppArticleDTO;
 import com.hfw.basesystem.entity.AppArticle;
 import com.hfw.basesystem.service.AppArticleService;
@@ -14,7 +15,7 @@ import java.util.List;
 
 /**
  * app文章控制器
- * @author zyh
+ * @author farkle
  * @date 2022-12-20
  */
 @RestController
@@ -36,25 +37,29 @@ public class AppArticleController {
         return ApiResult.data( appArticleService.detail(id) );
     }
 
-    @PostMapping("/save")
-    public ApiResult save(@RequestBody @Validated(ValidGroup.Add.class) AppArticle appArticle){
+    @AdminLog("新增系统文章")
+    @PostMapping("/add")
+    public ApiResult add(@RequestBody @Validated(ValidGroup.Add.class) AppArticle appArticle){
         appArticleService.save(appArticle);
         return ApiResult.success();
     }
 
+    @AdminLog("编辑系统文章")
     @PostMapping("/edit")
     public ApiResult edit(@RequestBody @Validated(ValidGroup.Update.class) AppArticle appArticle){
         appArticleService.edit(appArticle);
         return ApiResult.success();
     }
 
+    @AdminLog("删除系统文章")
     @PostMapping("/del")
     public ApiResult del(@RequestBody @Validated(ValidGroup.Del.class) AppArticle appArticle){
         appArticleService.del(appArticle.getId());
         return ApiResult.success();
     }
 
-    @PostMapping("/dels")
+    @AdminLog("批量删除系统文章")
+    //@PostMapping("/dels")
     public ApiResult dels(@RequestBody List<Long> ids){
         commonService.dels(AppArticle.class, ids);
         return ApiResult.success();

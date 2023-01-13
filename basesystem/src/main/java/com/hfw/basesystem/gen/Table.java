@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * 数据库表
- * @author zyh
+ * @author farkle
  * @date 2022-04-15
  */
 @Data

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hfw.api.mapper.AppUserMapper">
+
+    <select id="findByExt" resultType="com.hfw.basesystem.entity.AppUser">
+        select u.* from app_user u join app_user_ext e on u.id=e.user_id
+        <where>
+            <if test="openid!=null and openid!=''">
+                and e.openid=#{openid}
+            </if>
+            <if test="unionid!=null and unionid!=''">
+                and e.unionid=#{unionid}
+            </if>
+            <if test="appleid!=null and appleid!=''">
+                and e.appleid=#{appleid}
+            </if>
+        </where>
+    </select>
+
+</mapper>

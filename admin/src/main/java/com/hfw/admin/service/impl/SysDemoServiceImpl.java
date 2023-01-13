@@ -1,18 +1,16 @@
 package com.hfw.admin.service.impl;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
-import com.hfw.admin.service.SysDemoService;
 import com.hfw.admin.mapper.SysDemoMapper;
-import com.hfw.basesystem.entity.SysPicture;
+import com.hfw.admin.service.SysDemoService;
 import com.hfw.basesystem.enums.PictureEnum;
 import com.hfw.basesystem.mybatis.CommonDao;
-import com.hfw.model.entity.SysDemo;
+import com.hfw.basesystem.service.SysPictureService;
 import com.hfw.common.entity.PageResult;
+import com.hfw.model.entity.SysDemo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -28,6 +26,8 @@ public class SysDemoServiceImpl implements SysDemoService {
     private SysDemoMapper sysDemoMapper;
     @Autowired
     private CommonDao commonDao;
+    @Autowired
+    private SysPictureService sysPictureService;
 
     @Override
     public PageResult<SysDemo> page(SysDemo sysDemo) {
@@ -43,7 +43,7 @@ public class SysDemoServiceImpl implements SysDemoService {
         /*if(StringUtils.hasText(sysDemo.getInterest())){
             sysDemo.setInterestList(JSON.parseArray(sysDemo.getInterest(),String.class));
         }*/
-        sysDemo.setPictureList( commonDao.list(new SysPicture().setTargetId(sysDemo.getId()).setType(PictureEnum.demo)) );
+        sysDemo.setPictureList( sysPictureService.list(id,PictureEnum.demo) );
         return sysDemo;
     }
     public void add(SysDemo sysDemo){
@@ -51,25 +51,18 @@ public class SysDemoServiceImpl implements SysDemoService {
             sysDemo.setInterest(JSON.toJSONString(sysDemo.getInterestList()));
         }
         commonDao.insert(sysDemo);
-        if(!CollectionUtils.isEmpty(sysDemo.getPictureList())){
-            sysDemo.getPictureList().forEach( pic->pic.setType(PictureEnum.demo).setTargetId(sysDemo.getId()));
-            commonDao.insertBatch(sysDemo.getPictureList());
-        }
+        sysPictureService.save(sysDemo.getId(),PictureEnum.demo, sysDemo.getPictureList());
     }
     public void edit(SysDemo sysDemo){
         if(!CollectionUtils.isEmpty(sysDemo.getInterestList())){
             sysDemo.setInterest(JSON.toJSONString(sysDemo.getInterestList()));
         }
         commonDao.updateByPk(sysDemo);
-        if(!CollectionUtils.isEmpty(sysDemo.getPictureList())){
-            commonDao.delete( new SysPicture().setTargetId(sysDemo.getId()).setType(PictureEnum.demo) );
-            sysDemo.getPictureList().forEach( pic->pic.setType(PictureEnum.demo).setTargetId(sysDemo.getId()));
-            commonDao.insertBatch(sysDemo.getPictureList());
-        }
+        sysPictureService.edit(sysDemo.getId(),PictureEnum.demo, sysDemo.getPictureList());
     }
     public void del(Long id){
-        commonDao.delete( new SysPicture().setTargetId(id).setType(PictureEnum.demo) );
         commonDao.deleteByPk(SysDemo.class, id);
+        sysPictureService.del(id,PictureEnum.demo);
     }
 
 }

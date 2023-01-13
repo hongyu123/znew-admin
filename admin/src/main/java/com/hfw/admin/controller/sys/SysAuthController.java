@@ -1,5 +1,6 @@
 package com.hfw.admin.controller.sys;
 
+import com.hfw.admin.log.AdminLog;
 import com.hfw.admin.security.LoginUser;
 import com.hfw.basesystem.dto.SysAuthDTO;
 import com.hfw.basesystem.entity.SysAuth;
@@ -17,7 +18,7 @@ import java.util.List;
 
 /**
  * 系统权限控制器
- * @author zyh
+ * @author farkle
  * @date 2022-12-14
  */
 @RestController
@@ -39,14 +40,16 @@ public class SysAuthController {
         return ApiResult.data( commonService.detail(SysAuth.class, id) );
     }
 
+    @AdminLog("新增系统权限")
     @PostMapping("/save")
     public ApiResult save(@RequestBody @Validated(ValidGroup.Add.class) SysAuth sysAuth){
         sysAuth.setCreator(LoginUser.getLoginUser().getUsername());
         sysAuth.setCreateTime(LocalDateTime.now());
-        commonService.add(sysAuth);
+        commonService.save(sysAuth);
         return ApiResult.success();
     }
 
+    @AdminLog("编辑系统权限")
     @PostMapping("/edit")
     public ApiResult edit(@RequestBody @Validated(ValidGroup.Update.class) SysAuth sysAuth){
         if(sysAuth.getId().equals(sysAuth.getParentId())){
@@ -58,6 +61,7 @@ public class SysAuthController {
         return ApiResult.success();
     }
 
+    @AdminLog("删除系统权限")
     @PostMapping("/del")
     public ApiResult del(@RequestBody @Validated(ValidGroup.Del.class) SysAuth sysAuth){
         Long cnt = commonService.count(new SysAuth().setParentId(sysAuth.getId()));

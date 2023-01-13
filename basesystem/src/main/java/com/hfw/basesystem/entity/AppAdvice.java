@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 /**
 * app建议反馈
-* @author zyh
+* @author farkle
 * @date 2022-11-25
 */
 @Data
@@ -25,6 +25,7 @@ public class AppAdvice extends BaseEntity {
     /** 用户id **/
     private Long userId;
 
+    @NotBlank(message = "问题分类不能为空")
     /** 问题分类 **/
     private String category;
 
@@ -39,7 +40,9 @@ public class AppAdvice extends BaseEntity {
     /** 联系电话 **/
     private String phone;
 
+    /** 创建时间(反馈时间) */
     private LocalDateTime createTime;
 
+    /** 是否已读 */
     private Integer readFlag;
 }

@@ -2,7 +2,7 @@ package com.hfw.common.enums;
 
 /**
  * 性别
- * @author zyh
+ * @author farkle
  * @date 2022-12-28
  */
 public enum Gender implements IEnum {

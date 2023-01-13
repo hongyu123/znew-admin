@@ -21,7 +21,7 @@ import java.util.Map;
 
 /**
  * json请求添加请求参数拦截器
- * @author zyh
+ * @author farkle
  * @date 2022-11-07
  */
 public class RequestJsonFilter extends OncePerRequestFilter {

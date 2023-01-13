@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * jackson自定义null处理
- * @author zyh
+ * @author farkle
  * @date 2022-04-15
  */
 public class NullSerializerModifier extends BeanSerializerModifier {

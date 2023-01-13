@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * spring-security自定义ajax登录过滤器
- * @author zyh
+ * @author farkle
  * @date 2022-04-08
  */
 public class AjaxLoginFilter extends AbstractAuthenticationProcessingFilter {

@@ -9,7 +9,7 @@ import com.hfw.basesystem.enums.SmsCodeEnum;
 
 /**
  * app通用服务
- * @author zyh
+ * @author farkle
  * @date 2022-12-02
  */
 public interface AppService {

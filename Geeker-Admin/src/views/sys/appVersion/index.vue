@@ -57,13 +57,22 @@ const columns: ColumnProps[] = [
     label: "描述"
   },
   {
+    prop: "forceUpdate",
+    label: "是否强制更新",
+    search: { el: "select", key: "forceUpdate" },
+    enum: [
+      { label: "是", value: 1 },
+      { label: "否", value: 0 }
+    ]
+  },
+  {
     prop: "downloadUrl",
     label: "apk",
     render: (scope: { row: any }) => {
       if (scope.row.downloadUrl) {
         return (
           <el-link href={scope.row.downloadUrl} target="_blank">
-            apk
+            {scope.row.downloadUrl.substring(scope.row.downloadUrl.lastIndexOf("/") + 1)}
           </el-link>
         );
       }

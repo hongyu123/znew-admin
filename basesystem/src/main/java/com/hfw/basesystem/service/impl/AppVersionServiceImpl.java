@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * app版本管理服务实现
- * @author zyh
+ * @author farkle
  * @date 2022-12-20
  */
 @Service

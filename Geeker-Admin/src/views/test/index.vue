@@ -26,7 +26,7 @@ import javax.persistence.Table;
 
 /**
 * app用户
-* @author zyh
+* @author farkle
 * @date 2022-11-25
 */
 @Data

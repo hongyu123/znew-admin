@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author zyh
+ * @author farkle
  * @date 2022-06-14
  */
 public class SqlHelper {

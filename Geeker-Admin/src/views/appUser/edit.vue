@@ -1,5 +1,5 @@
 <template>
-  <el-drawer v-model="drawerVisible" :destroy-on-close="true" size="500px" :title="`${drawerProps.title}app用户`">
+  <el-drawer v-model="drawerVisible" :destroy-on-close="true" size="50%" :title="`${drawerProps.title}app用户`">
     <el-form
       ref="ruleFormRef"
       label-width="100px"
@@ -14,55 +14,58 @@
           v-model="drawerProps.rowData!.nickname"
           maxlength="100"
           show-word-limit
-          placeholder="请填写昵称"
+          placeholder="请填写"
           clearable
         ></el-input>
       </el-form-item>
-      <el-form-item label="头像" prop="photo">
-        <el-avatar shape="square" size="100" fit="contain" :src="drawerProps.rowData!.photo"></el-avatar>
+      <el-form-item label="头像" prop="avatar">
+        <UploadImg v-model:imageUrl="drawerProps.rowData!.avatar"></UploadImg>
       </el-form-item>
       <el-form-item label="手机号码" prop="phone">
-        <el-input
-          v-model="drawerProps.rowData!.phone"
-          maxlength="11"
-          show-word-limit
-          placeholder="请填写手机号码"
-          clearable
-        ></el-input>
+        <el-input v-model="drawerProps.rowData!.phone" maxlength="11" show-word-limit placeholder="请填写" clearable></el-input>
       </el-form-item>
       <el-form-item label="性别" prop="gender">
-        <el-input v-model="drawerProps.rowData!.genderDesc" :min="1" placeholder="请填写性别" clearable></el-input>
+        <el-select v-model="drawerProps.rowData!.gender" placeholder="请选择" clearable>
+          <el-option v-for="item in genderEnums" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
       </el-form-item>
       <el-form-item label="生日" prop="birth">
-        <el-input v-model="drawerProps.rowData!.birth" placeholder="请填写生日" clearable></el-input>
+        <el-date-picker
+          v-model="drawerProps.rowData!.birth"
+          format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD"
+          :disabledDate="disabledDateFun"
+          placeholder="请选择日期"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item label="地址" prop="address">
-        <el-input
-          v-model="drawerProps.rowData!.address"
-          maxlength="50"
-          show-word-limit
-          placeholder="请填写地址"
-          clearable
-        ></el-input>
-      </el-form-item>
-
-      <el-form-item label="状态" prop="state" v-show="drawerProps.isView">
-        <el-tag v-if="drawerProps.rowData!.state=='Enable'">启用</el-tag>
-        <el-tag v-else type="info">禁用</el-tag>
-      </el-form-item>
-
-      <h4>活动数据信息</h4>
-      <el-form-item label="关注数量" prop="focusNum">
-        <el-input v-model="drawerProps.rowData!.focusNum" :min="1" placeholder="请填写关注数量" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="粉丝数量" prop="fansNum">
-        <el-input v-model="drawerProps.rowData!.fansNum" :min="1" placeholder="请填写粉丝数量" clearable></el-input>
+        <el-input v-model="drawerProps.rowData!.address" maxlength="50" show-word-limit placeholder="请填写" clearable></el-input>
       </el-form-item>
       <el-form-item label="积分" prop="integral">
-        <el-input v-model="drawerProps.rowData!.integral" :min="1" placeholder="请填写积分" clearable></el-input>
+        <el-input-number v-model="drawerProps.rowData!.integral" placeholder="请填写" clearable></el-input-number>
       </el-form-item>
-      <el-form-item label="作品数量" prop="worksNum">
-        <el-input v-model="drawerProps.rowData!.worksNum" :min="1" placeholder="请填写作品数量" clearable></el-input>
+      <el-form-item label="余额" prop="balance">
+        <el-input-number v-model="drawerProps.rowData!.balance" placeholder="请填写" clearable></el-input-number>
+      </el-form-item>
+      <!-- <el-form-item label="角色" prop="role">
+        <el-select v-model="drawerProps.rowData!.role" placeholder="请选择" clearable>
+          <el-option v-for="item in genderEnums" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item> -->
+      <el-form-item label="启用状态" prop="enableState">
+        <el-select v-model="drawerProps.rowData!.enableState" placeholder="请选择" clearable>
+          <el-option label="启用" value="Enable" />
+          <el-option label="禁用" value="Disable" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="备注" prop="comment">
+        <el-input
+          v-model="drawerProps.rowData!.comment"
+          maxlength="255"
+          show-word-limit
+          placeholder="请填写"
+          clearable
+        ></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -73,10 +76,17 @@
 </template>
 
 <script setup lang="ts" name="EditModelForm">
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { ElMessage, FormInstance } from "element-plus";
 
-const rules = reactive({});
+import UploadImg from "@/components/Upload/Img.vue";
+import { GenderEnum } from "@/api/modules/enum";
+
+const rules = reactive({
+  nickname: [{ required: true, message: "请填写昵称", trigger: "change" }],
+  phone: [{ required: false, pattern: /^\d{11}$/, message: "手机号码格式错误", trigger: "change" }],
+  enableState: [{ required: true, message: "请填写启用状态", trigger: "change" }]
+});
 
 interface DrawerProps {
   title: string;
@@ -115,13 +125,18 @@ const handleSubmit = () => {
   });
 };
 
+const disabledDateFun = (time: any) => {
+  return time.getTime() < Date.now();
+};
+
+const genderEnums = ref<any[]>([]);
+onMounted(() => {
+  GenderEnum().then(res => {
+    genderEnums.value = res.data;
+  });
+});
+
 defineExpose({
   acceptParams
 });
 </script>
-<style scoped>
-/**input 禁用时不显示placehoher*/
-::v-deep input:disabled::-webkit-input-placeholder {
-  -webkit-text-fill-color: rgba(255, 255, 255, 0);
-}
-</style>

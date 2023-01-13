@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * @author zyh
+ * @author farkle
  * @date 2022-04-08
  */
 @SpringBootApplication(scanBasePackages = {"com.hfw.admin","com.hfw.basesystem","com.hfw.model"})

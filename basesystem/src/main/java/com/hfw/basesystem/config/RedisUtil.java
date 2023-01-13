@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Redis工具类
- * @author zyh
+ * @author farkle
  * @create 2020-04-25
  */
 @Component
@@ -56,6 +56,10 @@ public class RedisUtil {
 
     public <T> T get(String key) {
         return (T)redisTemplate.opsForValue().get(key);
+    }
+
+    public <T> T getAndExpire(String key, long expire){
+        return (T)redisTemplate.opsForValue().getAndExpire(key, expire, TimeUnit.SECONDS);
     }
 
     public Boolean del(String key) {

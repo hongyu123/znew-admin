@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * admin日志服务实现
- * @author zyh
+ * @author farkle
  * @date 2022-12-16
  */
 @Service
@@ -40,8 +40,8 @@ public class SysAdminLogServiceImpl implements SysAdminLogService {
 
     @Override
     @Async
-    public int log(SysAdminLog sysAdminLog){
-        return this.save(sysAdminLog);
+    public void log(SysAdminLog sysAdminLog){
+         this.save(sysAdminLog);
     }
 
 }

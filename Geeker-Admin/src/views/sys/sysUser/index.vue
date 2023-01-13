@@ -68,7 +68,6 @@ const columns: ColumnProps[] = [
     prop: "state",
     label: "状态",
     enum: EnableStateEnum,
-    fieldNames: { label: "desc", value: "value" },
     search: { el: "select" }
   },
   {

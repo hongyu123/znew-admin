@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 
 /**
- * @author zyh
+ * @author farkle
  * @date 2022-11-10
  */
 public class LocalDateJsonSerializer extends JsonSerializer {

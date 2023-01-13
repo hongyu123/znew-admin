@@ -7,7 +7,7 @@ import com.hfw.api.support.LoginUser;
 
 /**
  * 认证服务
- * @author zyh
+ * @author farkle
  * @date 2022-11-26
  */
 public interface AuthService {

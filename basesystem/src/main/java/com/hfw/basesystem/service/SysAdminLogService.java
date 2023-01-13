@@ -6,7 +6,7 @@ import com.hfw.common.entity.PageResult;
 
 /**
  * admin日志Service
- * @author zyh
+ * @author farkle
  * @date 2022-12-16
  */
 public interface SysAdminLogService {
@@ -23,5 +23,5 @@ public interface SysAdminLogService {
      * @param sysAdminLog
      * @return
      */
-    int log(SysAdminLog sysAdminLog);
+    void log(SysAdminLog sysAdminLog);
 }

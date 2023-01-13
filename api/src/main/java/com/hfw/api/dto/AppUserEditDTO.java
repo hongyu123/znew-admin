@@ -1,19 +1,17 @@
 package com.hfw.api.dto;
 
 import com.hfw.common.enums.Gender;
-import com.hfw.model.entity.AppUser;
+import com.hfw.basesystem.entity.AppUser;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 /**
  * 编辑app用户模型
- * @author zyh
+ * @author farkle
  * @date 2022-11-26
  */
 @Data
 public class AppUserEditDTO {
-
-    private Long id;
 
     /** 昵称 */
     @Length(max = 100, message = "昵称最多100字符")
@@ -34,7 +32,6 @@ public class AppUserEditDTO {
 
     public static AppUser to(AppUserEditDTO dto){
         AppUser appUser = new AppUser();
-        appUser.setId(dto.getId());
         appUser.setNickname(dto.getNickname());
         appUser.setAvatar(dto.getAvatar());
         appUser.setGender(dto.getGender());

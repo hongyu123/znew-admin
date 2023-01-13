@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 /**
  * 为Lambada表达式获取方法的对应信息
- * @author zyh
+ * @author farkle
  * @date 2022-06-10
  */
 @FunctionalInterface

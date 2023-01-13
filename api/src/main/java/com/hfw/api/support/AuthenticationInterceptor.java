@@ -1,6 +1,7 @@
 package com.hfw.api.support;
 
 import com.hfw.basesystem.support.ValidCode;
+import com.hfw.common.enums.EnableState;
 import com.hfw.common.support.jackson.ApiResult;
 import com.hfw.common.util.RequestUtil;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -11,7 +12,7 @@ import java.io.IOException;
 
 /**
  * 认证拦截器
- * @author zyh
+ * @author farkle
  * @date 2022-04-16
  */
 public class AuthenticationInterceptor implements HandlerInterceptor {
@@ -23,7 +24,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             RequestUtil.json(response, ApiResult.message(ValidCode.NO_LOGIN) );
             return false;
         }
-        if(loginUser.getEnableFlag()!=1){
+        if(loginUser.getEnableState() != EnableState.Enable){
             RequestUtil.json(response, ApiResult.message(ValidCode.DISABLE_ACCOUNT) );
             return false;
         }

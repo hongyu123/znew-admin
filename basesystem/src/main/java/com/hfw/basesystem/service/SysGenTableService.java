@@ -16,4 +16,10 @@ public interface SysGenTableService {
     PageResult<SysGenTable> page(SysGenTable sysGenTable);
 
     SysGenTable detail(Long id);
+
+    /**
+     * 保存表单生成记录
+     * @param table
+     */
+    void saveGenFormRecord(SysGenTable table);
 }

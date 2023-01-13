@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * 融云im
- * @author zyh
+ * @author farkle
  * @date 2022-12-26
  */
 public class RongCloudUtil {

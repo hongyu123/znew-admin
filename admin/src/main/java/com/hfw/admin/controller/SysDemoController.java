@@ -33,7 +33,7 @@ public class SysDemoController {
         return ApiResult.data( sysDemoService.detail( id) );
     }
 
-    @PostMapping("/save")
+    @PostMapping("/add")
     public ApiResult add(@RequestBody @Validated(ValidGroup.Add.class) SysDemo sysDemo){
         sysDemoService.add(sysDemo);
         return ApiResult.success();

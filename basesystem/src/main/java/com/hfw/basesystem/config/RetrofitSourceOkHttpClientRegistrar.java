@@ -12,7 +12,7 @@ import javax.net.ssl.X509TrustManager;
 import java.time.Duration;
 
 /**
- * @author zyh
+ * @author farkle
  * @date 2022-10-02
  */
 @RetrofitScan("com.hfw.demo.retrofit")

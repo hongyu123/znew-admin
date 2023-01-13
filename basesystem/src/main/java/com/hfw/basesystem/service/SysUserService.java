@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * 系统用户Service
- * @author zyh
+ * @author farkle
  * @date 2022-12-14
  */
 public interface SysUserService {

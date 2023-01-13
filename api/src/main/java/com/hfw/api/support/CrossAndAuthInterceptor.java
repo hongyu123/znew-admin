@@ -2,6 +2,7 @@ package com.hfw.api.support;
 
 import com.hfw.basesystem.service.impl.RedisAuth;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -10,10 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 跨域处理拦截器,并且获取用户的登录信息
- * @author zyh
+ * @author farkle
  * @date 2022-04-16
  */
-public class CorsAndAuthInterceptor implements HandlerInterceptor {
+@Component
+public class CrossAndAuthInterceptor implements HandlerInterceptor {
 
     private static final String token = "token";
 
@@ -22,9 +24,9 @@ public class CorsAndAuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String token = request.getHeader(CorsAndAuthInterceptor.token);
+        String token = request.getHeader(CrossAndAuthInterceptor.token);
         if(!StringUtils.hasText(token)){
-            token = request.getParameter(CorsAndAuthInterceptor.token);
+            token = request.getParameter(CrossAndAuthInterceptor.token);
         }
         if(StringUtils.hasText(token)){
             LoginUser loginUser = redisAuth.validToken(token);

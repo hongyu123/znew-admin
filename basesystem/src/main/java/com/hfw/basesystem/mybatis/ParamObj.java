@@ -2,7 +2,7 @@ package com.hfw.basesystem.mybatis;
 
 /**
  * 提供对象set方法链式调用的对象工具类
- * @author zyh
+ * @author farkle
  * @date 2022-06-10
  */
 public class ParamObj<T> {

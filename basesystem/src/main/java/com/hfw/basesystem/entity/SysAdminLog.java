@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
 
 /**
 * admin日志
-* @author zyh
+* @author farkle
 * @date 2022-12-16
 */
 @Data

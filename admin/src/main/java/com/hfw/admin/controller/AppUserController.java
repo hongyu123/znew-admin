@@ -10,7 +10,7 @@ import com.hfw.basesystem.support.validation.ValidGroup;
 import com.hfw.common.enums.EnableState;
 import com.hfw.common.support.jackson.ApiResult;
 import com.hfw.admin.dto.AppUserDTO;
-import com.hfw.model.entity.AppUser;
+import com.hfw.basesystem.entity.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * app用户控制器
- * @author zyh
+ * @author farkle
  * @date 2022-12-11
  */
 @RestController
@@ -41,9 +41,9 @@ public class AppUserController {
         return ApiResult.data( commonService.detail(AppUser.class, id) );
     }
 
-    //@PostMapping("/save")
-    public ApiResult save(@RequestBody @Validated(ValidGroup.Add.class) AppUser appUser){
-        commonService.add(appUser);
+    //@PostMapping("/add")
+    public ApiResult add(@RequestBody @Validated(ValidGroup.Add.class) AppUser appUser){
+        commonService.save(appUser);
         return ApiResult.success();
     }
 
@@ -66,18 +66,18 @@ public class AppUserController {
     }
 
     @Autowired
-    private RedisAuth redisAuth;
-    //修改状态
-    @AdminLog("APP用户状态")
+    private RedisUtil redisUtil;
+
+    @AdminLog("APP用户启用/禁用")
     @PostMapping("/state")
     public ApiResult state(@RequestBody @Validated(ValidGroup.Update.class) AppUser appUser){
-        if(appUser.getEnableFlag()==null){
+        if(appUser.getEnableState()==null){
             return ApiResult.error("状态不能为空!");
         }
-        if(appUser.getEnableFlag() == EnableState.Disable){
-            redisAuth.disableUser(appUser.getId());
+        if(appUser.getEnableState() == EnableState.Disable){
+            redisUtil.del("appuser:"+ appUser.getId());
         }
-        commonService.edit(new AppUser().setId(appUser.getId()).setEnableFlag(appUser.getEnableFlag()).setComment(appUser.getComment()));
+        commonService.edit(new AppUser().setId(appUser.getId()).setEnableState(appUser.getEnableState()).setComment(appUser.getComment()));
         return ApiResult.success();
     }
 

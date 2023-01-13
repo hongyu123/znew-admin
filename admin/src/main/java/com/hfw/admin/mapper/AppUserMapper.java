@@ -1,11 +1,11 @@
 package com.hfw.admin.mapper;
 
-import com.hfw.model.entity.AppUser;
+import com.hfw.basesystem.entity.AppUser;
 import java.util.List;
 
 /**
  * app用户Dao
- * @author zyh
+ * @author farkle
  * @date 2022-12-11
  */
 public interface AppUserMapper {

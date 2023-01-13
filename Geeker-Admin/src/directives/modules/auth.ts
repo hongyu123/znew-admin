@@ -15,7 +15,7 @@ const auth: Directive = {
     }
     if (value && value instanceof Array && value.length) {
       const hasPermission = value.every(item => {
-        return Object.values(currentPageRoles).includes(item);
+        return Object.values(currentPageRoles.split(",")).includes(item);
       });
       if (!hasPermission) el.remove();
     }

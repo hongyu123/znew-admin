@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 /**
  * 系统用户服务实现
- * @author zyh
+ * @author farkle
  * @date 2022-12-14
  */
 @Service
@@ -125,9 +125,6 @@ public class SysUserServiceImpl implements SysUserService {
         if(userId==1){
             List<MenuVO> menuList = sysUserMapper.adminWebMenus();
             Map<String, Object> map = menuList.stream().collect(Collectors.toMap(o -> o.getWebCode(), o -> "*" ));
-            map.put("teacher",new String[]{"page"});
-            map.put("merchants",new String[]{"page","detail","save","state"});
-            map.put("course",new String[]{"page","state"});
             return map;
         }
         List<JSONObject> menuList = sysUserMapper.webMenuButtons(userId);
@@ -136,7 +133,7 @@ public class SysUserServiceImpl implements SysUserService {
             if(code!=null && code.contains("*") ){
                 return "*";
             }
-            return o.getString("buttons").split(",");
+            return o.getString("buttons");
         }));
         return map;
     }

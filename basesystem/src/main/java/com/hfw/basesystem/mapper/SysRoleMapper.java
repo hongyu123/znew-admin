@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * 系统角色Mapper
- * @author zyh
+ * @author farkle
  * @date 2022-12-14
  */
 public interface SysRoleMapper {

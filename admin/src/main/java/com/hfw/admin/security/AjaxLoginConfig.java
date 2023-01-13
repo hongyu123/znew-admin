@@ -10,7 +10,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /**
  * spring-security自定义ajax登录配置
- * @author zyh
+ * @author farkle
  * @date 2022-04-12
  */
 @Configuration

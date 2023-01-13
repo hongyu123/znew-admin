@@ -4,11 +4,12 @@ import com.alibaba.fastjson2.JSONObject;
 import com.hfw.api.dto.AppleLoginParam;
 import com.hfw.api.dto.PhoneCodeParam;
 import com.hfw.api.dto.WeixinLoginParam;
+import com.hfw.api.service.AppUserService;
 import com.hfw.api.service.AuthService;
 import com.hfw.api.support.LoginUser;
-import com.hfw.basesystem.config.RedisUtil;
+import com.hfw.basesystem.entity.AppUser;
+import com.hfw.basesystem.entity.AppUserExt;
 import com.hfw.basesystem.enums.SmsCodeEnum;
-import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.service.AppService;
 import com.hfw.basesystem.service.impl.RedisAuth;
 import com.hfw.basesystem.support.ValidCode;
@@ -17,14 +18,14 @@ import com.hfw.common.enums.Gender;
 import com.hfw.common.support.GeneralException;
 import com.hfw.plugins.apple.Apple;
 import com.hfw.plugins.weixin.WeixinSNS;
-import com.hfw.model.entity.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 /**
- * @author zyh
+ * @author farkle
  * @date 2022-11-26
  */
 @Service
@@ -34,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private AppService appService;
     @Autowired
-    private CommonDao commonDao;
+    private AppUserService appUserService;
 
     @Override
     public void logout(Long userId){
@@ -47,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
 
     //登录
     private LoginUser login(AppUser appUser){
-        if(EnableState.Enable != appUser.getEnableFlag()){
+        if(EnableState.Enable != appUser.getEnableState()){
             throw new GeneralException(ValidCode.DISABLE_ACCOUNT.getCode(), ValidCode.DISABLE_ACCOUNT.getDesc());
         }
         String token = UUID.randomUUID().toString().replaceAll("-","");
@@ -63,31 +64,30 @@ public class AuthServiceImpl implements AuthService {
         if(!appService.validCode(SmsCodeEnum.login, loginParam.getPhone(), loginParam.getCode())){
             throw new GeneralException("验证码错误或已过期!");
         }
-        AppUser appUser = commonDao.findOne(new AppUser().setPhone(loginParam.getPhone()));
-        if(appUser==null){
-            appUser = new AppUser().setPhone(loginParam.getPhone()).setEnableFlag(EnableState.Enable);
-            commonDao.insert(appUser);
-        }
+        AppUser appUser = appUserService.loginByPhone(loginParam.getPhone());
         return this.login(appUser);
     }
 
     @Autowired
     private WeixinSNS weixinSNS;
+
+    @Transactional
     @Override
     public LoginUser loginByWeixin(WeixinLoginParam loginParam) throws Exception {
-        JSONObject obj = weixinSNS.access_token(loginParam.getCode());
+        /*JSONObject obj = weixinSNS.access_token(loginParam.getCode());
         String openid = obj.getString("openid");
-        JSONObject info = weixinSNS.userinfo(openid, obj.getString("access_token"));
-        AppUser appUser = commonDao.findOne(new AppUser().setOpenid(openid));
-        if(appUser==null){
-            appUser = new AppUser()
-                    .setOpenid(openid)
-                    .setNickname(info.getString("nickname"))
-                    .setAvatar(info.getString("headimgurl"))
-                    .setGender(Gender.of(info.getInteger("sex")))
-                    .setEnableFlag(EnableState.Enable);
-            commonDao.insert(appUser);
-        }
+        JSONObject info = weixinSNS.userinfo(openid, obj.getString("access_token"));*/
+        String openid = loginParam.getCode();
+        JSONObject info = new JSONObject();
+        info.put("nickname","nickname");
+        info.put("headimgurl","headimgurl");
+        info.put("sex",1);
+        AppUser userInfo = new AppUser()
+                .setNickname(info.getString("nickname"))
+                .setAvatar(info.getString("headimgurl"))
+                .setGender(Gender.of(info.getInteger("sex")))
+                .setEnableState(EnableState.Enable);
+        AppUser appUser = appUserService.loginByExt(userInfo, new AppUserExt().setOpenid(openid));
         return this.login(appUser);
     }
 
@@ -95,12 +95,9 @@ public class AuthServiceImpl implements AuthService {
     private Apple apple;
     @Override
     public LoginUser loginByApple(AppleLoginParam loginParam) throws Exception {
-        String appleId = apple.verify(loginParam.getToken());
-        AppUser appUser = commonDao.findOne(new AppUser().setAppleId(appleId));
-        if(appUser==null){
-            appUser = new AppUser().setAppleId(appleId).setEnableFlag(EnableState.Enable);
-            commonDao.insert(appUser);
-        }
+        //String appleid = apple.verify(loginParam.getToken());
+        String appleid = loginParam.getToken();
+        AppUser appUser = appUserService.loginByExt(new AppUserExt().setAppleid(appleid));
         return this.login(appUser);
     }
 

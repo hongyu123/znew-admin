@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * 苹果登录参数
- * @author zyh
+ * @author farkle
  * @date 2022-11-26
  */
 @Data

@@ -10,7 +10,7 @@ import java.util.Set;
 
 /**
  * 登录用户
- * @author zyh
+ * @author farkle
  * @date 2022-12-16
  */
 public class LoginUser implements UserDetails {

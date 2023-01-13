@@ -15,7 +15,7 @@ public class AppAdviceDTO extends AppAdvice {
     /*************************显示用*****************************/
     private String userNickname;
     private String userPhone;
-    private String userPhoto;
+    private String userAvatar;
 
     public AppAdvice toEntity(){
         AppAdvice appAdvice = new AppAdvice();

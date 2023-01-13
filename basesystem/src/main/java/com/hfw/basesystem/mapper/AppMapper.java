@@ -6,7 +6,7 @@ import com.hfw.basesystem.enums.DeviceEnum;
 import org.apache.ibatis.annotations.Select;
 
 /**
- * @author zyh
+ * @author farkle
  * @date 2022-12-02
  */
 public interface AppMapper {

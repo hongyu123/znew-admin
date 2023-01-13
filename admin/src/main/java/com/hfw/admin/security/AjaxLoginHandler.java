@@ -28,7 +28,7 @@ import java.util.UUID;
 
 /**
  *  spring-security自定义ajax登录处理
- * @author zyh
+ * @author farkle
  * @date 2022-04-11
  */
 @Component

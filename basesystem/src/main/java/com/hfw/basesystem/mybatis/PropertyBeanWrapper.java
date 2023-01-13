@@ -9,7 +9,7 @@ import org.apache.ibatis.reflection.wrapper.BeanWrapper;
  * 解决问题:
  *  1.下换线属性转驼峰后获取不到原样获取
  *  2.不存在的属性返回null
- * @author zyh
+ * @author farkle
  * @date 2022-12-06
  */
 public class PropertyBeanWrapper extends BeanWrapper {

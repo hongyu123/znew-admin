@@ -6,7 +6,7 @@ import com.hfw.common.entity.PageResult;
 
 /**
  * app版本管理Service
- * @author zyh
+ * @author farkle
  * @date 2022-12-20
  */
 public interface AppVersionService {

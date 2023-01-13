@@ -12,7 +12,7 @@ import com.hfw.basesystem.support.validation.ValidGroup;
 
 /**
 * 系统角色
-* @author zyh
+* @author farkle
 * @date 2022-12-14
 */
 @Data

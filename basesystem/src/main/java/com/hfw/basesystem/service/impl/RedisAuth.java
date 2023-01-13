@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * redis实现登录认证
- * @author zyh
+ * @author farkle
  * @date 2022-12-16
  */
 @Data
@@ -126,7 +126,7 @@ public class RedisAuth {
      * @return
      */
     public <T> T validToken(String token){
-        Integer userId = redisUtil.get(redis_token_key+ token);
+        Integer userId = redisUtil.getAndExpire(redis_token_key+ token, expire);
         if(userId==null){
             return null;
         }
@@ -136,12 +136,15 @@ public class RedisAuth {
         }
         //被挤下线
         if(!auth.getValidToken().contains(token)){
-            SysLoginLog log = commonDao.findOne(new SysLoginLog().setToken(token));
-            if(log!=null){
-                throw new GeneralException("您的账号在"+log.getLocation()+"登录,被挤下线!");
+            if("sysuser:".equals(redis_user_key)){
+                SysLoginLog log = commonDao.findOne(new SysLoginLog().setToken(token));
+                if(log!=null){
+                    throw new GeneralException("您的账号在"+log.getLocation()+"登录,被挤下线!");
+                }
             }
+            return null;
         }
-        redisUtil.expire(redis_token_key+ token, expire);
+        //redisUtil.expire(redis_token_key+ token, expire);
         return auth.getStoreObj();
     }
 

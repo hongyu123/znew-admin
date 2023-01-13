@@ -15,7 +15,7 @@ package com.hfw.common.support;
  *  https://segmentfault.com/a/1190000011282426
  *  https://blog.csdn.net/lq18050010830/article/details/89845790
  *
- * @author zyh
+ * @author farkle
  * @date 2022-04-07
  */
 public class IdWorker{

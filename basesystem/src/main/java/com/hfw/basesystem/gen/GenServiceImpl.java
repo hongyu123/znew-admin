@@ -4,6 +4,7 @@ import com.hfw.basesystem.entity.SysGenColumn;
 import com.hfw.basesystem.entity.SysGenTable;
 import com.hfw.basesystem.mapper.GenMapper;
 import com.hfw.basesystem.mybatis.CommonDao;
+import com.hfw.basesystem.service.SysGenTableService;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.support.GeneralException;
 import com.hfw.common.util.StrUtil;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 /**
  * 代码生成器实现
- * @author zyh
+ * @author farkle
  * @date 2022-04-15
  */
 @Service
@@ -219,6 +220,7 @@ public class GenServiceImpl implements GenService {
         Table table = this.tableColumnInfo(tableName);
         List<SysGenColumn> formColumns = table.getColumnList().stream().map(c -> {
             SysGenColumn column = new SysGenColumn();
+            column.setTableName(tableName);
             column.setFormType("input");
             column.setListFlag(1);
             column.setColumnName(c.getColumnName());
@@ -260,7 +262,7 @@ public class GenServiceImpl implements GenService {
 
 
     @Autowired
-    private CommonDao commonDao;
+    private SysGenTableService sysGenTableService;
 
     //表单生成设置
     private void genTableSet(SysGenTable table){
@@ -287,15 +289,6 @@ public class GenServiceImpl implements GenService {
             }
         }
     }
-    //保存生成记录
-    private void saveGenFormRecord(SysGenTable table){
-        //table.setId(null);
-        table.getColumnList().forEach( c->c.setId(null));
-        //commonDao.delete(new SysGenTable().setTableName(table.getTableName()));
-        commonDao.delete(new SysGenColumn().setTableName(table.getTableName()));
-        //commonDao.insert(table);
-        commonDao.insertBatch(table.getColumnList());
-    }
 
     @Override
     public void genFormToPath(SysGenTable table) throws Exception{
@@ -321,7 +314,7 @@ public class GenServiceImpl implements GenService {
             template.process(table, out);
         }
         //保存生成记录
-        this.saveGenFormRecord(table);
+        sysGenTableService.saveGenFormRecord(table);
     }
     @Override
     public void genFormToProject(SysGenTable table) throws Exception{
@@ -347,7 +340,7 @@ public class GenServiceImpl implements GenService {
             template.process(table, out);
         }
         //保存生成记录
-        this.saveGenFormRecord(table);
+        sysGenTableService.saveGenFormRecord(table);
     }
     @Override
     public String formCode(SysGenTable table, String templateName) throws Exception{

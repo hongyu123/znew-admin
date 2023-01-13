@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * 第三方插件配置
- * @author zyh
+ * @author farkle
  * @date 2022-06-14
  */
 @Configuration

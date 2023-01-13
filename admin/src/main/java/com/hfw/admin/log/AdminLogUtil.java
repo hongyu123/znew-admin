@@ -19,7 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
 /**
- * @author zyh
+ * 系统日志
+ * @author farkle
  * @date 2022-08-03
  */
 @Component
@@ -36,9 +37,9 @@ public class AdminLogUtil {
      */
     @Around("@annotation(adminLog)")
     public Object aroundPrintLog(ProceedingJoinPoint point, AdminLog adminLog){
-        //定义返回值
         SysAdminLog log = new SysAdminLog();
         long start = System.currentTimeMillis();
+        //定义返回值
         Object returnValue = null;
         try{
             ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();

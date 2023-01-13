@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 随机字符串工具
- * @author zyh
+ * @author farkle
  * @date 2022-05-11
  */
 public class RandomUtil {

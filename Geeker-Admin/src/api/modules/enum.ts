@@ -22,3 +22,6 @@ export const SysAuthEnum = () => {
 export const LogoutType = () => {
   return baseEnum({ code: "LogoutType" });
 };
+export const AppArticleType = () => {
+  return baseEnum({ code: "AppArticleType" });
+};

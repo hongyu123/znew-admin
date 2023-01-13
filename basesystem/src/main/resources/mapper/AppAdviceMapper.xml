@@ -5,7 +5,7 @@
 
     <select id="list" resultType="com.hfw.basesystem.dto.AppAdviceDTO">
         select a.*,
-            u.nickname user_nickname,u.phone user_phone, u.photo user_photo
+            u.nickname user_nickname,u.phone user_phone, u.avatar user_avatar
         from app_advice a
         left join app_user u on a.user_id=u.id
         <where>

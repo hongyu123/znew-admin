@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * 数结构数据
- * @author zyh
+ * @author farkle
  * @date 2022-04-06
  */
 public interface ListTree {

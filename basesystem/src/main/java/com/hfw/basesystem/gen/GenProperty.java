@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 代码生成配置属性
- * @author zyh
+ * @author farkle
  * @date 2023-01-03
  */
 @Data

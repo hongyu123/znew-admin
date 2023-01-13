@@ -4,7 +4,7 @@ import org.apache.ibatis.reflection.wrapper.BeanWrapper;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * @author zyh
+ * @author farkle
  * @date 2022-04-12
  */
 public class AdminTest extends Object{

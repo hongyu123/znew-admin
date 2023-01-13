@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * 通用服务
- * @author zyh
+ * @author farkle
  * @date 2022-12-08
  */
 @Service
@@ -27,7 +27,7 @@ public class CommonServiceImpl<T> implements CommonService<T> {
     public Long count(T t){
         return commonDao.count(t);
     }
-    public int add(T t){
+    public int save(T t){
         return commonDao.insert(t);
     }
     public int edit(T t){

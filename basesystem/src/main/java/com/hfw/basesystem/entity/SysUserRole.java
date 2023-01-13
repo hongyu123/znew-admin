@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 /**
 * 系统用户-角色
-* @author zyh
+* @author farkle
 * @date 2022-12-14
 */
 @Data

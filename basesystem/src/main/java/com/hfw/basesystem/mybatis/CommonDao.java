@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * 通用Dao
  * 每次执行SQL都是创建一个新的MappedStatement的查询,因此Mybatis的一级缓存功能不可用
- * @author zyh
+ * @author farkle
  * @date 2022-06-09
  */
 @Slf4j

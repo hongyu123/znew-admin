@@ -4,7 +4,7 @@ import com.hfw.common.enums.IEnum;
 
 /**
  * app文章
- * @author zyh
+ * @author farkle
  * @date 2022-11-25
  */
 public interface AppArticleEnum {

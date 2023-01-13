@@ -3,29 +3,20 @@
 
 <mapper namespace="com.hfw.admin.mapper.AppUserMapper">
 
-    <select id="list" resultType="com.hfw.model.entity.AppUser">
+    <select id="list" resultType="com.hfw.basesystem.entity.AppUser">
         select
-            id
-            ,nickname
-            ,photo
-            ,phone
-            ,gender
-            ,birth
-            ,address
-            ,address_detail
-            ,tags
-            ,focus_num
-            ,fans_num
-            ,integral
-            ,works_num
-            ,role
-            ,state
-            ,message_on
-            ,sys_message_on
-            ,im_message_on
-            ,openid
-            ,apple_id
-            ,im_id, comment
+        id
+        ,nickname
+        ,avatar
+        ,phone
+        ,gender
+        ,birth
+        ,address
+        ,integral
+        ,balance
+        ,role
+        ,enable_state
+        ,comment
         from app_user
         <where>
             <if test="id!=null">
@@ -46,9 +37,6 @@
             <if test="gender!=null">
                 and gender=#{gender}
             </if>
-            <if test="birth!=null">
-                and birth=#{birth}
-            </if>
             <if test="birth_lt!=null">
                 and birth &lt;= #{birth_lt}
             </if>
@@ -58,8 +46,8 @@
             <if test="role!=null">
                 and role=#{role}
             </if>
-            <if test="state!=null">
-                and state=#{state}
+            <if test="enableState!=null">
+                and enable_state=#{enableState}
             </if>
         </where>
         <if test="sortByField!=null and sortByWay!=null">

@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 /**
 * app文章
-* @author zyh
+* @author farkle
 * @date 2022-11-25
 */
 @Data

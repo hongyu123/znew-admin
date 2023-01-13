@@ -1,6 +1,6 @@
 package com.hfw.admin.dto;
 
-import com.hfw.model.entity.AppUser;
+import com.hfw.basesystem.entity.AppUser;
 import lombok.Data;
 
 /**
@@ -24,16 +24,7 @@ public class AppUserDTO extends AppUser {
         appUser.setGender(this.getGender());
         appUser.setBirth(this.getBirth());
         appUser.setAddress(this.getAddress());
-        appUser.setAddressDetail(this.getAddressDetail());
-        appUser.setTags(this.getTags());
-        appUser.setFocusNum(this.getFocusNum());
-        appUser.setFansNum(this.getFansNum());
         appUser.setIntegral(this.getIntegral());
-        appUser.setWorksNum(this.getWorksNum());
-        appUser.setEnableFlag(this.getEnableFlag());
-        appUser.setOpenid(this.getOpenid());
-        appUser.setAppleId(this.getAppleId());
-        appUser.setImId(this.getImId());
         return appUser;
     }
 

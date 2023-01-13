@@ -60,30 +60,65 @@ const drawerProps = ref<DrawerProps>({
 });
 
 // 接收父组件传过来的参数
-const acceptParams = async (params: string): Promise<void> => {
+const acceptParams = (params: string) => {
   drawerProps.value.tableName = params;
-  let res = await javaCode(drawerProps.value.tableName, "entity.java");
-  drawerProps.value.entityText = res.data;
 
-  res = await javaCode(drawerProps.value.tableName, "entityDTO.java");
-  drawerProps.value.dtoText = res.data;
+  let codeCnt = 0;
+  javaCode(drawerProps.value.tableName, "entity.java").then(res => {
+    drawerProps.value.entityText = res.data;
+    codeCnt++;
+    if (codeCnt >= 7) {
+      drawerVisible.value = true;
+    }
+  });
 
-  res = await javaCode(drawerProps.value.tableName, "mapper.java");
-  drawerProps.value.mapperText = res.data;
+  javaCode(drawerProps.value.tableName, "entityDTO.java").then(res => {
+    drawerProps.value.dtoText = res.data;
+    codeCnt++;
+    if (codeCnt >= 7) {
+      drawerVisible.value = true;
+    }
+  });
 
-  res = await javaCode(drawerProps.value.tableName, "mapper.xml");
-  drawerProps.value.mapperXml = res.data;
+  javaCode(drawerProps.value.tableName, "mapper.java").then(res => {
+    drawerProps.value.mapperText = res.data;
+    codeCnt++;
+    if (codeCnt >= 7) {
+      drawerVisible.value = true;
+    }
+  });
 
-  res = await javaCode(drawerProps.value.tableName, "service.java");
-  drawerProps.value.serviceText = res.data;
+  javaCode(drawerProps.value.tableName, "mapper.xml").then(res => {
+    drawerProps.value.mapperXml = res.data;
+    codeCnt++;
+    if (codeCnt >= 7) {
+      drawerVisible.value = true;
+    }
+  });
 
-  res = await javaCode(drawerProps.value.tableName, "serviceimpl.java");
-  drawerProps.value.implText = res.data;
+  javaCode(drawerProps.value.tableName, "service.java").then(res => {
+    drawerProps.value.serviceText = res.data;
+    codeCnt++;
+    if (codeCnt >= 7) {
+      drawerVisible.value = true;
+    }
+  });
 
-  res = await javaCode(drawerProps.value.tableName, "controller.java");
-  drawerProps.value.controllerText = res.data;
+  javaCode(drawerProps.value.tableName, "serviceimpl.java").then(res => {
+    drawerProps.value.implText = res.data;
+    codeCnt++;
+    if (codeCnt >= 7) {
+      drawerVisible.value = true;
+    }
+  });
 
-  drawerVisible.value = true;
+  javaCode(drawerProps.value.tableName, "controller.java").then(res => {
+    drawerProps.value.controllerText = res.data;
+    codeCnt++;
+    if (codeCnt >= 7) {
+      drawerVisible.value = true;
+    }
+  });
 };
 
 defineExpose({

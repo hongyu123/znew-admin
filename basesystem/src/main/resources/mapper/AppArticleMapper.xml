@@ -28,35 +28,11 @@
             <if test="title_like!=null and title_like!=''">
                 and title like concat('%',#{title_like},'%')
             </if>
-            <if test="picture!=null and picture!=''">
-                and picture=#{picture}
-            </if>
-            <if test="picture_like!=null and picture_like!=''">
-                and picture like concat('%',#{picture_like},'%')
-            </if>
-            <if test="introduction!=null and introduction!=''">
-                and introduction=#{introduction}
-            </if>
-            <if test="introduction_like!=null and introduction_like!=''">
-                and introduction like concat('%',#{introduction_like},'%')
-            </if>
             <if test="contentType!=null">
                 and content_type=#{contentType}
             </if>
             <if test="contentId!=null">
                 and content_id=#{contentId}
-            </if>
-            <if test="linkUrl!=null and linkUrl!=''">
-                and link_url=#{linkUrl}
-            </if>
-            <if test="linkUrl_like!=null and linkUrl_like!=''">
-                and link_url like concat('%',#{linkUrl_like},'%')
-            </if>
-            <if test="location!=null and location!=''">
-                and location=#{location}
-            </if>
-            <if test="location_like!=null and location_like!=''">
-                and location like concat('%',#{location_like},'%')
             </if>
         </where>
         <if test="sortByField!=null and sortByWay!=null">

@@ -1,5 +1,6 @@
 package ${packageName}.admin.controller;
 
+import com.hfw.admin.log.AdminLog;
 import com.hfw.common.entity.PageResult;
 import com.hfw.basesystem.support.validation.ValidGroup;
 import ${packageName}.common.support.jackson.ApiResult;
@@ -36,24 +37,28 @@ public class ${className}Controller {
         return ApiResult.data( commonService.detail(${className}.class, id) );
     }
 
+    @AdminLog("新增${tableComment}")
     @PostMapping("/add")
     public ApiResult add(@RequestBody @Validated(ValidGroup.Add.class) ${className} ${beanName}){
-        commonService.add(${beanName});
+        commonService.save(${beanName});
         return ApiResult.success();
     }
 
+    @AdminLog("编辑${tableComment}")
     @PostMapping("/edit")
     public ApiResult edit(@RequestBody @Validated(ValidGroup.Update.class) ${className} ${beanName}){
         commonService.edit(${beanName});
         return ApiResult.success();
     }
 
+    @AdminLog("删除${tableComment}")
     @PostMapping("/del")
     public ApiResult del(@RequestBody @Validated(ValidGroup.Del.class) ${className} ${beanName}){
         commonService.del(${className}.class, ${beanName}.getId());
         return ApiResult.success();
     }
 
+    @AdminLog("批量删除${tableComment}")
     @PostMapping("/dels")
     public ApiResult dels(@RequestBody List<Long> ids){
         commonService.dels(${className}.class, ids);

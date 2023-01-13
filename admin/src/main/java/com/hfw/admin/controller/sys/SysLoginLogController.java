@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 系统登录日志控制器
- * @author zyh
+ * @author farkle
  * @date 2022-12-17
  */
 @RestController

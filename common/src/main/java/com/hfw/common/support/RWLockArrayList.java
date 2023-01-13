@@ -6,7 +6,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * 基于读写锁的线程安全ArrayList类
  * @param <E>
- * @author zyh
+ * @author farkle
  * @date 2022-04-06
  *
  * 其他3中线程安全的List类

@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * 系统权限Mapper
- * @author zyh
+ * @author farkle
  * @date 2022-12-14
  */
 public interface SysAuthMapper {

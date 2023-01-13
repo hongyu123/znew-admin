@@ -35,8 +35,11 @@ import EditModelForm from "@/views/sys/sysDemo/edit.vue";
 import { Delete, CirclePlus } from "@element-plus/icons-vue";
 import { page, save, edit, del, dels } from "@/api/sys/sysDemo";
 import { useHandleData } from "@/hooks/useHandleData";
+import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { GenderEnum } from "@/api/modules/enum";
 
+//页面权限按钮
+const { BUTTONS } = useAuthButtons();
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
 const proTable = ref();
 
@@ -93,7 +96,7 @@ const columns: ColumnProps[] = [
     prop: "avatar",
     label: "头像",
     render: (scope: { row: any }) => {
-      return <el-avatar shape="square" fit="contain" src={scope.row.avatar}></el-avatar>;
+      return BUTTONS.value("detail") ? <el-avatar shape="square" fit="contain" src={scope.row.avatar}></el-avatar> : "";
     }
   },
   {

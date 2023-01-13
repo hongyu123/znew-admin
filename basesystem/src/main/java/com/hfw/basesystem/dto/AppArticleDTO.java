@@ -10,7 +10,7 @@ import lombok.Data;
 public class AppArticleDTO extends AppArticle {
 
     /*************************查询用*****************************/
-
+    private String title_like;
 
     /*************************显示用*****************************/
 

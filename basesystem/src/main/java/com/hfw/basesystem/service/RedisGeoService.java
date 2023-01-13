@@ -6,7 +6,7 @@ import java.util.Set;
 
 /**
  * redis实现附近的人
- * @author zyh
+ * @author farkle
  * @date 2022-11-28
  */
 public interface RedisGeoService {

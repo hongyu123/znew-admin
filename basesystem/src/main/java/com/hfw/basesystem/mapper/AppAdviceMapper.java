@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * app建议反馈Mapper
- * @author zyh
+ * @author farkle
  * @date 2022-12-20
  */
 public interface AppAdviceMapper {

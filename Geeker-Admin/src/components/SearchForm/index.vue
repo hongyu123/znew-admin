@@ -10,7 +10,7 @@
         <GridItem suffix>
           <div class="operation">
             <el-button type="primary" :icon="Search" @click="search">搜索</el-button>
-            <el-button :icon="Delete" @click="reset">重置</el-button>
+            <el-button :icon="Refresh" @click="reset">重置</el-button>
             <el-button v-if="showCollapse" type="primary" link class="search-isOpen" @click="collapsed = !collapsed">
               {{ collapsed ? "展开" : "合并" }}
               <el-icon class="el-icon--right">
@@ -27,7 +27,7 @@
 import { computed, ref } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { BreakPoint } from "@/components/Grid/interface";
-import { Delete, Search, ArrowDown, ArrowUp } from "@element-plus/icons-vue";
+import { Refresh, Search, ArrowDown, ArrowUp } from "@element-plus/icons-vue";
 import SearchFormItem from "./components/SearchFormItem.vue";
 import Grid from "@/components/Grid/index.vue";
 import GridItem from "@/components/Grid/components/GridItem.vue";

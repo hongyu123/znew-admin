@@ -2,7 +2,7 @@
   <el-drawer v-model="drawerVisible" :destroy-on-close="true" size="50%" :title="`${drawerProps.title}app版本管理`">
     <el-form
       ref="ruleFormRef"
-      label-width="100px"
+      label-width="150px"
       label-suffix=" :"
       :rules="rules"
       :disabled="drawerProps.isView"
@@ -35,7 +35,13 @@
           clearable
         ></el-input>
       </el-form-item>
-      <el-form-item label="apk文件" prop="downloadUrl">
+      <el-form-item label="是否强制更新" prop="forceUpdate">
+        <el-radio-group v-model="drawerProps.rowData!.forceUpdate">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="apk文件" prop="downloadUrl" v-show="drawerProps.rowData!.device=='android'">
         <UploadFile v-model:fileUrl="drawerProps.rowData!.downloadUrl" :api="upload" accept=".apk"></UploadFile>
       </el-form-item>
     </el-form>
@@ -47,15 +53,10 @@
 </template>
 
 <script setup lang="ts" name="EditModelForm">
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import { ElMessage, FormInstance } from "element-plus";
 import { upload } from "@/api/modules/common";
 import UploadFile from "@/components/Upload/File.vue";
-
-const rules = reactive({
-  device: [{ required: true, message: "请填写设备(android,ios)", trigger: "change" }],
-  version: [{ required: true, message: "请填写版本", trigger: "change" }]
-});
 
 interface DrawerProps {
   title: string;
@@ -72,8 +73,25 @@ const drawerProps = ref<DrawerProps>({
   title: ""
 });
 
+const downloadUrlRequired = computed(() => {
+  if (drawerProps.value.rowData && drawerProps.value.rowData.device == "android") {
+    return true;
+  }
+  return false;
+});
+const rules = reactive({
+  device: [{ required: true, message: "请填写设备(android,ios)", trigger: "change" }],
+  version: [{ required: true, message: "请填写版本", trigger: "change" }],
+  forceUpdate: [{ required: true, message: "请填写是否强制更新", trigger: "change" }],
+  downloadUrl: [{ required: downloadUrlRequired, message: "请上传apl文件", trigger: "change" }]
+});
+
 // 接收父组件传过来的参数
 const acceptParams = (params: DrawerProps): void => {
+  if (!params.rowData.id) {
+    params.rowData.device = "android";
+    params.rowData.forceUpdate = 0;
+  }
   drawerProps.value = params;
   drawerVisible.value = true;
 };

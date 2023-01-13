@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 
 /**
 * 系统用户
-* @author zyh
+* @author farkle
 * @date 2022-12-14
 */
 @Data

@@ -8,7 +8,7 @@ import com.hfw.common.entity.PageResult;
 
 /**
  * 系统角色Service
- * @author zyh
+ * @author farkle
  * @date 2022-12-14
  */
 public interface SysRoleService {

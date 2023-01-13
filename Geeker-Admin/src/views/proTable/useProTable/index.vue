@@ -55,7 +55,7 @@ import { User } from "@/api/interface";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useDownload } from "@/hooks/useDownload";
-import { useAuthButtons } from "@/hooks/useAuthButtons";
+//import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
 import ImportExcel from "@/components/ImportExcel/index.vue";
 import UserDrawer from "@/views/proTable/components/UserDrawer.vue";
@@ -106,7 +106,7 @@ const getTableList = (params: any) => {
 };
 
 // 页面按钮权限（按钮权限既可以使用 hooks，也可以直接使用 v-auth 指令，指令适合直接绑定在按钮上，hooks 适合根据按钮权限显示不同的内容）
-const { BUTTONS } = useAuthButtons();
+//const { BUTTONS } = useAuthButtons();
 
 // 自定义渲染表头（使用tsx语法）
 const headerRender = (row: ColumnProps) => {
@@ -162,19 +162,13 @@ const columns: ColumnProps[] = [
     },
     render: (scope: { row: User.ResUserList }) => {
       return (
-        <>
-          {BUTTONS.value.status ? (
-            <el-switch
-              model-value={scope.row.status}
-              active-text={scope.row.status ? "启用" : "禁用"}
-              active-value={1}
-              inactive-value={0}
-              onClick={() => changeStatus(scope.row)}
-            />
-          ) : (
-            <el-tag type={scope.row.status ? "success" : "danger"}>{scope.row.status ? "启用" : "禁用"}</el-tag>
-          )}
-        </>
+        <el-switch
+          model-value={scope.row.status}
+          active-text={scope.row.status ? "启用" : "禁用"}
+          active-value={1}
+          inactive-value={0}
+          onClick={() => changeStatus(scope.row)}
+        />
       );
     }
   },

@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * app文章Mapper
- * @author zyh
+ * @author farkle
  * @date 2022-12-20
  */
 public interface AppArticleMapper {

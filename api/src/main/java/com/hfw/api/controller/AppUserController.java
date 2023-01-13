@@ -6,14 +6,14 @@ import com.hfw.api.service.AppUserService;
 import com.hfw.api.service.AuthService;
 import com.hfw.api.support.LoginUser;
 import com.hfw.common.support.jackson.ApiResult;
-import com.hfw.model.entity.AppUser;
+import com.hfw.basesystem.entity.AppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * app用户通用控制器
- * @author zyh
+ * app用户通用
+ * @author farkle
  * @date 2022-11-26
  */
 @RestController
@@ -25,33 +25,50 @@ public class AppUserController {
     @Autowired
     private AuthService authService;
 
-    //用户信息
+    /**
+     * 用户信息
+     * @return
+     */
     @GetMapping("/info")
-    public ApiResult userInfo()  {
+    public ApiResult<AppUser> userInfo()  {
         AppUser appUser = appUserService.userInfo(LoginUser.getLoginUser().getId());
         return ApiResult.data(appUser);
     }
 
-    //校验当前用户的手机号码
-    @PostMapping("/phone/valid")
-    public ApiResult validPhone(@RequestBody String code){
+    /**
+     * 校验当前用户的手机号码
+     * @param code
+     * @return
+     */
+    @GetMapping("/phone/valid")
+    public ApiResult validPhone(@RequestParam String code){
        return appUserService.validPhone(code);
     }
 
-    //修改手机号码
+    /**
+     * 修改手机号码
+     * @param editPhone
+     * @return
+     */
     @PostMapping("/phone/edit")
     public ApiResult editPhone(@RequestBody @Validated EditPhoneParam editPhone){
-        appUserService.editPhone(editPhone);
-        return ApiResult.success();
+        return appUserService.editPhone(editPhone);
     }
 
-    //修改用户信息
+    /**
+     * 修改用户信息
+     * @param dto
+     * @return
+     */
     @PostMapping("/edit")
     public ApiResult editInfo(@RequestBody @Validated AppUserEditDTO dto){
         return ApiResult.data( appUserService.edit(dto) );
     }
 
-    //安全登出
+    /**
+     * 安全登出
+     * @return
+     */
     @PostMapping("/logout")
     public ApiResult logout(){
         LoginUser loginUser = LoginUser.getLoginUser();

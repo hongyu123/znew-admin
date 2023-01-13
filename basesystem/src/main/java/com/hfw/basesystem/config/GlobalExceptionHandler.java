@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 /**
  * 全局异常处理
- * @author zyh
+ * @author farkle
  * @date 2022-04-08
  */
 @Slf4j

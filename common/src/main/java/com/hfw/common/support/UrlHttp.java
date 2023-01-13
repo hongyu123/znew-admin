@@ -16,7 +16,7 @@ import java.util.Map;
 
 /**
  * JDK自带URL发起http请求
- * @author zyh
+ * @author farkle
  * @date 2022-04-06
  */
 public class UrlHttp {

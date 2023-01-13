@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * 代码生成器
- * @author zyh
+ * @author farkle
  * @date 2022-04-15
  */
 public interface GenMapper {

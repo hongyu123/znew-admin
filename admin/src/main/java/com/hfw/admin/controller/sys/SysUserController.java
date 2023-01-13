@@ -1,5 +1,6 @@
 package com.hfw.admin.controller.sys;
 
+import com.hfw.admin.log.AdminLog;
 import com.hfw.admin.security.LoginUser;
 import com.hfw.basesystem.dto.SysUserDTO;
 import com.hfw.basesystem.entity.SysUser;
@@ -18,7 +19,7 @@ import java.util.List;
 
 /**
  * 系统用户控制器
- * @author zyh
+ * @author farkle
  * @date 2022-12-14
  */
 @RestController
@@ -44,6 +45,7 @@ public class SysUserController {
         return this.detail( LoginUser.getLoginUser().getId() );
     }
 
+    @AdminLog("新增系统用户")
     @PostMapping("/save")
     public ApiResult save(@RequestBody @Validated(ValidGroup.Add.class) SysUserDTO dto){
         dto.setCreator(LoginUser.getLoginUser().getUsername());
@@ -52,6 +54,7 @@ public class SysUserController {
         return ApiResult.success();
     }
 
+    @AdminLog("编辑系统用户")
     @PostMapping("/edit")
     public ApiResult edit(@RequestBody @Validated(ValidGroup.Update.class) SysUserDTO dto){
         LoginUser loginUser = LoginUser.getLoginUser();
@@ -61,6 +64,8 @@ public class SysUserController {
         sysUserService.edit(dto);
         return ApiResult.success();
     }
+
+    @AdminLog("修改密码")
     @PostMapping("/changePassword")
     public ApiResult changePassword(@RequestBody SysUserDTO dto){
         if(!ValidUtil.validPassword(dto.getPassword()) ){
@@ -70,12 +75,15 @@ public class SysUserController {
         sysUserService.changePassword(dto);
         return ApiResult.success();
     }
+
+    @AdminLog("重置密码")
     @PostMapping("/resetPassword")
     public ApiResult resetPassword(@RequestBody SysUser sysUser){
         sysUserService.resetPassword(sysUser);
         return ApiResult.success();
     }
 
+    @AdminLog("删除系统用户")
     @PostMapping("/del")
     public ApiResult del(@RequestBody @Validated(ValidGroup.Del.class) SysUserDTO dto){
         LoginUser loginUser = LoginUser.getLoginUser();

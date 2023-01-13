@@ -5,7 +5,7 @@ import lombok.Data;
 
 /**
  * 数据库字段
- * @author zyh
+ * @author farkle
  * @date 2022-04-15
  */
 @Data

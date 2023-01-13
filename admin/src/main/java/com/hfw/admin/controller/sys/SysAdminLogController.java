@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * admin日志控制器
- * @author zyh
+ * @author farkle
  * @date 2022-12-16
  */
 @RestController

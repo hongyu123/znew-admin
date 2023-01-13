@@ -1,15 +1,16 @@
 package com.hfw.admin.controller.sys;
 
-import com.hfw.common.entity.PageResult;
-import com.hfw.basesystem.support.validation.ValidGroup;
-import com.hfw.common.support.jackson.ApiResult;
-import com.hfw.basesystem.service.CommonService;
-import com.hfw.basesystem.service.SysGenTableService;
 import com.hfw.basesystem.dto.SysGenTableDTO;
 import com.hfw.basesystem.entity.SysGenTable;
+import com.hfw.basesystem.service.CommonService;
+import com.hfw.basesystem.service.SysGenTableService;
+import com.hfw.basesystem.support.validation.ValidGroup;
+import com.hfw.common.entity.PageResult;
+import com.hfw.common.support.jackson.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 /**
@@ -36,9 +37,10 @@ public class SysGenTableController {
         return ApiResult.data( sysGenTableService.detail(id) );
     }
 
-    //@PostMapping("/add")
-    public ApiResult add(@RequestBody @Validated(ValidGroup.Add.class) SysGenTable sysGenTable){
-        commonService.add(sysGenTable);
+    //保存Java代码生成
+    @PostMapping("/add")
+    public ApiResult add(@RequestBody SysGenTable sysGenTable){
+        sysGenTableService.saveGenFormRecord(sysGenTable);
         return ApiResult.success();
     }
 

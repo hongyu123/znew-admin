@@ -4,7 +4,7 @@ import com.hfw.common.enums.IEnum;
 
 /**
  * 错误代码
- * @author zyh
+ * @author farkle
  * @date 2022-04-16
  */
 public enum ValidCode implements IEnum {

@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * @author zyh
+ * @author farkle
  * @date 2022-06-15
  */
 public class DateConverter implements Converter<String, Date> {

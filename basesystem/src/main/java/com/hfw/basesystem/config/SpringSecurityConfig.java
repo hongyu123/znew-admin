@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 /**
  * SpringSecurity配置
  * basesystem只使用密码PasswordEncoder
- * @author zyh
+ * @author farkle
  * @date 2022-12-16
  */
 @Configuration

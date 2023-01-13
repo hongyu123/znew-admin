@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * 系统登录日志Mapper
- * @author zyh
+ * @author farkle
  * @date 2022-12-17
  */
 public interface SysLoginLogMapper {

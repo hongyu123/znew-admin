@@ -1,10 +1,10 @@
 package com.hfw.basesystem.service.impl;
 
 import com.hfw.basesystem.entity.AppArticle;
-import com.hfw.basesystem.entity.SysContent;
 import com.hfw.basesystem.mapper.AppArticleMapper;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.service.AppArticleService;
+import com.hfw.basesystem.service.SysContentService;
 import com.hfw.common.entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * app文章服务实现
- * @author zyh
+ * @author farkle
  * @date 2022-12-20
  */
 @Service
@@ -24,6 +24,8 @@ public class AppArticleServiceImpl implements AppArticleService {
     private AppArticleMapper appArticleMapper;
     @Autowired
     private CommonDao commonDao;
+    @Autowired
+    private SysContentService sysContentService;
 
     @Override
     public PageResult<AppArticle> page(AppArticle appArticle) {
@@ -37,25 +39,19 @@ public class AppArticleServiceImpl implements AppArticleService {
     @Override
     public AppArticle detail(Long id){
         AppArticle appArticle = commonDao.findByPk(AppArticle.class, id);
-        if(appArticle!=null && appArticle.getContentId()>0){
-            SysContent content = commonDao.findByPk(SysContent.class, appArticle.getContentId());
-            if(content!=null){
-                appArticle.setContent(content.getContent());
-            }
-        }
+        appArticle.setContent(sysContentService.content(appArticle.getContentId()) );
         return appArticle;
     }
     @Transactional
     @Override
     public int save(AppArticle appArticle){
-        SysContent sysContent = new SysContent().setContent(appArticle.getContent());
-        appArticle.setContentId(sysContent.getId());
+        appArticle.setContentId( sysContentService.save(appArticle.getContent()) );
         return commonDao.insert(appArticle);
     }
     @Transactional
     @Override
     public int edit(AppArticle appArticle){
-        commonDao.updateByPk(new SysContent().setId(appArticle.getContentId()).setContent(appArticle.getContent()));
+        sysContentService.edit(appArticle.getContentId(), appArticle.getContent());
         return commonDao.updateByPk(appArticle);
     }
     @Transactional
@@ -65,7 +61,7 @@ public class AppArticleServiceImpl implements AppArticleService {
         if(appArticle==null){
             return 0;
         }
-        commonDao.deleteByPk(SysContent.class, appArticle.getContentId());
+        sysContentService.del(appArticle.getContentId());
         return commonDao.deleteByPk(AppArticle.class, id);
     }
 

@@ -1,7 +1,7 @@
 package com.hfw.common.support;
 
 /**
- * @author zyh
+ * @author farkle
  * @date 2022-06-15
  */
 public class Entry<K,V> {

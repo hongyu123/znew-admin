@@ -4,7 +4,7 @@ import com.hfw.common.enums.IEnum;
 
 /**
  * 设备类型
- * @author zyh
+ * @author farkle
  * @date 2022-12-28
  */
 public enum DeviceEnum implements IEnum {

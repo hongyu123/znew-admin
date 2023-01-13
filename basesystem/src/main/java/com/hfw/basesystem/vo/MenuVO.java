@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * 菜单VO
- * @author zyh
+ * @author farkle
  * @date 2022-12-16
  */
 @Data

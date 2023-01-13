@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * apache-Http客户端封装
- * @author zyh
+ * @author farkle
  * @date 2022-04-06
  */
 public class ApacheHttpClient {

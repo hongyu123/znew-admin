@@ -10,6 +10,7 @@
             ,version
             ,description
             ,download_url
+            ,force_update
         from app_version
         <where>
             <if test="id!=null">
@@ -23,6 +24,9 @@
             </if>
             <if test="version_like!=null and version_like!=''">
                 and version like concat('%',#{version_like},'%')
+            </if>
+            <if test="forceUpdate!=null">
+                and force_update=#{forceUpdate}
             </if>
         </where>
         <if test="sortByField!=null and sortByWay!=null">

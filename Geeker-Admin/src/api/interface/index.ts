@@ -36,7 +36,7 @@ export namespace Login {
   }
   export interface ResAuthButtons {
     [key: string]: {
-      [key: string]: boolean;
+      [key: string]: string;
     };
   }
 }

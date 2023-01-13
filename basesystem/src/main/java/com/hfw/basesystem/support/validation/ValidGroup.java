@@ -4,7 +4,7 @@ import javax.validation.groups.Default;
 
 /**
  * 校验分组
- * @author zyh
+ * @author farkle
  * @date 2022-04-09
  */
 public interface ValidGroup extends Default {

@@ -4,7 +4,7 @@ import com.hfw.common.enums.IEnum;
 
 /**
  * 图片枚举类型
- * @author zyh
+ * @author farkle
  * @date 2022-12-28
  */
 public enum PictureEnum implements IEnum {

@@ -6,7 +6,7 @@ import java.util.EmptyStackException;
 /**
  * 数组栈
  * @param <E>
- * @author zyh
+ * @author farkle
  * @date 2022-04-06
  */
 public class ArrayStack<E> extends ArrayList<E> {

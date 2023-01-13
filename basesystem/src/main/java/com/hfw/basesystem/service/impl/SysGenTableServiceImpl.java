@@ -40,4 +40,17 @@ public class SysGenTableServiceImpl implements SysGenTableService {
         return sysGenTable;
     }
 
+    @Override
+    public void saveGenFormRecord(SysGenTable table){
+        table.getColumnList().forEach( c->c.setId(null));
+        //commonDao.delete(new SysGenTable().setTableName(table.getTableName()));
+        commonDao.delete(new SysGenColumn().setTableName(table.getTableName()));
+        if(table.getId()==null || table.getId()<=0){
+            table.setId(null);
+            commonDao.insert(table);
+        }
+        commonDao.insertBatch(table.getColumnList());
+    }
+
+
 }

@@ -4,7 +4,7 @@ import com.hfw.common.enums.IEnum;
 
 /**
  * 登录类型
- * @author zyh
+ * @author farkle
  * @date 2022-12-17
  */
 public enum LogoutType implements IEnum {

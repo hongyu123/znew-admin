@@ -2,7 +2,7 @@ package com.hfw.common.util;
 
 /**
  * 正则校验工具类
- * @author zyh
+ * @author farkle
  * @date 2022-04-06
  */
 public class ValidUtil {

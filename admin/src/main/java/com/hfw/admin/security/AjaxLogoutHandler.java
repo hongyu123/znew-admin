@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * 自定义登出处理
- * @author zyh
+ * @author farkle
  * @date 2022-12-18
  */
 @Component

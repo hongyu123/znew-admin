@@ -6,7 +6,7 @@ package com.hfw.common.support;
  * * 匹配0或者任意数量的字符
  * ** 匹配0或者更多的目录
  *
- * @author zyh
+ * @author farkle
  * @date 2022-04-06
  */
 public class AntPathMatcher {

@@ -3,10 +3,10 @@
     <ProTable ref="proTable" title="${tableRemark}列表" :columns="columns" :requestApi="getTableList">
       <!-- 表格 header 按钮 -->
       <template #tableHeader="scope">
-        <el-button type="primary" :icon="CirclePlus" @click="openEditForm('新增')" v-auth="['add']">新增</el-button>
+        <el-button type="primary" icon="CirclePlus" @click="openEditForm('新增')" v-auth="['add']">新增</el-button>
         <el-button
           type="danger"
-          :icon="Delete"
+          icon="Delete"
           plain
           @click="delsModel(scope.selectedListIds)"
           :disabled="!scope.isSelected"
@@ -18,7 +18,7 @@
       <!-- 表格操作 -->
       <template #operation="scope">
         <el-button type="primary" icon="EditPen" link @click="openEditForm('编辑', scope.row)" v-auth="['edit']">编辑</el-button>
-        <el-button type="danger" :icon="Delete" link @click="delModel(scope.row)" v-auth="['del']">删除</el-button>
+        <el-button type="danger" icon="Delete" link @click="delModel(scope.row)" v-auth="['del']">删除</el-button>
       </template>
     </ProTable>
 
@@ -29,11 +29,10 @@
 <script setup lang="tsx" name="${className}">
 import { ref } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface";
+import { useHandleData } from "@/hooks/useHandleData";
 import ProTable from "@/components/ProTable/index.vue";
 import EditModelForm from "@/views/${beanName}/edit.vue";
-import { Delete, CirclePlus } from "@element-plus/icons-vue";
 import { page, add, edit, del, dels } from "@/api/modules/${beanName}";
-import { useHandleData } from "@/hooks/useHandleData";
 
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
 const proTable = ref();
