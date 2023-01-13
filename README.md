@@ -222,21 +222,21 @@ znew
 
 # 后端管理页面权限控制
 
-![image-20230113200504510](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20230113200504510.png)
+![image-20230113200504510](https://oscimg.oschina.net/oscnet/up-98dc0f77b993ff92d108d35109e6fcfb308.png)
 
 参考增删改demo, 注意:权限编码和Controlelr是一一对应的,前端被屏蔽了,需要去数据库查看.实现方式自行查看**Authorization**类.
 
 # 代码生成
 
-![image-20230113201820971](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20230113201820971.png)
+![image-20230113201820971](https://oscimg.oschina.net/oscnet/up-3c89e92f41f34755b35a5f872bbb6a1b756.png)
 
 生成代码预览
 
-![image-20230113201859476](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20230113201859476.png)
+![image-20230113201859476](https://oscimg.oschina.net/oscnet/up-285239ad3008c3d3aa8c6c7e5840a90cc41.png)
 
 可拖拽排序的表单配置, 以及常用的表单字段类型
 
-![image-20230113202149469](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20230113202149469.png)
+![image-20230113202149469](https://oscimg.oschina.net/oscnet/up-790d7bccdbc7d3115c73907dd5bc0f08ab6.png)
 
 # 接口规范
 
@@ -348,7 +348,19 @@ Response Headers(响应头设置)
 
 # 项目截图
 
+![](https://oscimg.oschina.net/oscnet/up-20857fbf71fb1799231f658e0f5d9dd818e.png)
 
+![](https://oscimg.oschina.net/oscnet/up-79681991122b288b5e29bc3b27900768af1.png)
+
+![](https://oscimg.oschina.net/oscnet/up-27fe458984a34cca72d9512f678ecfa1932.png)
+
+![](https://oscimg.oschina.net/oscnet/up-c6097ffd28dbc4898b5bda93493791773dc.png)
+
+![](https://oscimg.oschina.net/oscnet/up-1f24926296e1a56b167d73de8091722c2e4.png)
+
+![](https://oscimg.oschina.net/oscnet/up-69f5c6a7bb1b2ad365db254a036658e103d.png)
+
+![](https://oscimg.oschina.net/oscnet/up-ffc061a2809f7cda925b4e3834cb7031d4c.png)
 
 # TODO
 
