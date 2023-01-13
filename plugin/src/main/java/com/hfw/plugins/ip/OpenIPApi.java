@@ -44,8 +44,4 @@ public class OpenIPApi {
         return "";
     }
 
-    public static void main(String[] args) throws Exception {
-        System.out.println(baidu("47.108.230.110"));
-        System.out.println(baidu("192.168.1.5"));
-    }
 }
