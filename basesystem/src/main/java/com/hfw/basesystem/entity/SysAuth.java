@@ -24,7 +24,7 @@ import javax.validation.constraints.NotNull;
 public class SysAuth extends BaseEntity {
 
     /** id **/
-    @NotNull(message = "id不能为空",groups = {ValidGroup.Update.class, ValidGroup.Del.class})
+    @NotNull(message = "id不能为空",groups = ValidGroup.Update.class)
     private Long id;
 
     /** 父id **/
@@ -102,4 +102,13 @@ public class SysAuth extends BaseEntity {
     private String remark;
 
 
+    public void saveFilter(){
+        this.setId(null);
+        this.setUpdator(null);
+        this.setUpdateTime(null);
+    }
+    public void updateFilter(){
+        this.setCreator(null);
+        this.setCreateTime(null);
+    }
 }

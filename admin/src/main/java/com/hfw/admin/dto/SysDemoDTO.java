@@ -33,5 +33,15 @@ public class SysDemoDTO extends SysDemo {
         sysDemo.setDetail(this.getDetail());
         return sysDemo;
     }
+    public SysDemo toSave(){
+        SysDemo sysDemo = this.toEntity();
+
+        return sysDemo;
+    }
+    public SysDemo toUpdate(){
+        SysDemo sysDemo = this.toEntity();
+
+        return sysDemo;
+    }
 
 }

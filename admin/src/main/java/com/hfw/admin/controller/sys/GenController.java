@@ -1,11 +1,13 @@
-package com.hfw.basesystem.gen;
+package com.hfw.admin.controller.sys;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.hfw.basesystem.entity.SysGenTable;
+import com.hfw.basesystem.gen.GenService;
+import com.hfw.basesystem.gen.Table;
 import com.hfw.basesystem.service.SysGenTableService;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.support.jackson.ApiResult;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +22,7 @@ import java.util.List;
 @RequestMapping("/gen")
 public class GenController {
 
-    @Autowired
+    @Resource
     private GenService genService;
 
     //表分页列表
@@ -92,7 +94,7 @@ public class GenController {
     public ApiResult formCode(@RequestBody SysGenTable table, @PathVariable("templateName") String templateName) throws Exception {
         return ApiResult.data( genService.formCode(table,templateName) );
     }
-    @Autowired
+    @Resource
     private SysGenTableService sysGenTableService;
     //表单生成代码预览
     @GetMapping("/formCode")

@@ -20,7 +20,7 @@ import com.hfw.basesystem.support.validation.ValidGroup;
 public class SysGenColumn extends BaseEntity {
 
     /** id **/
-    @NotNull(message = "id不能为空",groups = {ValidGroup.Update.class, ValidGroup.Del.class})
+    @NotNull(message = "id不能为空",groups = ValidGroup.Update.class)
     private Long id;
 
     /** 表名 **/

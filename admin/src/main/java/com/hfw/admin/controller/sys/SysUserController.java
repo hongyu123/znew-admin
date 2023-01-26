@@ -6,14 +6,14 @@ import com.hfw.basesystem.dto.SysUserDTO;
 import com.hfw.basesystem.entity.SysUser;
 import com.hfw.basesystem.service.CommonService;
 import com.hfw.basesystem.service.SysUserService;
-import com.hfw.common.entity.PageResult;
 import com.hfw.basesystem.support.validation.ValidGroup;
+import com.hfw.common.entity.PageResult;
 import com.hfw.common.support.jackson.ApiResult;
 import com.hfw.common.util.ValidUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,36 +26,31 @@ import java.util.List;
 @RequestMapping("/sysUser")
 public class SysUserController {
 
-    @Autowired
+    @Resource
     private CommonService<SysUser> commonService;
-    @Autowired
+    @Resource
     private SysUserService sysUserService;
 
-    @GetMapping("/page")
+    @GetMapping
     public PageResult page(SysUserDTO dto){
         return sysUserService.page(dto);
     }
 
-    @GetMapping("/detail")
-    public ApiResult detail(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ApiResult detail(@PathVariable Long id){
         return ApiResult.data( sysUserService.detail(id) );
-    }
-    @GetMapping("/current")
-    public ApiResult currentUserInfo(){
-        return this.detail( LoginUser.getLoginUser().getId() );
     }
 
     @AdminLog("新增系统用户")
-    @PostMapping("/save")
+    @PostMapping
     public ApiResult save(@RequestBody @Validated(ValidGroup.Add.class) SysUserDTO dto){
         dto.setCreator(LoginUser.getLoginUser().getUsername());
-        dto.setCreateTime(LocalDateTime.now());
         sysUserService.save(dto);
         return ApiResult.success();
     }
 
     @AdminLog("编辑系统用户")
-    @PostMapping("/edit")
+    @PutMapping
     public ApiResult edit(@RequestBody @Validated(ValidGroup.Update.class) SysUserDTO dto){
         LoginUser loginUser = LoginUser.getLoginUser();
         dto.setCurrentUserId(loginUser.getId());
@@ -65,8 +60,21 @@ public class SysUserController {
         return ApiResult.success();
     }
 
+    @AdminLog("删除系统用户")
+    @DeleteMapping("/{id}")
+    public ApiResult del(@PathVariable("id") Long id){
+        sysUserService.del(id);
+        return ApiResult.success();
+    }
+
+
+    @GetMapping("/current")
+    public ApiResult currentUserInfo(){
+        return this.detail( LoginUser.getLoginUser().getId() );
+    }
+
     @AdminLog("修改密码")
-    @PostMapping("/changePassword")
+    @PutMapping("/changePassword")
     public ApiResult changePassword(@RequestBody SysUserDTO dto){
         if(!ValidUtil.validPassword(dto.getPassword()) ){
             return ApiResult.error("密码格式错误!");
@@ -77,20 +85,12 @@ public class SysUserController {
     }
 
     @AdminLog("重置密码")
-    @PostMapping("/resetPassword")
-    public ApiResult resetPassword(@RequestBody SysUser sysUser){
+    @PutMapping("/resetPassword")
+    public ApiResult resetPassword(@RequestBody @Validated(ValidGroup.Update.class) SysUser sysUser){
         sysUserService.resetPassword(sysUser);
         return ApiResult.success();
     }
 
-    @AdminLog("删除系统用户")
-    @PostMapping("/del")
-    public ApiResult del(@RequestBody @Validated(ValidGroup.Del.class) SysUserDTO dto){
-        LoginUser loginUser = LoginUser.getLoginUser();
-        dto.setCurrentUserId(loginUser.getId());
-        sysUserService.del(dto);
-        return ApiResult.success();
-    }
 
     //@PostMapping("/dels")
     public ApiResult dels(@RequestBody List<Long> ids){

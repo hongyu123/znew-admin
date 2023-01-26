@@ -2,7 +2,7 @@ package com.hfw.basesystem.service.impl;
 
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.service.CommonService;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,17 +12,17 @@ import java.util.List;
  * @author farkle
  * @date 2022-12-08
  */
-@Service
+@Service("commonService")
 public class CommonServiceImpl<T> implements CommonService<T> {
 
-    @Autowired
+    @Resource
     private CommonDao commonDao;
 
     public List<T> list(T t){
-        return commonDao.list(t);
+        return commonDao.select(t);
     }
     public T detail(Class<T> clazz, Long id){
-        return commonDao.findByPk(clazz, id);
+        return commonDao.selectByPk(clazz, id);
     }
     public Long count(T t){
         return commonDao.count(t);

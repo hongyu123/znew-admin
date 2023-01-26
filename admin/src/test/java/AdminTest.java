@@ -1,3 +1,4 @@
+import com.hfw.basesystem.entity.SysUser;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.wrapper.BeanWrapper;
 
@@ -10,11 +11,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class AdminTest extends Object{
 
     public static void main(String[] args) throws Exception {
+        SysUser user = new SysUser();
+        System.out.println(user.getClass());
+        System.out.println(user.getClass().getSuperclass());
     }
-    class T extends BeanWrapper{
 
-        public T(MetaObject metaObject, Object object) {
-            super(metaObject, object);
-        }
-    }
 }

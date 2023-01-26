@@ -1,20 +1,19 @@
 package com.hfw.admin.controller;
 
+import com.hfw.admin.dto.AppUserDTO;
 import com.hfw.admin.log.AdminLog;
 import com.hfw.admin.service.AppUserService;
 import com.hfw.basesystem.config.RedisUtil;
+import com.hfw.basesystem.entity.AppUser;
 import com.hfw.basesystem.service.CommonService;
-import com.hfw.basesystem.service.impl.RedisAuth;
-import com.hfw.common.entity.PageResult;
 import com.hfw.basesystem.support.validation.ValidGroup;
+import com.hfw.common.entity.PageResult;
 import com.hfw.common.enums.EnableState;
 import com.hfw.common.support.jackson.ApiResult;
-import com.hfw.admin.dto.AppUserDTO;
-import com.hfw.basesystem.entity.AppUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -26,18 +25,18 @@ import java.util.List;
 @RequestMapping("/appUser")
 public class AppUserController {
 
-    @Autowired
+    @Resource
     private CommonService<AppUser> commonService;
-    @Autowired
+    @Resource
     private AppUserService appUserService;
 
-    @GetMapping("/page")
+    @GetMapping
     public PageResult page(AppUserDTO dto){
         return appUserService.page(dto);
     }
 
-    @GetMapping("/detail")
-    public ApiResult detail(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ApiResult detail(@PathVariable("id") Long id){
         return ApiResult.data( commonService.detail(AppUser.class, id) );
     }
 
@@ -54,7 +53,7 @@ public class AppUserController {
     }
 
    // @PostMapping("/del")
-    public ApiResult del(@RequestBody @Validated(ValidGroup.Del.class) AppUser appUser){
+    public ApiResult del(@RequestBody AppUser appUser){
         commonService.del(AppUser.class, appUser.getId());
         return ApiResult.success();
     }
@@ -65,11 +64,11 @@ public class AppUserController {
         return ApiResult.success();
     }
 
-    @Autowired
+    @Resource
     private RedisUtil redisUtil;
 
     @AdminLog("APP用户启用/禁用")
-    @PostMapping("/state")
+    @PutMapping("/state")
     public ApiResult state(@RequestBody @Validated(ValidGroup.Update.class) AppUser appUser){
         if(appUser.getEnableState()==null){
             return ApiResult.error("状态不能为空!");

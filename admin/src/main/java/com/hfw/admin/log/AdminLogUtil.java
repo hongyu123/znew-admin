@@ -6,11 +6,10 @@ import com.hfw.basesystem.entity.SysAdminLog;
 import com.hfw.basesystem.service.SysAdminLogService;
 import com.hfw.common.util.RequestUtil;
 import com.hfw.common.util.StrUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -25,10 +24,9 @@ import java.time.LocalDateTime;
  */
 @Component
 @Aspect
-@Slf4j
 public class AdminLogUtil {
 
-    @Autowired
+    @Resource
     private SysAdminLogService sysAdminLogService;
 
     /**
@@ -36,8 +34,9 @@ public class AdminLogUtil {
      * @return
      */
     @Around("@annotation(adminLog)")
-    public Object aroundPrintLog(ProceedingJoinPoint point, AdminLog adminLog){
+    public Object aroundPrintLog(ProceedingJoinPoint point, AdminLog adminLog) throws Throwable {
         SysAdminLog log = new SysAdminLog();
+        log.setRequestTime(LocalDateTime.now());
         long start = System.currentTimeMillis();
         //定义返回值
         Object returnValue = null;
@@ -63,26 +62,22 @@ public class AdminLogUtil {
             returnValue = point.proceed(args);
             //后置通知
             //System.out.println("后置通知");
-
             log.setResponse( StrUtil.limitLength(JSON.toJSONString(returnValue),2000) );
+            log.setTimes(System.currentTimeMillis()-start);
+            sysAdminLogService.log(log);
+            return returnValue;
         }catch (Throwable t){
             //异常通知
             //System.out.println("异常通知");
             log.setState(0);
             log.setMessage( StrUtil.limitLength(t.getMessage(),255) );
-            this.log.error("异常通知",t);
-        }finally {
+            log.setTimes(System.currentTimeMillis()-start);
+            sysAdminLogService.log(log);
+            throw t;
+        }/*finally {
             //最终通知
             //System.out.println("最终通知");
-        }
-        log.setTimes(System.currentTimeMillis()-start);
-        log.setRequestTime(LocalDateTime.now());
-        try{
-            sysAdminLogService.log(log);
-        }catch (Exception e){
-            this.log.error("AOP日志入库异常", e);
-        }
-        return returnValue;
+        }*/
     }
 
 }

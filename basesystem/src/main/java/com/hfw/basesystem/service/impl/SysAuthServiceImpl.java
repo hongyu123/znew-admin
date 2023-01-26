@@ -6,7 +6,7 @@ import com.hfw.basesystem.mapper.SysAuthMapper;
 import com.hfw.basesystem.service.SysAuthService;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.util.ListUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -15,10 +15,10 @@ import java.util.List;
  * @author farkle
  * @date 2022-12-14
  */
-@Service
+@Service("sysAuthService")
 public class SysAuthServiceImpl implements SysAuthService {
 
-    @Autowired
+    @Resource
     private SysAuthMapper sysAuthMapper;
 
     @Override

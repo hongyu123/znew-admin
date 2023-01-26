@@ -1,7 +1,7 @@
 package com.hfw.api.support;
 
 import com.hfw.basesystem.service.impl.RedisAuth;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,7 +19,7 @@ public class CrossAndAuthInterceptor implements HandlerInterceptor {
 
     private static final String token = "token";
 
-    @Autowired
+    @Resource
     private RedisAuth redisAuth;
 
     @Override

@@ -5,7 +5,7 @@ import com.hfw.basesystem.entity.SysUser;
 import com.hfw.basesystem.mapper.SysUserMapper;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.common.enums.EnableState;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,17 +22,17 @@ import java.util.Set;
  * @author farkle
  * @date 2022-04-12
  */
-@Service
+@Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
+    @Resource
     private CommonDao commonDao;
-    @Autowired
+    @Resource
     private SysUserMapper sysUserMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SysUser sysUser = commonDao.findOne(new SysUser().setAccount(username));
+        SysUser sysUser = commonDao.selectOne(new SysUser().setAccount(username));
         if(sysUser==null){
             throw new UsernameNotFoundException("用户名不存在");
         }

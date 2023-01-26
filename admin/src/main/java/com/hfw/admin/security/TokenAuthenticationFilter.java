@@ -5,7 +5,7 @@ import com.hfw.basesystem.support.ValidCode;
 import com.hfw.common.support.GeneralException;
 import com.hfw.common.support.jackson.ApiResult;
 import com.hfw.common.util.RequestUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -27,7 +27,7 @@ import java.io.IOException;
 @Component
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
     
-    @Autowired
+    @Resource
     private RedisAuth redisAuth;
     
     @Override

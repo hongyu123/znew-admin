@@ -9,7 +9,7 @@ import com.hfw.basesystem.support.validation.ValidGroup;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.support.ParamMap;
 import com.hfw.common.support.jackson.ApiResult;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,20 +24,21 @@ import java.util.List;
 @RequestMapping("/appAdvice")
 public class AppAdviceController {
 
-    @Autowired
+    @Resource
     private CommonService<AppAdvice> commonService;
-    @Autowired
+    @Resource
     private AppAdviceService appAdviceService;
 
-    @GetMapping("/page")
+    @GetMapping
     public PageResult page(AppAdviceDTO dto){
         return appAdviceService.page(dto);
     }
 
-    @GetMapping("/detail")
-    public ApiResult detail(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ApiResult detail(@PathVariable("id") Long id){
         return ApiResult.data( commonService.detail(AppAdvice.class, id) );
     }
+
     //未读数量
     @GetMapping("/unreadCount")
     public ApiResult unreadCount(){
@@ -46,9 +47,9 @@ public class AppAdviceController {
     }
 
     @AdminLog("建议已读")
-    @PostMapping("/read")
-    public ApiResult read(@RequestBody @Validated(ValidGroup.Update.class) AppAdvice appAdvice){
-        commonService.edit(new AppAdvice().setId(appAdvice.getId()).setReadFlag(1));
+    @PostMapping("/read/{id}")
+    public ApiResult read(@PathVariable("id") Long id){
+        commonService.edit(new AppAdvice().setId(id).setReadFlag(1));
         return ApiResult.success();
     }
 

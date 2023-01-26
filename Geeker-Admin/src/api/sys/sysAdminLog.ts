@@ -1,21 +1,21 @@
 import http from "@/api";
 import { ApiResult, PageResult } from "@/api/interface/znew";
 
-export const page = (params: object) => {
-  return http.get<PageResult>("/sysAdminLog/page", params);
+export const page = (params: {}) => {
+  return http.get<PageResult>("/sysAdminLog", params);
 };
 export const detail = (id: number) => {
-  return http.get<ApiResult>("/sysAdminLog/detail", { id });
+  return http.get<ApiResult>(`/sysAdminLog/${id}`);
 };
-export const save = (params: object) => {
-  return http.post<ApiResult>("/sysAdminLog/save", params);
+export const save = (params: {}) => {
+  return http.post<ApiResult>("/sysAdminLog", params);
 };
-export const edit = (params: object) => {
-  return http.post<ApiResult>("/sysAdminLog/edit", params);
+export const edit = (params: {}) => {
+  return http.put<ApiResult>("/sysAdminLog", params);
 };
-export const del = (params: { id: number }) => {
-  return http.post<ApiResult>("/sysAdminLog/del", params);
+export const del = (id: number) => {
+  return http.delete<ApiResult>(`/sysAdminLog/${id}`);
 };
 export const dels = (params: string[]) => {
-  return http.post<ApiResult>("/sysAdminLog/dels", params);
+  return http.delete<ApiResult>("/sysAdminLog/dels", params);
 };

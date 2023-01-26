@@ -7,7 +7,7 @@ import com.hfw.basesystem.enums.PaymentsType;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.common.support.GeneralException;
 import com.hfw.model.entity.UserIntegral;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,23 +18,23 @@ import java.util.List;
  * @author farkle
  * @date 2023-01-12
  */
-@Service
+@Service("userIntegralService")
 public class UserIntegralServiceImpl implements UserIntegralService {
 
-    @Autowired
+    @Resource
     private AppUserMapper appUserMapper;
-    @Autowired
+    @Resource
     private CommonDao commonDao;
 
     @Override
     public List<UserIntegral> list(UserIntegral cond){
-        return commonDao.list(cond, cond.getPageNumber(), cond.getPageSize());
+        return commonDao.select(cond, cond.getPageNumber(), cond.getPageSize());
     }
 
     @Override
     public void addIntegral(Long userId, Integer integral, String source, Long orderId){
         appUserMapper.addIntegral(userId, integral);
-        AppUser appUser = commonDao.findByPk(AppUser.class, userId);
+        AppUser appUser = commonDao.selectByPk(AppUser.class, userId);
         UserIntegral userIntegral = new UserIntegral();
         userIntegral.setUserId(userId);
         userIntegral.setIntegral(integral);
@@ -54,7 +54,7 @@ public class UserIntegralServiceImpl implements UserIntegralService {
         if(res<=0){
             throw new GeneralException("用户积分不足!");
         }
-        AppUser appUser = commonDao.findByPk(AppUser.class, userId);
+        AppUser appUser = commonDao.selectByPk(AppUser.class, userId);
         UserIntegral userIntegral = new UserIntegral();
         userIntegral.setUserId(userId);
         userIntegral.setIntegral(integral);

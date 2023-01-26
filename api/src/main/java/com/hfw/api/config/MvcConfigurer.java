@@ -5,7 +5,7 @@ import com.hfw.api.support.CrossAndAuthInterceptor;
 import com.hfw.api.support.RequestJsonFilter;
 import com.hfw.basesystem.support.DateConverter;
 import com.hfw.basesystem.support.NullHandleMappingJackson2HttpMessageConverter;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +31,7 @@ public class MvcConfigurer implements WebMvcConfigurer {
         return registration;
     }*/
 
-    @Autowired
+    @Resource
     private CrossAndAuthInterceptor crossAndAuthInterceptor;
     //api接口认证过滤器
     @Override

@@ -8,7 +8,7 @@ import ${packageName}.basesystem.service.CommonService;
 import ${packageName}.admin.service.${className}Service;
 import ${packageName}.admin.dto.${className}DTO;
 import ${packageName}.model.entity.${className};
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -22,44 +22,44 @@ import java.util.List;
 @RequestMapping("/${beanName}")
 public class ${className}Controller {
 
-    @Autowired
+    @Resource
     private CommonService<${className}> commonService;
-    @Autowired
+    @Resource
     private ${className}Service ${beanName}Service;
 
-    @GetMapping("/page")
+    @GetMapping
     public PageResult page(${className}DTO dto){
         return ${beanName}Service.page(dto);
     }
 
-    @GetMapping("/detail")
-    public ApiResult detail(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ApiResult detail(@PathVariable("id") Long id){
         return ApiResult.data( commonService.detail(${className}.class, id) );
     }
 
     @AdminLog("新增${tableComment}")
-    @PostMapping("/add")
+    @PostMapping
     public ApiResult add(@RequestBody @Validated(ValidGroup.Add.class) ${className} ${beanName}){
         commonService.save(${beanName});
         return ApiResult.success();
     }
 
     @AdminLog("编辑${tableComment}")
-    @PostMapping("/edit")
+    @PutMapping
     public ApiResult edit(@RequestBody @Validated(ValidGroup.Update.class) ${className} ${beanName}){
         commonService.edit(${beanName});
         return ApiResult.success();
     }
 
     @AdminLog("删除${tableComment}")
-    @PostMapping("/del")
-    public ApiResult del(@RequestBody @Validated(ValidGroup.Del.class) ${className} ${beanName}){
-        commonService.del(${className}.class, ${beanName}.getId());
+    @DeleteMapping("/{id}")
+    public ApiResult del(@PathVariable("id") Long id){
+        commonService.del(${className}.class, id);
         return ApiResult.success();
     }
 
     @AdminLog("批量删除${tableComment}")
-    @PostMapping("/dels")
+    @DeleteMapping("/dels")
     public ApiResult dels(@RequestBody List<Long> ids){
         commonService.dels(${className}.class, ids);
         return ApiResult.success();

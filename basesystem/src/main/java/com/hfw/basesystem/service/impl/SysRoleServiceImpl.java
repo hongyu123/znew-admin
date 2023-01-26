@@ -8,7 +8,7 @@ import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.service.SysRoleService;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.support.GeneralException;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -22,12 +22,12 @@ import java.util.stream.Collectors;
  * @author farkle
  * @date 2022-12-14
  */
-@Service
+@Service("sysRoleService")
 public class SysRoleServiceImpl implements SysRoleService {
 
-    @Autowired
+    @Resource
     private SysRoleMapper sysRoleMapper;
-    @Autowired
+    @Resource
     private CommonDao commonDao;
 
     @Override
@@ -41,9 +41,9 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public SysRoleDTO detail(Long id){
-        SysRole sysRole = commonDao.findByPk(SysRole.class, id);
+        SysRole sysRole = commonDao.selectByPk(SysRole.class, id);
         SysRoleDTO dto = SysRoleDTO.of(sysRole);
-        List<SysRoleAuth> ruleAuthList = commonDao.list(new SysRoleAuth().setRoleId(dto.getId()));
+        List<SysRoleAuth> ruleAuthList = commonDao.select(new SysRoleAuth().setRoleId(dto.getId()));
         if(!CollectionUtils.isEmpty(ruleAuthList)){
             List<SysAuth> authList = ruleAuthList.stream().map(ruleAuth -> new SysAuth().setId(ruleAuth.getAuthId())).collect(Collectors.toList());
             dto.setAuthList(authList);
@@ -53,44 +53,42 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     @Transactional
-    public int save(SysRoleDTO dto){
-        SysRole sysRole = dto.toSave();
-        int res = commonDao.insert(sysRole);
+    public void save(SysRoleDTO dto){
+        SysRole sysRole = dto.saveFilter().toEntity();
+        commonDao.insert(sysRole);
         if(!CollectionUtils.isEmpty(dto.getAuthList())){
             List<SysRoleAuth> ruleAuthList = dto.getAuthList().stream()
                     .map(auth -> new SysRoleAuth().setRoleId(sysRole.getId()).setAuthId(auth.getId())).collect(Collectors.toList());
             commonDao.insertBatch(ruleAuthList);
         }
-        return res;
     }
 
     @Override
     @Transactional
-    public int edit(SysRoleDTO dto){
-        SysRole origin = commonDao.findByPk(SysRole.class, dto.getId());
+    public void edit(SysRoleDTO dto){
+        SysRole origin = commonDao.selectByPk(SysRole.class, dto.getId());
         if(origin.getSystemFlag()==1){
             throw new GeneralException("系统内置角色,不允许修改!");
         }
-        SysRole sysRole = dto.toEdit();
-        int res = commonDao.updateByPk(sysRole);
+        SysRole sysRole = dto.updateFilter().toEntity();
+        commonDao.updateByPk(sysRole);
         commonDao.delete(new SysRoleAuth().setRoleId(sysRole.getId()));
         if(!CollectionUtils.isEmpty(dto.getAuthList())){
             List<SysRoleAuth> ruleAuthList = dto.getAuthList().stream()
                     .map(auth -> new SysRoleAuth().setRoleId(sysRole.getId()).setAuthId(auth.getId())).collect(Collectors.toList());
             commonDao.insertBatch(ruleAuthList);
         }
-        return res;
     }
 
     @Override
     @Transactional
-    public int del(Long id){
-        SysRole origin = commonDao.findByPk(SysRole.class, id);
+    public void del(Long id){
+        SysRole origin = commonDao.selectByPk(SysRole.class, id);
         if(origin.getSystemFlag()==1){
             throw new GeneralException("系统内置角色,不允许删除!");
         }
         commonDao.delete(new SysRoleAuth().setRoleId(id));
-        return commonDao.deleteByPk(SysRole.class, id);
+        commonDao.deleteByPk(SysRole.class, id);
     }
 
 

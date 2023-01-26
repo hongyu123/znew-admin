@@ -10,6 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.hfw.common.util.LocalDateUtil;
+import com.hfw.common.util.StrUtil;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -43,6 +44,10 @@ public class NullHandleObjectMapper{
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         //允许序列化空对象(Object)
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS,false);
+        //空字符串可以序列化成枚举,对象,Map,集合
+        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+        //非法枚举序列化为null
+        //objectMapper.configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true);
         //自定义字段为null处理
         objectMapper.setSerializerFactory(objectMapper.getSerializerFactory().withSerializerModifier(new NullSerializerModifier()));
         //设置时区
@@ -58,6 +63,9 @@ public class NullHandleObjectMapper{
             @Override
             public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
                 String text = jsonParser.getText().trim();
+                if(!StrUtil.hasText(text)){
+                    return null;
+                }
                 return LocalDateUtil.parseDateTime(text);
             }
         });
@@ -65,6 +73,9 @@ public class NullHandleObjectMapper{
             @Override
             public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
                 String text = jsonParser.getText().trim();
+                if(!StrUtil.hasText(text)){
+                    return null;
+                }
                 return LocalDateUtil.parse(text);
             }
         });

@@ -18,7 +18,7 @@ import com.hfw.common.enums.Gender;
 import com.hfw.common.support.GeneralException;
 import com.hfw.plugins.apple.Apple;
 import com.hfw.plugins.weixin.WeixinSNS;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,13 +28,13 @@ import java.util.UUID;
  * @author farkle
  * @date 2022-11-26
  */
-@Service
+@Service("authService")
 public class AuthServiceImpl implements AuthService {
-    @Autowired
+    @Resource
     private RedisAuth redisAuth;
-    @Autowired
+    @Resource
     private AppService appService;
-    @Autowired
+    @Resource
     private AppUserService appUserService;
 
     @Override
@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
         return this.login(appUser);
     }
 
-    @Autowired
+    @Resource
     private WeixinSNS weixinSNS;
 
     @Transactional
@@ -91,7 +91,7 @@ public class AuthServiceImpl implements AuthService {
         return this.login(appUser);
     }
 
-    @Autowired
+    @Resource
     private Apple apple;
     @Override
     public LoginUser loginByApple(AppleLoginParam loginParam) throws Exception {

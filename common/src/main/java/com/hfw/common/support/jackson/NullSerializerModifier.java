@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -75,9 +77,11 @@ public class NullSerializerModifier extends BeanSerializerModifier {
                 writer.assignNullSerializer(nullBoolean);
             }
             //日期
-            else if (clazz.equals(Date.class)) {
+            else if (clazz.equals(Date.class) || clazz.equals(LocalDate.class) || clazz.equals(LocalDateTime.class)) {
                 writer.assignNullSerializer(nullDate);
-            }else if(Enum.class.isAssignableFrom(clazz)){
+            }
+            //枚举
+            else if(Enum.class.isAssignableFrom(clazz)){
                 writer.assignNullSerializer(nullString);
             }
         }

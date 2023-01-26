@@ -1,21 +1,21 @@
 import http from "@/api";
 import { ApiResult, PageResult } from "@/api/interface/znew";
 
-export const page = (params: object) => {
-  return http.get<PageResult>("/appArticle/page", params);
+export const page = (params: {}) => {
+  return http.get<PageResult>("/appArticle", params);
 };
 export const detail = (id: number) => {
-  return http.get<ApiResult>("/appArticle/detail", { id });
+  return http.get<ApiResult>(`/appArticle/${id}`);
 };
-export const add = (params: object) => {
-  return http.post<ApiResult>("/appArticle/add", params);
+export const add = (params: {}) => {
+  return http.post<ApiResult>("/appArticle", params);
 };
-export const edit = (params: object) => {
-  return http.post<ApiResult>("/appArticle/edit", params);
+export const edit = (params: {}) => {
+  return http.put<ApiResult>("/appArticle", params);
 };
-export const del = (params: { id: number }) => {
-  return http.post<ApiResult>("/appArticle/del", params);
+export const del = (id: number) => {
+  return http.delete<ApiResult>(`/appArticle/${id}`);
 };
 export const dels = (params: string[]) => {
-  return http.post<ApiResult>("/appArticle/dels", params);
+  return http.delete<ApiResult>("/appArticle/dels", params);
 };

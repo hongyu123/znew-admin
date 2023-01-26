@@ -9,7 +9,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -24,10 +24,9 @@ import java.time.LocalDateTime;
  */
 @Component
 @Aspect
-@Slf4j
 public class ApiLogUtil {
 
-    @Autowired
+    @Resource
     private ApiLogService apiLogService;
 
     @Pointcut("execution(* com.hfw.api.controller.*.*(..))")
@@ -38,8 +37,9 @@ public class ApiLogUtil {
      * @return
      */
     @Around("pointcut()")
-    public Object aroundPrintLog(ProceedingJoinPoint point){
+    public Object aroundPrintLog(ProceedingJoinPoint point) throws Throwable {
         SysApiLog log = new SysApiLog();
+        log.setRequestTime(LocalDateTime.now());
         long start = System.currentTimeMillis();
         //定义返回值
         Object returnValue = null;
@@ -67,24 +67,21 @@ public class ApiLogUtil {
             //System.out.println("后置通知");
 
             log.setResponse( StrUtil.limitLength(JSON.toJSONString(returnValue),2000) );
+            log.setTimes(System.currentTimeMillis()-start);
+            apiLogService.log(log);
+            return returnValue;
         }catch (Throwable t){
             //异常通知
             //System.out.println("异常通知");
             log.setState(0);
             log.setMessage( StrUtil.limitLength(t.getMessage(),255) );
-            this.log.error("异常通知",t);
-        }finally {
+            log.setTimes(System.currentTimeMillis()-start);
+            apiLogService.log(log);
+            throw t;
+        }/*finally {
             //最终通知
             //System.out.println("最终通知");
-        }
-        log.setTimes(System.currentTimeMillis()-start);
-        log.setRequestTime(LocalDateTime.now());
-        try{
-            apiLogService.log(log);
-        }catch (Exception e){
-            this.log.error("AOP日志入库异常", e);
-        }
-        return returnValue;
+        }*/
     }
 
 }

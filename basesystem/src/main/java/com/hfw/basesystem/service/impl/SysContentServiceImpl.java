@@ -3,7 +3,7 @@ package com.hfw.basesystem.service.impl;
 import com.hfw.basesystem.entity.SysContent;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.service.SysContentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,15 +11,15 @@ import org.springframework.stereotype.Service;
  * @author farkle
  * @date 2022-11-29
  */
-@Service
+@Service("sysContentService")
 public class SysContentServiceImpl implements SysContentService {
 
-    @Autowired
+    @Resource
     private CommonDao commonDao;
 
     @Override
     public SysContent detail(Long id){
-        return commonDao.findByPk(SysContent.class, id);
+        return commonDao.selectByPk(SysContent.class, id);
     }
     @Override
     public String content(Long id){

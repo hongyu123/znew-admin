@@ -5,7 +5,7 @@ import com.hfw.basesystem.entity.SysContent;
 import com.hfw.basesystem.enums.AppArticleEnum;
 import com.hfw.basesystem.service.AppService;
 import com.hfw.basesystem.service.SysContentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/view")
 public class ViewController {
 
-    @Autowired
+    @Resource
     private AppService appService;
-    @Autowired
+    @Resource
     private SysContentService sysContentService;
 
     /**

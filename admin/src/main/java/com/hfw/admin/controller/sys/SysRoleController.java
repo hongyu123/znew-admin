@@ -10,7 +10,7 @@ import com.hfw.common.entity.PageResult;
 import com.hfw.basesystem.support.validation.ValidGroup;
 import com.hfw.common.support.jackson.ApiResult;
 import com.hfw.basesystem.service.CommonService;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,23 +26,23 @@ import java.util.List;
 @RequestMapping("/sysRole")
 public class SysRoleController {
 
-    @Autowired
+    @Resource
     private CommonService<SysRole> commonService;
-    @Autowired
+    @Resource
     private SysRoleService sysRoleService;
 
-    @GetMapping("/page")
+    @GetMapping
     public PageResult page(SysRoleDTO dto){
         return sysRoleService.page(dto);
     }
 
-    @GetMapping("/detail")
-    public ApiResult detail(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ApiResult detail(@PathVariable("id") Long id){
         return ApiResult.data( sysRoleService.detail(id) );
     }
 
     @AdminLog("新增系统角色")
-    @PostMapping("/save")
+    @PostMapping
     public ApiResult save(@RequestBody @Validated(ValidGroup.Add.class) SysRoleDTO dto){
         dto.setCreator(LoginUser.getLoginUser().getUsername());
         dto.setCreateTime(LocalDateTime.now());
@@ -51,7 +51,7 @@ public class SysRoleController {
     }
 
     @AdminLog("编辑系统角色")
-    @PostMapping("/edit")
+    @PutMapping
     public ApiResult edit(@RequestBody @Validated(ValidGroup.Update.class) SysRoleDTO dto){
         dto.setUpdator(LoginUser.getLoginUser().getUsername());
         dto.setUpdateTime(LocalDateTime.now());
@@ -60,9 +60,9 @@ public class SysRoleController {
     }
 
     @AdminLog("删除系统角色")
-    @PostMapping("/del")
-    public ApiResult del(@RequestBody @Validated(ValidGroup.Del.class) SysRole sysRole){
-        sysRoleService.del(sysRole.getId());
+    @DeleteMapping("/{id}")
+    public ApiResult del(@PathVariable Long id){
+        sysRoleService.del(id);
         return ApiResult.success();
     }
 
@@ -84,14 +84,14 @@ public class SysRoleController {
     }
 
     @AdminLog("角色授权用户")
-    @PostMapping("/addUsers")
+    @PostMapping("/users")
     public ApiResult addUsers(@RequestBody @Validated SysUserRoleDTO dto){
         sysRoleService.addUsers(dto);
         return ApiResult.success();
     }
 
     @AdminLog("角色取消授权用户")
-    @PostMapping("/delUsers")
+    @DeleteMapping("/users")
     public ApiResult delUsers(@RequestBody @Validated SysUserRoleDTO dto){
         sysRoleService.delUsers(dto);
         return ApiResult.success();

@@ -6,7 +6,7 @@ import com.hfw.basesystem.entity.SysLoginLog;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.common.support.GeneralException;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -118,7 +118,7 @@ public class RedisAuth {
         return list;
     }
 
-    @Autowired
+    @Resource
     private CommonDao commonDao;
     /**
      * 校验token
@@ -137,7 +137,7 @@ public class RedisAuth {
         //被挤下线
         if(!auth.getValidToken().contains(token)){
             if("sysuser:".equals(redis_user_key)){
-                SysLoginLog log = commonDao.findOne(new SysLoginLog().setToken(token));
+                SysLoginLog log = commonDao.selectOne(new SysLoginLog().setToken(token));
                 if(log!=null){
                     throw new GeneralException("您的账号在"+log.getLocation()+"登录,被挤下线!");
                 }

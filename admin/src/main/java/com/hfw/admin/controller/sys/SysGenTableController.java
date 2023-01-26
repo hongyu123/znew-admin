@@ -7,7 +7,7 @@ import com.hfw.basesystem.service.SysGenTableService;
 import com.hfw.basesystem.support.validation.ValidGroup;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.support.jackson.ApiResult;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,23 +22,23 @@ import java.util.List;
 @RequestMapping("/sysGenTable")
 public class SysGenTableController {
 
-    @Autowired
+    @Resource
     private CommonService<SysGenTable> commonService;
-    @Autowired
+    @Resource
     private SysGenTableService sysGenTableService;
 
-    @GetMapping("/page")
+    @GetMapping
     public PageResult page(SysGenTableDTO dto){
         return sysGenTableService.page(dto);
     }
 
-    @GetMapping("/detail")
-    public ApiResult detail(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ApiResult detail(@PathVariable("id") Long id){
         return ApiResult.data( sysGenTableService.detail(id) );
     }
 
     //保存Java代码生成
-    @PostMapping("/add")
+    @PostMapping
     public ApiResult add(@RequestBody SysGenTable sysGenTable){
         sysGenTableService.saveGenFormRecord(sysGenTable);
         return ApiResult.success();
@@ -51,7 +51,7 @@ public class SysGenTableController {
     }
 
     //@PostMapping("/del")
-    public ApiResult del(@RequestBody @Validated(ValidGroup.Del.class) SysGenTable sysGenTable){
+    public ApiResult del(@RequestBody SysGenTable sysGenTable){
         commonService.del(SysGenTable.class, sysGenTable.getId());
         return ApiResult.success();
     }

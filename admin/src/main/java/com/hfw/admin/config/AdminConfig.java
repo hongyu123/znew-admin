@@ -2,7 +2,7 @@ package com.hfw.admin.config;
 
 import com.hfw.basesystem.config.RedisUtil;
 import com.hfw.basesystem.service.impl.RedisAuth;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AdminConfig {
 
-    @Autowired
+    @Resource
     private RedisUtil redisUtil;
     //redis认证
     @Bean

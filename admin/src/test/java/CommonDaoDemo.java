@@ -4,7 +4,7 @@ import com.hfw.common.entity.PageResult;
 import com.hfw.common.enums.Gender;
 import com.hfw.common.enums.SortByWay;
 import com.hfw.model.entity.SysDemo;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,32 +17,32 @@ import java.util.List;
  */
 @Service
 public class CommonDaoDemo {
-    @Autowired
+    @Resource
     private CommonDao commonDao;
 
     //主键查找
-    public SysDemo findByPk(Long id){
-        return commonDao.findByPk(SysDemo.class, id);
+    public SysDemo selectByPk(Long id){
+        return commonDao.selectByPk(SysDemo.class, id);
     }
     //查询所有数据
-    public List<SysDemo> findALl(){
-        return commonDao.findALl(SysDemo.class);
+    public List<SysDemo> select(){
+        return commonDao.select(SysDemo.class);
     }
     //查询一条数据,推荐
     public SysDemo findByName(String name){
-        return commonDao.findOne(new SysDemo().setName(name));
+        return commonDao.selectOne(new SysDemo().setName(name));
     }
     //查询一条数据2
     public SysDemo findByName2(String name){
-        return commonDao.findOneCond(Condition.create(SysDemo.class).put(SysDemo::getName, name));
+        return commonDao.selectOneCond(Condition.create(SysDemo.class).put(SysDemo::getName, name));
     }
     //列表查询,推荐
     public List<SysDemo> list(String name){
-        return commonDao.list(new SysDemo().setName(name));
+        return commonDao.select(new SysDemo().setName(name));
     }
     //列表查询2
     public List<SysDemo> list2(String name){
-        return commonDao.listCond(Condition.create(SysDemo.class).put(SysDemo::getName, name));
+        return commonDao.selectCond(Condition.create(SysDemo.class).put(SysDemo::getName, name));
     }
     /**
      * 分页查询,推荐
@@ -53,11 +53,11 @@ public class CommonDaoDemo {
      * @return
      */
     public List<SysDemo> listPage(String name, Integer pageNumber, Integer pageSize){
-        return commonDao.list((SysDemo)new SysDemo().setName(name).setSortByField("id").setSortByWay(SortByWay.desc), pageNumber,pageSize);
+        return commonDao.select((SysDemo)new SysDemo().setName(name).setSortByField("id").setSortByWay(SortByWay.desc), pageNumber,pageSize);
     }
     //分页查询2
     public List<SysDemo> listPage2(String name, Integer pageNumber, Integer pageSize){
-        return commonDao.listCond(Condition.create(SysDemo.class).put(SysDemo::getName, name), pageNumber,pageSize);
+        return commonDao.selectCond(Condition.create(SysDemo.class).put(SysDemo::getName, name), pageNumber,pageSize);
     }
     //统计,推荐
     public Long count(String name){

@@ -9,7 +9,7 @@ import com.hfw.common.entity.PageResult;
 import com.hfw.common.util.RequestUtil;
 import com.hfw.common.util.StrUtil;
 import com.hfw.plugins.ip.OpenIPApi;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -24,14 +24,14 @@ import java.util.Map;
  * @author farkle
  * @date 2022-12-17
  */
-@Service
+@Service("sysLoginLogService")
 public class SysLoginLogServiceImpl implements SysLoginLogService {
 
-    @Autowired
+    @Resource
     private SysLoginLogMapper sysLoginLogMapper;
-    @Autowired
+    @Resource
     private CommonDao commonDao;
-    @Autowired
+    @Resource
     private RedisAuth redisAuth;
 
     @Override

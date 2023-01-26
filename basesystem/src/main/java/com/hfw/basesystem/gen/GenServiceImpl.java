@@ -10,7 +10,7 @@ import com.hfw.common.support.GeneralException;
 import com.hfw.common.util.StrUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -28,12 +28,12 @@ import java.util.stream.Collectors;
  * @author farkle
  * @date 2022-04-15
  */
-@Service
+@Service("genService")
 public class GenServiceImpl implements GenService {
 
-    @Autowired
+    @Resource
     private GenProperty genProperty;
-    @Autowired
+    @Resource
     private GenMapper genMapper;
 
     @Override
@@ -66,6 +66,7 @@ public class GenServiceImpl implements GenService {
         table.setBeanName(StrUtil.lineToHump( tableName ));
         table.setClassName(StrUtil.upperCase(table.getBeanName()));
         table.setPackageName(genProperty.getPack());
+        table.setAuthor(genProperty.getAuthor());
 
         //表字段信息处理
         List<Column> columnList = this.tableColumn(tableName);
@@ -261,7 +262,7 @@ public class GenServiceImpl implements GenService {
     }
 
 
-    @Autowired
+    @Resource
     private SysGenTableService sysGenTableService;
 
     //表单生成设置

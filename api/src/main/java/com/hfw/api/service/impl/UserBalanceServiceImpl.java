@@ -7,7 +7,7 @@ import com.hfw.basesystem.enums.PaymentsType;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.common.support.GeneralException;
 import com.hfw.model.entity.UserBalance;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,23 +18,23 @@ import java.util.List;
  * @author farkle
  * @date 2023-01-12
  */
-@Service
+@Service("userBalanceService")
 public class UserBalanceServiceImpl implements UserBalanceService {
 
-    @Autowired
+    @Resource
     private AppUserMapper appUserMapper;
-    @Autowired
+    @Resource
     private CommonDao commonDao;
 
     @Override
     public List<UserBalance> list(UserBalance cond){
-        return commonDao.list(cond, cond.getPageNumber(), cond.getPageSize());
+        return commonDao.select(cond, cond.getPageNumber(), cond.getPageSize());
     }
 
     @Override
     public void addBalance(Long userId, Integer balance, String source, Long orderId){
         appUserMapper.addBalance(userId, balance);
-        AppUser appUser = commonDao.findByPk(AppUser.class, userId);
+        AppUser appUser = commonDao.selectByPk(AppUser.class, userId);
         UserBalance userBalance = new UserBalance();
         userBalance.setUserId(userId);
         userBalance.setBalance(balance);
@@ -54,7 +54,7 @@ public class UserBalanceServiceImpl implements UserBalanceService {
         if(res<=0){
             throw new GeneralException("用户余额不足!");
         }
-        AppUser appUser = commonDao.findByPk(AppUser.class, userId);
+        AppUser appUser = commonDao.selectByPk(AppUser.class, userId);
         UserBalance userBalance = new UserBalance();
         userBalance.setUserId(userId);
         userBalance.setBalance(balance);

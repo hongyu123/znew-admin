@@ -8,7 +8,7 @@ import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.service.SysPictureService;
 import com.hfw.common.entity.PageResult;
 import com.hfw.model.entity.SysDemo;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -19,14 +19,14 @@ import java.util.List;
  * @author 
  * @date 2023-01-04
  */
-@Service
+@Service("sysDemoService")
 public class SysDemoServiceImpl implements SysDemoService {
 
-    @Autowired
+    @Resource
     private SysDemoMapper sysDemoMapper;
-    @Autowired
+    @Resource
     private CommonDao commonDao;
-    @Autowired
+    @Resource
     private SysPictureService sysPictureService;
 
     @Override
@@ -39,7 +39,7 @@ public class SysDemoServiceImpl implements SysDemoService {
     }
 
     public SysDemo detail(Long id){
-        SysDemo sysDemo = commonDao.findByPk(SysDemo.class, id);
+        SysDemo sysDemo = commonDao.selectByPk(SysDemo.class, id);
         /*if(StringUtils.hasText(sysDemo.getInterest())){
             sysDemo.setInterestList(JSON.parseArray(sysDemo.getInterest(),String.class));
         }*/

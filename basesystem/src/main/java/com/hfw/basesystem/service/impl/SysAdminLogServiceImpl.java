@@ -5,7 +5,7 @@ import com.hfw.basesystem.mapper.SysAdminLogMapper;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.service.SysAdminLogService;
 import com.hfw.common.entity.PageResult;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +16,12 @@ import java.util.List;
  * @author farkle
  * @date 2022-12-16
  */
-@Service
+@Service("sysAdminLogService")
 public class SysAdminLogServiceImpl implements SysAdminLogService {
 
-    @Autowired
+    @Resource
     private SysAdminLogMapper sysAdminLogMapper;
-    @Autowired
+    @Resource
     private CommonDao commonDao;
 
     @Override

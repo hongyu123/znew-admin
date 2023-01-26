@@ -4,7 +4,7 @@ import ${packageName}.admin.service.${className}Service;
 import ${packageName}.admin.mapper.${className}Mapper;
 import ${packageName}.model.entity.${className};
 import com.hfw.common.entity.PageResult;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -13,10 +13,10 @@ import java.util.List;
  * @author ${author}
  * @date ${.now?string('yyyy-MM-dd')}
  */
-@Service
+@Service("${beanName}")
 public class ${className}ServiceImpl implements ${className}Service {
 
-    @Autowired
+    @Resource
     private ${className}Mapper ${beanName}Mapper;
 
     @Override

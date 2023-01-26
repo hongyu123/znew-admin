@@ -71,14 +71,14 @@ public class CommonDao{
         return executor;
     }
 
-    private <T> T findOne(String statementId, Class<T> clazz, String sql, Object params) {
-        List<T> list = this.findList(statementId,clazz,sql,params);
+    private <T> T selectOne(String statementId, Class<T> clazz, String sql, Object params) {
+        List<T> list = this.select(statementId,clazz,sql,params);
         if(list==null || list.size()<=0){
             return null;
         }
         return list.get(0);
     }
-    private <T> List<T> findList(String statementId, Class<T> clazz, String sql, Object params) {
+    private <T> List<T> select(String statementId, Class<T> clazz, String sql, Object params) {
         Executor executor = getExecutor();
         try{
             Configuration configuration = sqlSessionFactory.getConfiguration();
@@ -130,14 +130,14 @@ public class CommonDao{
      * @param <T>
      * @return
      */
-    public <T> T findByPk(Class<T> clazz, Long pk)  {
+    public <T> T selectByPk(Class<T> clazz, Long pk)  {
         String sql = String.format("select %s from %s where %s=#{pk}",
                 sqlHelper.getSelectSql(clazz), sqlHelper.getTableNameWithAlias(clazz), sqlHelper.getPkColumnWithAlias(clazz));
         String logicCond = sqlHelper.getLogicCond(clazz);
         if(logicCond!=null){
             sql += " and "+logicCond;
         }
-        return this.findOne("com.hfw.basesystem.mybatis.CommonDao.findByPk", clazz, sql, pk);
+        return this.selectOne("com.hfw.basesystem.mybatis.CommonDao.findByPk", clazz, sql, pk);
     }
 
     /**
@@ -146,13 +146,13 @@ public class CommonDao{
      * @param <T>
      * @return
      */
-    public <T> List<T> findALl(Class<T> clazz){
+    public <T> List<T> select(Class<T> clazz){
         String sql = String.format("select %s from %s", sqlHelper.getSelectSql(clazz), sqlHelper.getTableNameWithAlias(clazz));
         String logicCond = sqlHelper.getLogicCond(clazz);
         if(logicCond!=null){
             sql += " where "+logicCond;
         }
-        return this.findList("com.hfw.basesystem.mybatis.CommonDao.findALl",clazz,sql,null);
+        return this.select("com.hfw.basesystem.mybatis.CommonDao.findALl",clazz,sql,null);
     }
 
     /**
@@ -161,7 +161,7 @@ public class CommonDao{
      * @param <T>
      * @return
      */
-    public <T> T findOne(T t) {
+    public <T> T selectOne(T t) {
         Class<T> clazz = (Class<T>) t.getClass();
         try {
             String sql = String.format("select %s from %s", sqlHelper.getSelectSql(clazz), sqlHelper.getTableNameWithAlias(clazz));
@@ -169,7 +169,7 @@ public class CommonDao{
             if(StrUtil.hasText(where)){
                 sql += " where "+where;
             }
-            return this.findOne("com.hfw.basesystem.mybatis.CommonDao.findOne", clazz, sql, t);
+            return this.selectOne("com.hfw.basesystem.mybatis.CommonDao.findOne", clazz, sql, t);
         } catch (IllegalAccessException e) {
             throw new GeneralException(e);
             /*log.error("findOne error", e);
@@ -183,7 +183,7 @@ public class CommonDao{
      * @param <T>
      * @return
      */
-    public <T> T findOneCond(Condition<T> cond) {
+    public <T> T selectOneCond(Condition<T> cond) {
         try {
             Class<T> clazz = cond.getClazz();
             Map<String,Object> params = new HashMap<>();
@@ -192,7 +192,7 @@ public class CommonDao{
             if(StrUtil.hasText(where)){
                 sql += " where "+where;
             }
-            return this.findOne("com.hfw.basesystem.mybatis.CommonDao.findOneCond", clazz, sql, params);
+            return this.selectOne("com.hfw.basesystem.mybatis.CommonDao.findOneCond", clazz, sql, params);
         } catch (Exception e) {
             throw new GeneralException(e);
             /*log.error("findOne error", e);
@@ -206,7 +206,7 @@ public class CommonDao{
      * @param <T>
      * @return
      */
-    public <T> List<T> list(T t){
+    public <T> List<T> select(T t){
         Class clazz = t.getClass();
         try {
             String sql = String.format("select %s from %s", sqlHelper.getSelectSql(clazz), sqlHelper.getTableNameWithAlias(clazz));
@@ -220,7 +220,7 @@ public class CommonDao{
                     sql += String.format(" order by %s %s",base.getSortByField(), base.getSortByWay().toString());
                 }
             }
-            return this.findList("com.hfw.basesystem.mybatis.CommonDao.list", clazz, sql, t);
+            return this.select("com.hfw.basesystem.mybatis.CommonDao.list", clazz, sql, t);
         } catch (IllegalAccessException e) {
             throw new GeneralException(e);
             /*log.error("list error", e);
@@ -236,7 +236,7 @@ public class CommonDao{
      * @param <T>
      * @return
      */
-    public <T> List<T> list(T t, Integer pageNumber, Integer pageSize){
+    public <T> List<T> select(T t, Integer pageNumber, Integer pageSize){
         Class clazz = t.getClass();
         PageResult page = new PageResult(pageNumber,pageSize);
         try {
@@ -253,7 +253,7 @@ public class CommonDao{
                 }
             }
             sql += String.format(" limit %d,%d", page.getStart(),page.getRows());
-            return this.findList("com.hfw.basesystem.mybatis.CommonDao.list_page", clazz, sql, t);
+            return this.select("com.hfw.basesystem.mybatis.CommonDao.list_page", clazz, sql, t);
         } catch (IllegalAccessException e) {
             throw new GeneralException(e);
            /* log.error("list error", e);
@@ -267,7 +267,7 @@ public class CommonDao{
      * @param <T>
      * @return
      */
-    public <T> List<T> listCond(Condition<T> cond) {
+    public <T> List<T> selectCond(Condition<T> cond) {
         try {
             Class<T> clazz = cond.getClazz();
             Map<String,Object> params = new HashMap<>();
@@ -276,7 +276,7 @@ public class CommonDao{
             if(StrUtil.hasText(where)){
                 sql += " where "+where;
             }
-            return this.findList("com.hfw.basesystem.mybatis.CommonDao.listCond", clazz, sql, params);
+            return this.select("com.hfw.basesystem.mybatis.CommonDao.listCond", clazz, sql, params);
         } catch (Exception e) {
             throw new GeneralException(e);
            /* log.error("listCond error", e);
@@ -292,7 +292,7 @@ public class CommonDao{
      * @param <T>
      * @return
      */
-    public <T> List<T> listCond(Condition<T> cond, Integer pageNumber, Integer pageSize) {
+    public <T> List<T> selectCond(Condition<T> cond, Integer pageNumber, Integer pageSize) {
         PageResult page = new PageResult(pageNumber,pageSize);
         try {
             Class<T> clazz = cond.getClazz();
@@ -304,7 +304,7 @@ public class CommonDao{
             String sql = String.format("select %s from %s %s limit %d,%d",
                     sqlHelper.getSelectSql(clazz), sqlHelper.getTableNameWithAlias(clazz), where,
                     page.getStart(),page.getRows());
-            return this.findList("com.hfw.basesystem.mybatis.CommonDao.listCond_page", clazz, sql, params);
+            return this.select("com.hfw.basesystem.mybatis.CommonDao.listCond_page", clazz, sql, params);
         } catch (Exception e) {
             throw new GeneralException(e);
             /*log.error("listCond error", e);
@@ -388,7 +388,7 @@ public class CommonDao{
             //String listSql = String.format("select %s from %s %s limit %d,%d", sqlHelper.getSelectSql(clazz),tableName,where, page.getStart(),page.getRows());
             page.setTotal(this.count("com.hfw.basesystem.mybatis.CommonDao.page",clazz,countSql,t));
             if(page.getTotal()>0){
-                page.setData(this.findList("com.hfw.basesystem.mybatis.CommonDao.page",clazz,listSql,t));
+                page.setData(this.select("com.hfw.basesystem.mybatis.CommonDao.page",clazz,listSql,t));
             }
             return page;
         } catch (IllegalAccessException e) {
@@ -420,7 +420,7 @@ public class CommonDao{
             String listSql = String.format("select %s from %s %s limit %d,%d", sqlHelper.getSelectSql(clazz),tableName,where, page.getStart(),page.getRows());
             page.setTotal(this.count("com.hfw.basesystem.mybatis.CommonDao.pageCond",clazz,countSql,params));
             if(page.getTotal()>0){
-                page.setData(this.findList("com.hfw.basesystem.mybatis.CommonDao.pageCond",clazz,listSql,params));
+                page.setData(this.select("com.hfw.basesystem.mybatis.CommonDao.pageCond",clazz,listSql,params));
             }
             return page;
         } catch (Exception e) {

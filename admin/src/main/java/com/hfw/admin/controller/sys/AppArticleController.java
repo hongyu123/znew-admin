@@ -4,13 +4,14 @@ import com.hfw.admin.log.AdminLog;
 import com.hfw.basesystem.dto.AppArticleDTO;
 import com.hfw.basesystem.entity.AppArticle;
 import com.hfw.basesystem.service.AppArticleService;
+import com.hfw.basesystem.service.CommonService;
 import com.hfw.basesystem.support.validation.ValidGroup;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.support.jackson.ApiResult;
-import com.hfw.basesystem.service.CommonService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -22,39 +23,39 @@ import java.util.List;
 @RequestMapping("/appArticle")
 public class AppArticleController {
 
-    @Autowired
+    @Resource
     private CommonService<AppArticle> commonService;
-    @Autowired
+    @Resource
     private AppArticleService appArticleService;
 
-    @GetMapping("/page")
+    @GetMapping
     public PageResult page(AppArticleDTO dto){
         return appArticleService.page(dto);
     }
 
-    @GetMapping("/detail")
-    public ApiResult detail(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ApiResult detail(@PathVariable("id") Long id){
         return ApiResult.data( appArticleService.detail(id) );
     }
 
     @AdminLog("新增系统文章")
-    @PostMapping("/add")
+    @PostMapping
     public ApiResult add(@RequestBody @Validated(ValidGroup.Add.class) AppArticle appArticle){
         appArticleService.save(appArticle);
         return ApiResult.success();
     }
 
     @AdminLog("编辑系统文章")
-    @PostMapping("/edit")
+    @PutMapping
     public ApiResult edit(@RequestBody @Validated(ValidGroup.Update.class) AppArticle appArticle){
         appArticleService.edit(appArticle);
         return ApiResult.success();
     }
 
     @AdminLog("删除系统文章")
-    @PostMapping("/del")
-    public ApiResult del(@RequestBody @Validated(ValidGroup.Del.class) AppArticle appArticle){
-        appArticleService.del(appArticle.getId());
+    @DeleteMapping("/{id}")
+    public ApiResult del(@PathVariable("id") Long id){
+        appArticleService.del(id);
         return ApiResult.success();
     }
 

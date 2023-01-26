@@ -23,7 +23,7 @@ import java.util.List;
 public class SysGenTable extends BaseEntity {
 
     /** id **/
-    @NotNull(message = "id不能为空",groups = {ValidGroup.Update.class, ValidGroup.Del.class})
+    @NotNull(message = "id不能为空",groups = ValidGroup.Update.class)
     private Long id;
 
     /** 表名 **/

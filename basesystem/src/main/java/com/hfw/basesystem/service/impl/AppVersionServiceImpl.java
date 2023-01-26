@@ -4,7 +4,7 @@ import com.hfw.basesystem.entity.AppVersion;
 import com.hfw.basesystem.mapper.AppVersionMapper;
 import com.hfw.basesystem.service.AppVersionService;
 import com.hfw.common.entity.PageResult;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -13,10 +13,10 @@ import java.util.List;
  * @author farkle
  * @date 2022-12-20
  */
-@Service
+@Service("appVersionService")
 public class AppVersionServiceImpl implements AppVersionService {
 
-    @Autowired
+    @Resource
     private AppVersionMapper appVersionMapper;
 
     @Override

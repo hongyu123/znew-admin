@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 public class SysLoginLog extends BaseEntity {
 
     /** 访问ID **/
-    @NotNull(message = "id不能为空",groups = {ValidGroup.Update.class, ValidGroup.Del.class})
+    @NotNull(message = "id不能为空",groups = ValidGroup.Update.class)
     private Long id;
 
     /** 用户账号 **/

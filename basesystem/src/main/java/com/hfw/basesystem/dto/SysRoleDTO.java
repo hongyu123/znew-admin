@@ -21,28 +21,31 @@ public class SysRoleDTO extends SysRole {
     /*************************显示用*****************************/
 
 
-    public SysRole toSave(){
-        SysRole sysRole = new SysRole();
-        sysRole.setName(this.getName());
-        sysRole.setCode(this.getCode());
-        sysRole.setSort(this.getSort());
-        sysRole.setState(this.getState());
-        sysRole.setRemark(this.getRemark());
-        sysRole.setCreator(this.getCreator());
-        sysRole.setCreateTime(this.getCreateTime());
-        return sysRole;
-    }
-    public SysRole toEdit(){
+    public SysRole toEntity(){
         SysRole sysRole = new SysRole();
         sysRole.setId(this.getId());
         sysRole.setName(this.getName());
         sysRole.setCode(this.getCode());
         sysRole.setSort(this.getSort());
         sysRole.setState(this.getState());
-        sysRole.setRemark(this.getRemark());
+        sysRole.setCreator(this.getCreator());
+        sysRole.setCreateTime(this.getCreateTime());
         sysRole.setUpdator(this.getUpdator());
         sysRole.setUpdateTime(this.getUpdateTime());
+        sysRole.setRemark(this.getRemark());
+        sysRole.setSystemFlag(this.getSystemFlag());
         return sysRole;
+    }
+    public SysRoleDTO saveFilter(){
+        this.setId(null);
+        this.setUpdator(null);
+        this.setUpdateTime(null);
+        return this;
+    }
+    public SysRoleDTO updateFilter(){
+        this.setCreator(null);
+        this.setCreateTime(null);
+        return this;
     }
 
     public static SysRoleDTO of(SysRole sysRole){

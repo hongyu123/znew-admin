@@ -19,9 +19,9 @@ public interface SysRoleService {
     PageResult<SysRole> page(SysRole sysRole);
 
     SysRoleDTO detail(Long id);
-    int save(SysRoleDTO dto);
-    int edit(SysRoleDTO dto);
-    int del(Long id);
+    void save(SysRoleDTO dto);
+    void edit(SysRoleDTO dto);
+    void del(Long id);
 
     /**
      * 查询角色下的用户

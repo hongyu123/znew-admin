@@ -5,7 +5,7 @@ import com.hfw.admin.service.AppUserService;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.common.entity.PageResult;
 import com.hfw.basesystem.entity.AppUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,12 +15,12 @@ import java.util.List;
  * @author farkle
  * @date 2022-12-11
  */
-@Service
+@Service("appUserService")
 public class AppUserServiceImpl implements AppUserService {
 
-    @Autowired
+    @Resource
     private AppUserMapper appUserMapper;
-    @Autowired
+    @Resource
     private CommonDao commonDao;
 
     @Override

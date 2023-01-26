@@ -4,15 +4,15 @@ import com.hfw.admin.log.AdminLog;
 import com.hfw.admin.security.LoginUser;
 import com.hfw.basesystem.dto.SysAuthDTO;
 import com.hfw.basesystem.entity.SysAuth;
-import com.hfw.basesystem.service.SysAuthService;
-import com.hfw.common.entity.PageResult;
-import com.hfw.basesystem.support.validation.ValidGroup;
-import com.hfw.common.support.jackson.ApiResult;
 import com.hfw.basesystem.service.CommonService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.hfw.basesystem.service.SysAuthService;
+import com.hfw.basesystem.support.validation.ValidGroup;
+import com.hfw.common.entity.PageResult;
+import com.hfw.common.support.jackson.ApiResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,24 +25,25 @@ import java.util.List;
 @RequestMapping("/sysAuth")
 public class SysAuthController {
 
-    @Autowired
+    @Resource
     private CommonService<SysAuth> commonService;
-    @Autowired
+    @Resource
     private SysAuthService sysAuthService;
 
-    @GetMapping("/page")
+    @GetMapping
     public PageResult page(SysAuthDTO dto){
         return sysAuthService.page(dto);
     }
 
-    @GetMapping("/detail")
-    public ApiResult detail(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ApiResult detail(@PathVariable("id") Long id){
         return ApiResult.data( commonService.detail(SysAuth.class, id) );
     }
 
     @AdminLog("新增系统权限")
-    @PostMapping("/save")
+    @PostMapping
     public ApiResult save(@RequestBody @Validated(ValidGroup.Add.class) SysAuth sysAuth){
+        sysAuth.saveFilter();
         sysAuth.setCreator(LoginUser.getLoginUser().getUsername());
         sysAuth.setCreateTime(LocalDateTime.now());
         commonService.save(sysAuth);
@@ -50,11 +51,12 @@ public class SysAuthController {
     }
 
     @AdminLog("编辑系统权限")
-    @PostMapping("/edit")
+    @PutMapping
     public ApiResult edit(@RequestBody @Validated(ValidGroup.Update.class) SysAuth sysAuth){
         if(sysAuth.getId().equals(sysAuth.getParentId())){
             return ApiResult.error("不能设置父节点为自己");
         }
+        sysAuth.updateFilter();
         sysAuth.setUpdator(LoginUser.getLoginUser().getUsername());
         sysAuth.setUpdateTime(LocalDateTime.now());
         commonService.edit(sysAuth);
@@ -62,13 +64,13 @@ public class SysAuthController {
     }
 
     @AdminLog("删除系统权限")
-    @PostMapping("/del")
-    public ApiResult del(@RequestBody @Validated(ValidGroup.Del.class) SysAuth sysAuth){
-        Long cnt = commonService.count(new SysAuth().setParentId(sysAuth.getId()));
+    @DeleteMapping("/{id}")
+    public ApiResult del(@PathVariable("id") Long id){
+        Long cnt = commonService.count(new SysAuth().setParentId(id));
         if(cnt>0){
             return ApiResult.error("节点下有子节点,无法删除!");
         }
-        commonService.del(SysAuth.class, sysAuth.getId());
+        commonService.del(SysAuth.class, id);
         return ApiResult.success();
     }
 

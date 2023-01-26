@@ -28,13 +28,13 @@ export const genFormToProject = (params: object) => {
 };
 
 export const page = (params: object) => {
-  return http.get<PageResult>("/sysGenTable/page", params);
+  return http.get<PageResult>("/sysGenTable", params);
 };
 export const detail = (id: any) => {
-  return http.get<ApiResult>("/sysGenTable/detail", { id });
+  return http.get<ApiResult>(`/sysGenTable/${id}`);
 };
 export const saveGenFormRecord = (params: object) => {
-  return http.post<ApiResult>(`/sysGenTable/add`, params);
+  return http.post<ApiResult>(`/sysGenTable`, params);
 };
 
 export const javaCode = (tableName: string, templateName: string) => {

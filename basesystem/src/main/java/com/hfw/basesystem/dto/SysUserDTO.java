@@ -33,35 +33,34 @@ public class SysUserDTO extends SysUser {
 
     /*************************显示用*****************************/
 
-
-    public SysUser toSave(){
-        SysUser sysUser = new SysUser();
-        sysUser.setAccount(this.getAccount());
-        sysUser.setPhone(this.getPhone());
-        sysUser.setNickname(this.getNickname());
-        sysUser.setAvatar(this.getAvatar());
-        sysUser.setEmail(this.getEmail());
-        sysUser.setGender(this.getGender());
-        sysUser.setState(this.getState());
-        sysUser.setRemark(this.getRemark());
-        sysUser.setCreator(this.getCreator());
-        sysUser.setCreateTime(this.getCreateTime());
-        return sysUser;
-    }
-    public SysUser toEdit(){
-        //账号,密码不能修改
+    public SysUser toEntity(){
         SysUser sysUser = new SysUser();
         sysUser.setId(this.getId());
+        sysUser.setAccount(this.getAccount());
+        sysUser.setPassword(this.getPassword());
         sysUser.setPhone(this.getPhone());
         sysUser.setNickname(this.getNickname());
         sysUser.setAvatar(this.getAvatar());
         sysUser.setEmail(this.getEmail());
         sysUser.setGender(this.getGender());
         sysUser.setState(this.getState());
-        sysUser.setRemark(this.getRemark());
+        sysUser.setSystemFlag(this.getSystemFlag());
+        sysUser.setCreator(this.getCreator());
+        sysUser.setCreateTime(this.getCreateTime());
         sysUser.setUpdator(this.getUpdator());
         sysUser.setUpdateTime(this.getUpdateTime());
+        sysUser.setRemark(this.getRemark());
         return sysUser;
+    }
+    public SysUserDTO saveFilter(){
+        this.setId(null);
+        return this;
+    }
+    public SysUserDTO updateFilter(){
+        //账号,密码不能修改
+        this.setAccount(null);
+        this.setPassword(null);
+        return this;
     }
 
     public static SysUserDTO of(SysUser sysUser){

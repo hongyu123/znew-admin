@@ -1,6 +1,6 @@
 package com.hfw.basesystem.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.GeoResults;
@@ -40,10 +40,10 @@ public class RedisUtil {
      */
     private final static String BLOOM_FILTER = "BLOOM_FILTER_";
 
-    @Autowired
+    @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-    @Autowired
+    @Resource
     private StringRedisTemplate stringRedisTemplate;
 
     public void set(String key, Object value) {

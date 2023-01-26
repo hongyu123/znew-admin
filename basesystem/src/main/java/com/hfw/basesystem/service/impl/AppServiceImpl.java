@@ -11,7 +11,7 @@ import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.dto.SendCodeParam;
 import com.hfw.basesystem.service.AppService;
 import com.hfw.common.util.RandomUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +21,16 @@ import java.util.UUID;
  * @author farkle
  * @date 2022-12-02
  */
-@Service
+@Service("appService")
 public class AppServiceImpl implements AppService {
 
-    @Autowired
+    @Resource
     private CommonDao commonDao;
 
-    @Autowired
+    @Resource
     private AppMapper appMapper;
 
-    @Autowired
+    @Resource
     private RedisUtil redisUtil;
 
     @Value("${spring.profiles.active}")

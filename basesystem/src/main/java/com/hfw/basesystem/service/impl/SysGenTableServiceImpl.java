@@ -6,7 +6,7 @@ import com.hfw.basesystem.service.SysGenTableService;
 import com.hfw.basesystem.mapper.SysGenTableMapper;
 import com.hfw.basesystem.entity.SysGenTable;
 import com.hfw.common.entity.PageResult;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -15,12 +15,12 @@ import java.util.List;
  * @author 
  * @date 2023-01-04
  */
-@Service
+@Service("sysGenTableService")
 public class SysGenTableServiceImpl implements SysGenTableService {
 
-    @Autowired
+    @Resource
     private SysGenTableMapper sysGenTableMapper;
-    @Autowired
+    @Resource
     private CommonDao commonDao;
 
     @Override
@@ -34,8 +34,8 @@ public class SysGenTableServiceImpl implements SysGenTableService {
 
     @Override
     public SysGenTable detail(Long id){
-        SysGenTable sysGenTable = commonDao.findByPk(SysGenTable.class, id);
-        List<SysGenColumn> columnList = commonDao.list(new SysGenColumn().setTableName(sysGenTable.getTableName()));
+        SysGenTable sysGenTable = commonDao.selectByPk(SysGenTable.class, id);
+        List<SysGenColumn> columnList = commonDao.select(new SysGenColumn().setTableName(sysGenTable.getTableName()));
         sysGenTable.setColumnList(columnList);
         return sysGenTable;
     }

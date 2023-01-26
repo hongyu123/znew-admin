@@ -33,7 +33,7 @@ import { ColumnProps } from "@/components/ProTable/interface";
 import ProTable from "@/components/ProTable/index.vue";
 import EditModelForm from "@/views/sys/sysDemo/edit.vue";
 import { Delete, CirclePlus } from "@element-plus/icons-vue";
-import { page, save, edit, del, dels } from "@/api/sys/sysDemo";
+import { page, add, edit, del, dels } from "@/api/sys/sysDemo";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { GenderEnum } from "@/api/modules/enum";
@@ -119,7 +119,7 @@ const openEditForm = (title: string, rowData: Partial<any> = {}) => {
     title,
     rowData: { ...rowData },
     isView: title === "查看",
-    api: title === "新增" ? save : title === "编辑" ? edit : "",
+    api: title === "新增" ? add : title === "编辑" ? edit : "",
     getTableList: proTable.value.getTableList
   };
   editModelFormRef.value.acceptParams(params);
@@ -127,7 +127,7 @@ const openEditForm = (title: string, rowData: Partial<any> = {}) => {
 
 //删除
 const delModel = async (params: any) => {
-  await useHandleData(del, { id: params.id }, `删除【${params.name}】`);
+  await useHandleData(del, params.id, `删除【${params.name}】`);
   proTable.value.getTableList();
 };
 

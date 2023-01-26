@@ -15,7 +15,7 @@ import com.hfw.common.support.GeneralException;
 import com.hfw.common.support.ParamMap;
 import com.hfw.common.support.jackson.ApiResult;
 import com.hfw.basesystem.entity.AppUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -24,26 +24,26 @@ import org.springframework.util.StringUtils;
  * @author farkle
  * @date 2022-11-26
  */
-@Service
+@Service("appUserService")
 public class AppUserServiceImpl implements AppUserService {
-    @Autowired
+    @Resource
     private CommonDao commonDao;
-    @Autowired
+    @Resource
     private AppService appService;
-    @Autowired
+    @Resource
     private RedisAuth redisAuth;
-    @Autowired
+    @Resource
     private AppUserMapper appUserMapper;
 
     @Override
     public AppUser userInfo(Long id){
-        AppUser user = commonDao.findByPk(AppUser.class, id);
+        AppUser user = commonDao.selectByPk(AppUser.class, id);
         return user;
     }
 
     @Override
     public AppUser loginByPhone(String phone){
-        AppUser appUser = commonDao.findOne(new AppUser().setPhone(phone));
+        AppUser appUser = commonDao.selectOne(new AppUser().setPhone(phone));
         if(appUser==null){
             appUser = new AppUser().setPhone(phone).setEnableState(EnableState.Enable);
             commonDao.insert(appUser);

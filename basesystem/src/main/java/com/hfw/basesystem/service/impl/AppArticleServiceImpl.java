@@ -6,7 +6,7 @@ import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.service.AppArticleService;
 import com.hfw.basesystem.service.SysContentService;
 import com.hfw.common.entity.PageResult;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,14 +17,14 @@ import java.util.List;
  * @author farkle
  * @date 2022-12-20
  */
-@Service
+@Service("appArticleService")
 public class AppArticleServiceImpl implements AppArticleService {
 
-    @Autowired
+    @Resource
     private AppArticleMapper appArticleMapper;
-    @Autowired
+    @Resource
     private CommonDao commonDao;
-    @Autowired
+    @Resource
     private SysContentService sysContentService;
 
     @Override
@@ -38,31 +38,31 @@ public class AppArticleServiceImpl implements AppArticleService {
 
     @Override
     public AppArticle detail(Long id){
-        AppArticle appArticle = commonDao.findByPk(AppArticle.class, id);
+        AppArticle appArticle = commonDao.selectByPk(AppArticle.class, id);
         appArticle.setContent(sysContentService.content(appArticle.getContentId()) );
         return appArticle;
     }
-    @Transactional
+
     @Override
-    public int save(AppArticle appArticle){
+    public void save(AppArticle appArticle){
         appArticle.setContentId( sysContentService.save(appArticle.getContent()) );
-        return commonDao.insert(appArticle);
+        commonDao.insert(appArticle);
     }
-    @Transactional
+
     @Override
-    public int edit(AppArticle appArticle){
+    public void edit(AppArticle appArticle){
         sysContentService.edit(appArticle.getContentId(), appArticle.getContent());
-        return commonDao.updateByPk(appArticle);
+        commonDao.updateByPk(appArticle);
     }
-    @Transactional
+
     @Override
-    public int del(Long id){
-        AppArticle appArticle = commonDao.findByPk(AppArticle.class, id);
+    public void del(Long id){
+        AppArticle appArticle = commonDao.selectByPk(AppArticle.class, id);
         if(appArticle==null){
-            return 0;
+            return ;
         }
         sysContentService.del(appArticle.getContentId());
-        return commonDao.deleteByPk(AppArticle.class, id);
+        commonDao.deleteByPk(AppArticle.class, id);
     }
 
 }

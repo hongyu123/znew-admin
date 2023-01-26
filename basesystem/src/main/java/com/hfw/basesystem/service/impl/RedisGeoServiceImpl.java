@@ -4,7 +4,7 @@ import com.hfw.basesystem.config.RedisUtil;
 import com.hfw.basesystem.service.RedisGeoService;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.util.NumberUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -17,7 +17,7 @@ import java.util.Set;
  * @author farkle
  * @date 2022-11-27
  */
-@Service
+@Service("redisGeoService")
 public class RedisGeoServiceImpl implements RedisGeoService {
     /**
      * 附近的点最多获取多少个
@@ -34,7 +34,7 @@ public class RedisGeoServiceImpl implements RedisGeoService {
     private static final String near_zset_key = "near_zset";
     public static final String near_geo_key = "near_geo";
 
-    @Autowired
+    @Resource
     private RedisUtil redisUtil;
 
     @Override

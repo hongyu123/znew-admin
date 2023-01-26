@@ -1,6 +1,6 @@
 package com.hfw.admin.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -19,17 +19,17 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableGlobalMethodSecurity(prePostEnabled = true)//开启注解支持
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
+    @Resource
     private AjaxLoginConfig ajaxLoginConfig;
-    @Autowired
+    @Resource
     private AjaxLogoutHandler ajaxLogoutHandler;
-    @Autowired
+    @Resource
     private AuthenticationHandler authenticationHandler;
-    @Autowired
+    @Resource
     private TokenAuthenticationFilter tokenAuthenticationFilter;
-    @Autowired
+    @Resource
     private UserDetailsService userDetailsService;
-    @Autowired
+    @Resource
     private PasswordEncoder passwordEncoder;
 
     @Override

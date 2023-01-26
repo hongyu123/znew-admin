@@ -7,7 +7,7 @@ import com.hfw.basesystem.support.ValidCode;
 import com.hfw.common.support.ParamMap;
 import com.hfw.common.support.jackson.ApiResult;
 import com.hfw.common.util.RequestUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
@@ -34,9 +34,9 @@ import java.util.UUID;
 @Component
 public class AjaxLoginHandler implements AuthenticationSuccessHandler ,AuthenticationFailureHandler {
 
-    @Autowired
+    @Resource
     private RedisAuth redisAuth;
-    @Autowired
+    @Resource
     private SysLoginLogService sysLoginLogService;
 
     @Override

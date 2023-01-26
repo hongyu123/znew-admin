@@ -7,7 +7,7 @@ import com.hfw.basesystem.entity.AppUser;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.common.support.GeneralException;
 import com.hfw.model.entity.UserSignin;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +19,12 @@ import java.time.LocalDateTime;
  * @author farkle
  * @date 2023-01-12
  */
-@Service
+@Service("userSigninService")
 public class UserSigninServiceImpl implements UserSigninService {
 
-    @Autowired
+    @Resource
     private CommonDao commonDao;
-    @Autowired
+    @Resource
     private UserIntegralService userIntegralService;
 
     //积分计算
@@ -33,7 +33,7 @@ public class UserSigninServiceImpl implements UserSigninService {
     }
     private SigninInfo info(Long userId, Integer baseIntegral, Integer plusIntegral){
         //用户当前积分
-        AppUser user = commonDao.findByPk(AppUser.class, userId);
+        AppUser user = commonDao.selectByPk(AppUser.class, userId);
         SigninInfo info = new SigninInfo();
         info.setIntegral(user.getIntegral());
         info.setTodayIntegral( integral(baseIntegral,plusIntegral,1) );
@@ -41,9 +41,9 @@ public class UserSigninServiceImpl implements UserSigninService {
 
         LocalDate now = LocalDate.now();
         //今日签到情况
-        UserSignin today = commonDao.findOne(new UserSignin().setSigninDate(now).setUserId(userId));
+        UserSignin today = commonDao.selectOne(new UserSignin().setSigninDate(now).setUserId(userId));
         //昨日签到情况
-        UserSignin yesterday = commonDao.findOne(new UserSignin().setSigninDate(now.plusDays(-1)).setUserId(userId));
+        UserSignin yesterday = commonDao.selectOne(new UserSignin().setSigninDate(now.plusDays(-1)).setUserId(userId));
         if(yesterday!=null){
             info.setContinueDays(yesterday.getContinueDays());
             info.setTodayIntegral( integral(baseIntegral,plusIntegral,yesterday.getContinueDays()+1) );
@@ -66,12 +66,12 @@ public class UserSigninServiceImpl implements UserSigninService {
     private void signin(Long userId, Integer baseIntegral, Integer plusIntegral){
         LocalDate now = LocalDate.now();
         //今日签到情况
-        UserSignin today = commonDao.findOne(new UserSignin().setSigninDate(now).setUserId(userId));
+        UserSignin today = commonDao.selectOne(new UserSignin().setSigninDate(now).setUserId(userId));
         if(today!=null){
             throw new GeneralException("今日已经签到过了哟~");
         }
         //昨日签到情况
-        UserSignin yesterday = commonDao.findOne(new UserSignin().setSigninDate(now.plusDays(-1)).setUserId(userId));
+        UserSignin yesterday = commonDao.selectOne(new UserSignin().setSigninDate(now.plusDays(-1)).setUserId(userId));
         Integer continueDays = yesterday==null ?1:yesterday.getContinueDays()+1;
         Integer integral = integral(baseIntegral,plusIntegral, continueDays);
 

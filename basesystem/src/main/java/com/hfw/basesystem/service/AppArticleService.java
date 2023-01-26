@@ -17,7 +17,7 @@ public interface AppArticleService {
     PageResult<AppArticle> page(AppArticle appArticle);
 
     AppArticle detail(Long id);
-    int save(AppArticle appArticle);
-    int edit(AppArticle appArticle);
-    int del(Long id);
+    void save(AppArticle appArticle);
+    void edit(AppArticle appArticle);
+    void del(Long id);
 }

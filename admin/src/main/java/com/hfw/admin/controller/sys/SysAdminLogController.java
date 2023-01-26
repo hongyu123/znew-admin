@@ -6,11 +6,12 @@ import com.hfw.basesystem.service.CommonService;
 import com.hfw.basesystem.service.SysAdminLogService;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.support.jackson.ApiResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * admin日志控制器
@@ -21,18 +22,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sysAdminLog")
 public class SysAdminLogController {
 
-    @Autowired
+    @Resource
     private CommonService<SysAdminLog> commonService;
-    @Autowired
+    @Resource
     private SysAdminLogService sysAdminLogService;
 
-    @GetMapping("/page")
+    @GetMapping
     public PageResult page(SysAdminLogDTO dto){
         return sysAdminLogService.page(dto);
     }
 
-    @GetMapping("/detail")
-    public ApiResult detail(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ApiResult detail(@PathVariable("id") Long id){
         return ApiResult.data( commonService.detail(SysAdminLog.class, id) );
     }
 

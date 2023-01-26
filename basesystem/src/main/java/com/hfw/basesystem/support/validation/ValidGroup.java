@@ -14,7 +14,7 @@ public interface ValidGroup extends Default {
     //更新
     interface Update extends ValidGroup{
     }
-    //删除
+    /*//删除
     interface Del extends ValidGroup{
-    }
+    }*/
 }

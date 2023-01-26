@@ -19,11 +19,10 @@ public interface SysUserService {
      * @return
      */
     PageResult<SysUser> page(SysUser sysUser);
-
     SysUserDTO detail(Long id);
-    int save(SysUserDTO dto);
-    int edit(SysUserDTO dto);
-    int del(SysUserDTO dto);
+    void save(SysUserDTO dto);
+    void edit(SysUserDTO dto);
+    void del(Long id);
 
     /**
      * 修改密码

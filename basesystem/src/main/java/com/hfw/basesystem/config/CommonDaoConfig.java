@@ -3,7 +3,7 @@ package com.hfw.basesystem.config;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.mybatis.SqlHelper;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CommonDaoConfig {
 
-    @Autowired
+    @Resource
     private SqlSessionFactory sqlSessionFactory;
 
     /** 通用dao配置 */

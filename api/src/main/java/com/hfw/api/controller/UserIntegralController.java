@@ -9,7 +9,7 @@ import com.hfw.common.enums.SortByWay;
 import com.hfw.common.support.jackson.ApiResult;
 import com.hfw.model.entity.UserBalance;
 import com.hfw.model.entity.UserIntegral;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +26,9 @@ import java.util.List;
 @RequestMapping("/user/integral")
 public class UserIntegralController {
 
-    @Autowired
+    @Resource
     private UserIntegralService userIntegralService;
-    @Autowired
+    @Resource
     private UserSigninService userSigninService;
 
     /**
@@ -81,7 +81,7 @@ public class UserIntegralController {
     }
 
 
-    @Autowired
+    @Resource
     private UserBalanceService userBalanceService;
     /**
      * 余额明细列表

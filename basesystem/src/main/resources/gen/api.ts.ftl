@@ -1,21 +1,21 @@
 import http from "@/api";
 import { ApiResult, PageResult } from "@/api/interface/znew";
 
-export const page = (params: object) => {
-  return http.get<PageResult>("/${beanName}/page", params);
+export const page = (params: {}) => {
+  return http.get<PageResult>("/${beanName}", params);
 };
 export const detail = (id: number) => {
-  return http.get<ApiResult>("/${beanName}/detail", { id });
+  return http.get<ApiResult>(`/${beanName}/${r'${id}'}`);
 };
-export const add = (params: object) => {
-  return http.post<ApiResult>("/${beanName}/add", params);
+export const add = (params: {}) => {
+  return http.post<ApiResult>("/${beanName}", params);
 };
-export const edit = (params: object) => {
-  return http.post<ApiResult>("/${beanName}/edit", params);
+export const edit = (params: {}) => {
+  return http.put<ApiResult>("/${beanName}", params);
 };
-export const del = (params: { id: number }) => {
-  return http.post<ApiResult>("/${beanName}/del", params);
+export const del = (id: number) => {
+  return http.delete<ApiResult>(`/${beanName}/${r'${id}'}`);
 };
 export const dels = (params: string[]) => {
-  return http.post<ApiResult>("/${beanName}/dels", params);
+  return http.delete<ApiResult>("/${beanName}/dels", params);
 };

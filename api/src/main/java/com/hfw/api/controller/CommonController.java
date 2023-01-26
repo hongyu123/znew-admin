@@ -9,7 +9,7 @@ import com.hfw.basesystem.enums.DeviceEnum;
 import com.hfw.basesystem.service.AppService;
 import com.hfw.common.support.jackson.ApiResult;
 import com.hfw.plugins.objstore.Qiniu;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/common")
 public class CommonController {
 
-    @Autowired
+    @Resource
     private AppService appService;
 
     /**

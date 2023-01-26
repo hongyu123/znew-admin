@@ -5,7 +5,7 @@ import com.hfw.basesystem.service.impl.RedisAuth;
 import com.hfw.basesystem.support.ValidCode;
 import com.hfw.common.support.jackson.ApiResult;
 import com.hfw.common.util.RequestUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -24,9 +24,9 @@ import java.util.List;
 @Component
 public class AjaxLogoutHandler implements LogoutSuccessHandler {
 
-    @Autowired
+    @Resource
     private RedisAuth redisAuth;
-    @Autowired
+    @Resource
     private SysLoginLogService sysLoginLogService;
 
     @Override

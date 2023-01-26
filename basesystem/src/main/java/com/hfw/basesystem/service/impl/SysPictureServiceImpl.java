@@ -4,7 +4,7 @@ import com.hfw.basesystem.entity.SysPicture;
 import com.hfw.basesystem.enums.PictureEnum;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.service.SysPictureService;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,15 +14,15 @@ import java.util.List;
  * @author farkle
  * @date 2023-01-09
  */
-@Service
+@Service("sysPictureService")
 public class SysPictureServiceImpl implements SysPictureService {
 
-    @Autowired
+    @Resource
     private CommonDao commonDao;
 
     @Override
     public List<SysPicture> list(Long targetId, PictureEnum type){
-        return commonDao.list(new SysPicture().setTargetId(targetId).setType(type));
+        return commonDao.select(new SysPicture().setTargetId(targetId).setType(type));
     }
 
     @Override

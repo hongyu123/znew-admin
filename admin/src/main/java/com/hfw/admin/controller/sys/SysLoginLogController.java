@@ -6,11 +6,12 @@ import com.hfw.basesystem.service.CommonService;
 import com.hfw.basesystem.service.SysLoginLogService;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.support.jackson.ApiResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * 系统登录日志控制器
@@ -21,18 +22,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sysLoginLog")
 public class SysLoginLogController {
 
-    @Autowired
+    @Resource
     private CommonService<SysLoginLog> commonService;
-    @Autowired
+    @Resource
     private SysLoginLogService sysLoginLogService;
 
-    @GetMapping("/page")
+    @GetMapping
     public PageResult page(SysLoginLogDTO dto){
         return sysLoginLogService.page(dto);
     }
 
-    @GetMapping("/detail")
-    public ApiResult detail(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ApiResult detail(@PathVariable("id") Long id){
         return ApiResult.data( commonService.detail(SysLoginLog.class, id) );
     }
 

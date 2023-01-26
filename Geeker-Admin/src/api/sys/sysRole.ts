@@ -2,22 +2,22 @@ import http from "@/api";
 import { ApiResult, PageResult } from "@/api/interface/znew";
 
 export const page = (params: object) => {
-  return http.get<PageResult>("/sysRole/page", params);
+  return http.get<PageResult>("/sysRole", params);
 };
 export const detail = (id: number) => {
-  return http.get<ApiResult>("/sysRole/detail", { id });
+  return http.get<ApiResult>(`/sysRole/${id}`);
 };
 export const save = (params: object) => {
-  return http.post<ApiResult>("/sysRole/save", params);
+  return http.post<ApiResult>("/sysRole", params);
 };
 export const edit = (params: object) => {
-  return http.post<ApiResult>("/sysRole/edit", params);
+  return http.put<ApiResult>("/sysRole", params);
 };
-export const del = (params: { id: number }) => {
-  return http.post<ApiResult>("/sysRole/del", params);
+export const del = (id: number) => {
+  return http.delete<ApiResult>(`/sysRole/${id}`);
 };
 export const dels = (params: string[]) => {
-  return http.post<ApiResult>("/sysRole/dels", params);
+  return http.delete<ApiResult>("/sysRole/dels", params);
 };
 export const list = (params: object) => {
   return http.get<ApiResult>("/sysRole/list", params);
@@ -27,8 +27,8 @@ export const users = (params: object) => {
   return http.get<PageResult>("/sysRole/users", params);
 };
 export const addUsers = (params: object) => {
-  return http.post<ApiResult>("/sysRole/addUsers", params);
+  return http.post<ApiResult>("/sysRole/users", params);
 };
 export const delUsers = (params: object) => {
-  return http.post<ApiResult>("/sysRole/delUsers", params);
+  return http.put<ApiResult>("/sysRole/users", params);
 };

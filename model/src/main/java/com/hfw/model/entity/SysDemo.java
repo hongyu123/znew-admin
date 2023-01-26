@@ -3,17 +3,17 @@ package com.hfw.model.entity;
 import com.alibaba.fastjson2.JSON;
 import com.hfw.basesystem.entity.SysPicture;
 import com.hfw.basesystem.mybatis.FieldIgnore;
+import com.hfw.basesystem.mybatis.FieldLogic;
+import com.hfw.basesystem.support.validation.ValidGroup;
+import com.hfw.common.entity.BaseEntity;
 import com.hfw.common.enums.Gender;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
-import com.hfw.common.entity.BaseEntity;
-import com.hfw.basesystem.support.validation.ValidGroup;
-import com.hfw.basesystem.mybatis.FieldLogic;
 
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -27,7 +27,7 @@ import java.util.List;
 public class SysDemo extends BaseEntity {
 
     /** id */
-    @NotNull(message = "id不能为空",groups = {ValidGroup.Update.class, ValidGroup.Del.class})
+    @NotNull(message = "id不能为空",groups = ValidGroup.Update.class)
     private Long id;
 
     /** 名称(文本框) */

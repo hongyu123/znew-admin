@@ -20,7 +20,7 @@ import org.hibernate.validator.constraints.Length;
 public class SysAdminLog extends BaseEntity {
 
     /** id **/
-    @NotNull(message = "id不能为空",groups = {ValidGroup.Update.class, ValidGroup.Del.class})
+    @NotNull(message = "id不能为空",groups = ValidGroup.Update.class)
     private Long id;
 
     /** 标题 **/

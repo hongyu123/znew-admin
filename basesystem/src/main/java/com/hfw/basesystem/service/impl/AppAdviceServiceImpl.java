@@ -5,7 +5,7 @@ import com.hfw.basesystem.service.AppAdviceService;
 import com.hfw.basesystem.mapper.AppAdviceMapper;
 import com.hfw.basesystem.entity.AppAdvice;
 import com.hfw.common.entity.PageResult;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -14,10 +14,10 @@ import java.util.List;
  * @author farkle
  * @date 2022-12-20
  */
-@Service
+@Service("appAdviceService")
 public class AppAdviceServiceImpl implements AppAdviceService {
 
-    @Autowired
+    @Resource
     private AppAdviceMapper appAdviceMapper;
 
     @Override
