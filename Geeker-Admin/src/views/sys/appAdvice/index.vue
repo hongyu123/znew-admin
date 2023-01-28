@@ -121,7 +121,7 @@ const columns: ColumnProps[] = [
 const otherStore = OtherStore();
 //删除
 const delModel = async (params: any) => {
-  await useHandleData(read, { id: params.id }, `已读`);
+  await useHandleData(read, params.id, `已读`);
   proTable.value.getTableList();
   otherStore.loadUnreadCnt();
 };

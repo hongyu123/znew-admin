@@ -31,6 +31,7 @@ public class SysPictureServiceImpl implements SysPictureService {
             return 0;
         }
         for(SysPicture pic : pictureList){
+            pic.setId(null);
             pic.setTargetId(targetId);
             pic.setType(type);
         }

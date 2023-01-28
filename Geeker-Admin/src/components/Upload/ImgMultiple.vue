@@ -1,44 +1,58 @@
 <template>
   <div class="upload-box">
-    <el-upload
-      action="#"
-      list-type="picture-card"
-      :class="['upload', self_disabled ? 'disabled' : '', drag ? 'no-border' : '']"
-      v-model:file-list="fileList"
-      :multiple="true"
-      :disabled="self_disabled"
-      :limit="limit"
-      :http-request="handleHttpUpload"
-      :before-upload="beforeUpload"
-      :on-exceed="handleExceed"
-      :on-success="uploadSuccess"
-      :on-error="uploadError"
-      :drag="drag"
-      :accept="fileType.join(',')"
-    >
-      <div class="upload-empty">
-        <slot name="empty">
-          <el-icon><Plus /></el-icon>
-          <span>请上传图片</span>
-        </slot>
-      </div>
-      <template #file="{ file }">
-        <img :src="file.url" class="upload-image" />
-        <div class="upload-handle" @click.stop>
-          <div class="handle-icon" @click="handlePictureCardPreview(file)">
-            <el-icon><ZoomIn /></el-icon>
-            <span>查看</span>
-          </div>
-          <div class="handle-icon" @click="handleRemove(file)" v-if="!self_disabled">
-            <el-icon><Delete /></el-icon>
-            <span>删除</span>
-          </div>
-        </div>
-      </template>
-    </el-upload>
+    <div class="upload no-border">
+      <ul class="el-upload-list el-upload-list--picture-card">
+        <draggable v-model="fileList" item-key="url" animation="300" chosenClass="chosen" forceFallback="true" @end="dragEnd">
+          <template #item="{ element }">
+            <li class="el-upload-list__item is-success">
+              <img :src="element.url" class="upload-image" />
+              <div class="upload-handle" @click.stop>
+                <div class="handle-icon" @click="handlePictureCardPreview(element)">
+                  <el-icon><ZoomIn /></el-icon>
+                  <span>查看</span>
+                </div>
+                <div class="handle-icon" @click="handleRemove(element)" v-if="!self_disabled">
+                  <el-icon><Delete /></el-icon>
+                  <span>删除</span>
+                </div>
+              </div>
+            </li>
+          </template>
+          <template #footer>
+            <el-upload
+              action="#"
+              :show-file-list="false"
+              list-type="picture-card"
+              :class="['upload', self_disabled ? 'disabled' : '', drag ? 'no-border' : '']"
+              v-model:file-list="fileList"
+              :multiple="true"
+              :disabled="self_disabled"
+              :limit="limit"
+              :http-request="handleHttpUpload"
+              :before-upload="beforeUpload"
+              :on-exceed="handleExceed"
+              :on-success="uploadSuccess"
+              :on-error="uploadError"
+              :drag="drag"
+              :accept="fileType.join(',')"
+              style="float: right"
+            >
+              <div class="upload-empty">
+                <slot name="empty">
+                  <el-icon><Plus /></el-icon>
+                  <span>请上传图片</span>
+                </slot>
+              </div>
+            </el-upload>
+          </template>
+        </draggable>
+      </ul>
+    </div>
+
     <div class="el-upload__tip">
       <slot name="tip"></slot>
     </div>
+
     <el-image-viewer v-if="imgViewVisible" @close="imgViewVisible = false" :url-list="[viewImageUrl]" />
   </div>
 </template>
@@ -46,6 +60,7 @@
 <script setup lang="ts" name="UploadImgMultiple">
 import { ref, computed, inject } from "vue";
 import { Plus } from "@element-plus/icons-vue";
+import draggable from "vuedraggable/src/vuedraggable";
 import { upload } from "@/api/modules/common";
 import type { UploadProps, UploadFile, UploadUserFile, UploadRequestOptions } from "element-plus";
 import { ElNotification, formContextKey, formItemContextKey } from "element-plus";
@@ -184,6 +199,11 @@ const imgViewVisible = ref(false);
 const handlePictureCardPreview: UploadProps["onPreview"] = uploadFile => {
   viewImageUrl.value = uploadFile.url!;
   imgViewVisible.value = true;
+};
+
+//拖拽排序
+const dragEnd = () => {
+  emit("update:fileList", fileList.value);
 };
 </script>
 

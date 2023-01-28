@@ -19,8 +19,8 @@ export const del = (id: number) => {
 export const dels = (params: string[]) => {
   return http.delete<ApiResult>("/appAdvice/dels", params);
 };
-export const read = (params: { id: number }) => {
-  return http.post<ApiResult>("/appAdvice/read", params);
+export const read = (id: number) => {
+  return http.post<ApiResult>(`/appAdvice/read/${id}`);
 };
 export const reads = (params: string[]) => {
   return http.post<ApiResult>("/appAdvice/reads", params);
