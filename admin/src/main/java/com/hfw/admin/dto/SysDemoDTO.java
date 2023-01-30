@@ -27,6 +27,7 @@ public class SysDemoDTO extends SysDemo {
         sysDemo.setBirth(this.getBirth());
         sysDemo.setRegistTime(this.getRegistTime());
         sysDemo.setAvatar(this.getAvatar());
+        sysDemo.setVideo(this.getVideo());
         sysDemo.setPhotos(this.getPhotos());
         sysDemo.setAttachment(this.getAttachment());
         sysDemo.setIntroduction(this.getIntroduction());

@@ -291,7 +291,7 @@ public class StrUtil {
      * @return
      */
     public static String limitLength(String str, int length){
-        if(str.length()>length){
+        if(str!=null && str.length()>length){
             return str.substring(0,length);
         }
         return str;

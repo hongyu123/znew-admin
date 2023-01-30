@@ -25,3 +25,6 @@ export const LogoutType = () => {
 export const AppArticleType = () => {
   return baseEnum({ code: "AppArticleType" });
 };
+export const AppBannerEnum = () => {
+  return baseEnum({ code: "AppBannerEnum" });
+};

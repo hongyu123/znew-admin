@@ -57,6 +57,9 @@
       <el-form-item label="头像" prop="avatar">
         <UploadImg v-model:imageUrl="drawerProps.rowData!.avatar"> </UploadImg>
       </el-form-item>
+      <el-form-item label="视频" prop="video">
+        <UploadVideo v-model:imageUrl="drawerProps.rowData!.video"></UploadVideo>
+      </el-form-item>
       <el-form-item label="照片" prop="pictureList">
         <UploadImgMultiple v-model:fileList="drawerProps.rowData!.pictureList"> </UploadImgMultiple>
       </el-form-item>
@@ -119,6 +122,7 @@ import UploadImgMultiple from "@/components/Upload/ImgMultiple.vue";
 import MapContainer from "@/components/amap/MapContainer.vue";
 import UploadFile from "@/components/Upload/File.vue";
 import FileInput from "@/components/Upload/FileInput.vue";
+import UploadVideo from "@/components/Upload/Video.vue";
 
 import { GenderEnum } from "@/api/modules/enum";
 import { detail } from "@/api/sys/sysDemo";

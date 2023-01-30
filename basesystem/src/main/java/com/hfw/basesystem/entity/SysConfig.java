@@ -2,13 +2,15 @@ package com.hfw.basesystem.entity;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import javax.persistence.Column;
 import javax.persistence.Table;
 
 /**
-* 系统配置
-* @author farkle
-* @date 2022-11-25
-*/
+ * 系统配置
+ * @author farkle
+ * @date 2022-11-25
+ */
 @Data
 @Accessors(chain = true)
 @Table(name = "sys_config")
@@ -17,6 +19,7 @@ public class SysConfig {
     private Long id;
 
     /** key **/
+    @Column(name = "`key`")
     private String key;
 
     /** value **/
@@ -24,6 +27,5 @@ public class SysConfig {
 
     /** 备注 **/
     private String comment;
-
 
 }

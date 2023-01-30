@@ -62,6 +62,9 @@ public class SysDemo extends BaseEntity {
     @Length(max = 200,message = "头像(图片上传)最多200字符")
     private String avatar;
 
+    /** 视频(视频上传) */
+    private String video;
+
     /** 照片(多图删除) */
     private String photos;
 

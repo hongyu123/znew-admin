@@ -60,6 +60,7 @@ public class GenServiceImpl implements GenService {
     public Table tableColumnInfo(String tableName){
         //表信息处理
         Table table = this.tableInfo(tableName);
+        List<Column> columnList = this.tableColumn(tableName);
         if(tableName.startsWith(genProperty.getTablePrefix())){
             tableName = tableName.substring(genProperty.getTablePrefix().length());
         }
@@ -69,7 +70,6 @@ public class GenServiceImpl implements GenService {
         table.setAuthor(genProperty.getAuthor());
 
         //表字段信息处理
-        List<Column> columnList = this.tableColumn(tableName);
         for(Column column : columnList){
             //主键,逻辑删除处理
             if("PRI".equals(column.getColumnKey())){
@@ -267,7 +267,11 @@ public class GenServiceImpl implements GenService {
 
     //表单生成设置
     private void genTableSet(SysGenTable table){
-        table.setBeanName(StrUtil.lineToHump( table.getTableName() ));
+        String tableName = table.getTableName();
+        if(tableName.startsWith(genProperty.getTablePrefix())){
+            tableName = tableName.substring(genProperty.getTablePrefix().length());
+        }
+        table.setBeanName(StrUtil.lineToHump( tableName ));
         table.setClassName( StrUtil.upperCase(table.getBeanName()) );
 
         for(SysGenColumn c : table.getColumnList()){
@@ -287,6 +291,8 @@ public class GenServiceImpl implements GenService {
                 table.setFileInput(true);
             }else if(c.getFormType().equals("map")){
                 table.setMap(true);
+            }else if(c.getFormType().equals("video")){
+                table.setVideo(true);
             }
         }
     }

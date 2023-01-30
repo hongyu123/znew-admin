@@ -72,6 +72,8 @@
         <el-input v-model="drawerProps.rowData!.${c.property}" maxlength="${c.maxlength}" disabled placeholder="请选择地址" clearable>
           <template #append><el-button @click="amapVisible = true">选择</el-button></template>
         </el-input>
+      <#elseif c.formType=='video'>
+        <UploadVideo v-model:imageUrl="drawerProps.rowData!.${c.property}"></UploadVideo>
       </#if>
       </el-form-item>
       </#list>
@@ -102,6 +104,7 @@ import { ElMessage, FormInstance } from "element-plus";
 <#if file>import UploadFile from "@/components/Upload/File.vue";</#if>
 <#if fileInput>import FileInput from "@/components/Upload/FileInput.vue";</#if>
 <#if map>import MapContainer from "@/components/amap/MapContainer.vue";</#if>
+<#if video>import UploadVideo from "@/components/Upload/Video.vue";</#if>
 
 const rules = reactive({
 <#list columnList as c>

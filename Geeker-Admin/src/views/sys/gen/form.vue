@@ -26,6 +26,7 @@
             <el-option label="多图上传" value="pictures" />
             <el-option label="文件上传" value="file" />
             <el-option label="文件输入" value="fileInput" />
+            <el-option label="视频" value="video" />
             <el-option label="地图" value="map" />
           </el-select>
           <el-switch v-model="element.listFlag" active-text="列表" :active-value="1" :inactive-value="0"></el-switch>

@@ -61,4 +61,6 @@ public class SysGenTable extends BaseEntity {
     private boolean fileInput = false;
     @FieldIgnore
     private boolean map = false;
+    @FieldIgnore
+    private boolean video = false;
 }
