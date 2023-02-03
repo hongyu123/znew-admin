@@ -1,7 +1,7 @@
 package com.hfw.admin.security;
 
+import com.hfw.basesystem.service.RedisAuthService;
 import com.hfw.basesystem.service.SysLoginLogService;
-import com.hfw.basesystem.service.impl.RedisAuth;
 import com.hfw.basesystem.support.ValidCode;
 import com.hfw.common.support.jackson.ApiResult;
 import com.hfw.common.util.RequestUtil;
@@ -25,7 +25,7 @@ import java.util.List;
 public class AjaxLogoutHandler implements LogoutSuccessHandler {
 
     @Resource
-    private RedisAuth redisAuth;
+    private RedisAuthService redisAuthService;
     @Resource
     private SysLoginLogService sysLoginLogService;
 
@@ -41,8 +41,8 @@ public class AjaxLogoutHandler implements LogoutSuccessHandler {
             return;
         }
         LoginUser loginUser = (LoginUser) principal;
-        List<String> tokens = redisAuth.getValidToken(loginUser.getId());
-        redisAuth.logout(loginUser.getId());
+        List<String> tokens = redisAuthService.getValidToken(loginUser.getId());
+        redisAuthService.logout(loginUser.getId());
         sysLoginLogService.logout(tokens);
         RequestUtil.json(response, ApiResult.success() );
     }

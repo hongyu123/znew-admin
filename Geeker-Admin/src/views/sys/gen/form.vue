@@ -1,5 +1,5 @@
 <template>
-  <el-form label-width="100px">
+  <el-form label-width="200px">
     <span>{{ genTable.tableName }}</span>
     <draggable
       class="card grid-container"

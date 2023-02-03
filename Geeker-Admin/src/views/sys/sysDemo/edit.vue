@@ -97,6 +97,17 @@
           <template #append><el-button @click="amapVisible = true">选择</el-button></template>
         </el-input>
       </el-form-item>
+
+      <el-form-item label="单选" prop="artile">
+        <el-input v-model="drawerProps.rowData!.artile" disabled placeholder="请选择文章" clearable>
+          <template #append><el-button @click="visibleSelectSingle = true">选择</el-button></template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="多选" prop="artileList">
+        <el-input v-model="drawerProps.rowData!.artileList" disabled placeholder="请选择文章list" clearable>
+          <template #append><el-button @click="visibleSelectMultiple = true">选择</el-button></template>
+        </el-input>
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="drawerVisible = false">取消</el-button>
@@ -109,6 +120,21 @@
     <template #footer>
       <el-button @click="amapVisible = false">取消</el-button>
       <el-button type="primary" v-show="!drawerProps.isView" @click="handleAddress">确定</el-button>
+    </template>
+  </el-dialog>
+
+  <el-dialog v-model="visibleSelectSingle" :destroy-on-close="true" width="50%" title="单选" draggable>
+    <SingleSelect :handleSingleSelect="handleSelectSingle"></SingleSelect>
+    <template #footer>
+      <el-button @click="visibleSelectSingle = false">关闭</el-button>
+    </template>
+  </el-dialog>
+
+  <el-dialog v-model="visibleSelectMultiple" :destroy-on-close="true" width="50%" title="多选" draggable>
+    <MultipleSelect ref="selectDataRef"></MultipleSelect>
+    <template #footer>
+      <el-button @click="visibleSelectMultiple = false">取消</el-button>
+      <el-button type="primary" @click="handleSelectMultiple">确定</el-button>
     </template>
   </el-dialog>
 </template>
@@ -126,6 +152,8 @@ import UploadVideo from "@/components/Upload/Video.vue";
 
 import { GenderEnum } from "@/api/modules/enum";
 import { detail } from "@/api/sys/sysDemo";
+import SingleSelect from "@/views/sys/appArticle/singleSelect.vue";
+import MultipleSelect from "@/views/sys/appArticle/multipleSelect.vue";
 
 const rules = reactive({
   name: [{ required: true, message: "请填写", trigger: "change" }],
@@ -207,6 +235,22 @@ onMounted(() => {
   });
 });
 
+//单选弹出框
+const visibleSelectSingle = ref(false);
+const handleSelectSingle = (val: any) => {
+  drawerProps.value.rowData.artile = val.title;
+  visibleSelectSingle.value = false;
+};
+
+//多选弹出框
+const visibleSelectMultiple = ref(false);
+const selectDataRef = ref();
+const handleSelectMultiple = async () => {
+  const selectData = selectDataRef.value.getSelect();
+  const titleList = selectData.map((data: any) => data.title);
+  drawerProps.value.rowData.artileList = JSON.stringify(titleList);
+  visibleSelectMultiple.value = false;
+};
 defineExpose({
   acceptParams
 });

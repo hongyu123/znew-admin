@@ -18,6 +18,7 @@ import java.util.List;
  * @date 2022-12-16
  */
 @Data
+@Deprecated
 public class RedisAuth {
     /**
      * 限制同一账号最大登录人数
@@ -69,7 +70,7 @@ public class RedisAuth {
         redisUtil.set(redis_user_key+ auth.getId(), auth);
 
         //存储token
-        redisUtil.set(redis_token_key+ auth.getToken(), auth.getId(), expire);
+        redisUtil.setEx(redis_token_key+ auth.getToken(), auth.getId(), expire);
         return pushedOff;
     }
 
@@ -126,7 +127,7 @@ public class RedisAuth {
      * @return
      */
     public <T> T validToken(String token){
-        Integer userId = redisUtil.getAndExpire(redis_token_key+ token, expire);
+        Integer userId = redisUtil.getEx(redis_token_key+ token, expire);
         if(userId==null){
             return null;
         }

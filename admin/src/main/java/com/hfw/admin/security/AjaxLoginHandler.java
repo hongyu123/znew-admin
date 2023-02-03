@@ -1,8 +1,8 @@
 package com.hfw.admin.security;
 
 import com.hfw.basesystem.entity.Auth;
+import com.hfw.basesystem.service.RedisAuthService;
 import com.hfw.basesystem.service.SysLoginLogService;
-import com.hfw.basesystem.service.impl.RedisAuth;
 import com.hfw.basesystem.support.ValidCode;
 import com.hfw.common.support.ParamMap;
 import com.hfw.common.support.jackson.ApiResult;
@@ -35,7 +35,7 @@ import java.util.UUID;
 public class AjaxLoginHandler implements AuthenticationSuccessHandler ,AuthenticationFailureHandler {
 
     @Resource
-    private RedisAuth redisAuth;
+    private RedisAuthService redisAuthService;
     @Resource
     private SysLoginLogService sysLoginLogService;
 
@@ -45,12 +45,12 @@ public class AjaxLoginHandler implements AuthenticationSuccessHandler ,Authentic
         //设置认证信息
         SecurityContextHolder.getContext().setAuthentication(authentication);
         //生成令牌
-        String access_token = UUID.randomUUID().toString().replaceAll("-","");
+        String access_token = redisAuthService.genToken();
         //生成刷新令牌，如果accessToken令牌失效，则使用refreshToken重新获取令牌（refreshToken过期时间必须大于accessToken）
         //String refreshToken = "refreshToken";
         loginUser.setToken(access_token);
         //存储
-        String pushedOffToken = redisAuth.store(loginUser.getId(), loginUser.getToken(), loginUser);
+        String pushedOffToken = redisAuthService.store(loginUser.getId(), loginUser.getToken(), loginUser);
         //登录日志
         sysLoginLogService.login(loginUser.getToken(),loginUser.getUsername(),"登录成功", request);
         sysLoginLogService.pushedOff(pushedOffToken);

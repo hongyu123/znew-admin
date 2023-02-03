@@ -6,6 +6,7 @@ import com.hfw.basesystem.entity.SysUser;
 import com.hfw.basesystem.entity.SysUserRole;
 import com.hfw.basesystem.mapper.SysUserMapper;
 import com.hfw.basesystem.mybatis.CommonDao;
+import com.hfw.basesystem.service.RedisAuthService;
 import com.hfw.basesystem.service.SysUserService;
 import com.hfw.basesystem.vo.MenuVO;
 import com.hfw.common.entity.PageResult;
@@ -13,6 +14,8 @@ import com.hfw.common.enums.EnableState;
 import com.hfw.common.support.GeneralException;
 import com.hfw.common.util.ListUtil;
 import javax.annotation.Resource;
+
+import com.hfw.common.util.TreeUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +41,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Resource
     private PasswordEncoder passwordEncoder;
     @Resource
-    private RedisAuth redisAuth;
+    private RedisAuthService redisAuthService;
 
     @Override
     public PageResult<SysUser> page(SysUser sysUser) {
@@ -94,7 +97,7 @@ public class SysUserServiceImpl implements SysUserService {
             commonDao.insertBatch(roleList);
         }
         if(sysUser.getState()!=null && sysUser.getState() == EnableState.Disable){
-            redisAuth.disableUser(sysUser.getId());
+            redisAuthService.disableUser(sysUser.getId());
         }
     }
 
@@ -136,18 +139,19 @@ public class SysUserServiceImpl implements SysUserService {
         }
         List<JSONObject> menuList = sysUserMapper.webMenuButtons(userId);
         Map<String, Object> map = menuList.stream().collect(Collectors.toMap(o -> o.getString("web_code"), o -> {
-            String code = o.getString("code");
-            if(code!=null && code.contains("*") ){
+            if(o.containsKey("code") && o.getString("code").contains("*") ){
                 return "*";
             }
-            return o.getString("buttons");
+            return o.containsKey("buttons") ?o.getString("buttons"):"";
         }));
         return map;
     }
     @Override
     public List<MenuVO> webMenus(Long userId){
         List<MenuVO> menus = userId==1? sysUserMapper.adminWebMenus(): sysUserMapper.webMenus(userId);
-        menus = ListUtil.listTotree(menus);
+        //menus = ListUtil.listTotree(menus);
+        menus = TreeUtils.listToTree(menus, MenuVO::getId, MenuVO::getParentId, MenuVO::setChildren,
+                (vo) -> vo.getParentId()==0 );
         return menus;
     }
 }

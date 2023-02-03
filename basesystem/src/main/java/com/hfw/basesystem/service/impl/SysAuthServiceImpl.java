@@ -7,6 +7,8 @@ import com.hfw.basesystem.service.SysAuthService;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.util.ListUtil;
 import javax.annotation.Resource;
+
+import com.hfw.common.util.TreeUtils;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -38,7 +40,9 @@ public class SysAuthServiceImpl implements SysAuthService {
     @Override
     public List<SysAuthDTO> treeList(SysAuth sysAuth){
         List<SysAuthDTO> list = sysAuthMapper.treeList(sysAuth);
-        return ListUtil.listTotree(list);
+        //return ListUtil.listTotree(list);
+        return TreeUtils.listToTree(list, SysAuthDTO::getId, SysAuthDTO::getParentId, SysAuthDTO::setChildren,
+                (dto) -> dto.getParentId()==0 );
     }
 
 }

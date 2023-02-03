@@ -18,8 +18,14 @@ public class CommonServiceImpl<T> implements CommonService<T> {
     @Resource
     private CommonDao commonDao;
 
+    public List<T> listAll(Class<T> clazz){
+        return commonDao.select(clazz);
+    }
     public List<T> list(T t){
         return commonDao.select(t);
+    }
+    public List<T> list(T t, Integer pageNumber, Integer pageSize){
+        return commonDao.select(t,pageNumber,pageSize);
     }
     public T detail(Class<T> clazz, Long id){
         return commonDao.selectByPk(clazz, id);
@@ -33,7 +39,7 @@ public class CommonServiceImpl<T> implements CommonService<T> {
     public int edit(T t){
         return commonDao.updateByPk(t);
     }
-    public int update(T t, T cond){
+    public int edit(T t, T cond){
         return  commonDao.update(t,cond);
     }
     public int del(Class<T> clazz, Long id){

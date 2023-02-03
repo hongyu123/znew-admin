@@ -46,7 +46,7 @@ public class AppServiceImpl implements AppService {
             code = "123456";
         }
         String key = SmsCodeEnum.redis_key + codeParam.getType().toString()+"_"+codeParam.getPhone();
-        redisUtil.set(key, code, 30*60);
+        redisUtil.setEx(key, code, 30*60);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class AppServiceImpl implements AppService {
     @Override
     public String editPhoneToken(String phone){
         String editToken = UUID.randomUUID().toString().replaceAll("-","");
-        redisUtil.set("edit_phone_token:"+phone, editToken, 10*60);
+        redisUtil.setEx("edit_phone_token:"+phone, editToken, 10*60);
         return editToken;
     }
     @Override

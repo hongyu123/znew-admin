@@ -6,7 +6,6 @@ package com.hfw.basesystem.service;
  * @date 2023-01-29
  */
 public interface SysConfigService {
-
     /**
      * 获取key
      * @param key
@@ -20,4 +19,12 @@ public interface SysConfigService {
      * @param value
      */
     void set(String key, String value);
+
+    /**
+     * 设置key
+     * @param key
+     * @param value
+     * @param comment 备注
+     */
+    void set(String key, String value, String comment);
 }

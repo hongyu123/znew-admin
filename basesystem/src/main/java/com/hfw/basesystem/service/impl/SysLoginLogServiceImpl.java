@@ -4,6 +4,7 @@ import com.hfw.basesystem.entity.SysLoginLog;
 import com.hfw.basesystem.enums.LogoutType;
 import com.hfw.basesystem.mapper.SysLoginLogMapper;
 import com.hfw.basesystem.mybatis.CommonDao;
+import com.hfw.basesystem.service.RedisAuthService;
 import com.hfw.basesystem.service.SysLoginLogService;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.util.RequestUtil;
@@ -32,7 +33,7 @@ public class SysLoginLogServiceImpl implements SysLoginLogService {
     @Resource
     private CommonDao commonDao;
     @Resource
-    private RedisAuth redisAuth;
+    private RedisAuthService redisAuthService;
 
     @Override
     public PageResult<SysLoginLog> page(SysLoginLog sysLoginLog) {
@@ -40,7 +41,7 @@ public class SysLoginLogServiceImpl implements SysLoginLogService {
         page.startPage();
         List<SysLoginLog> list = sysLoginLogMapper.list(sysLoginLog);
         for(SysLoginLog log : list){
-            if(log.getOnlineFlag()==1 && !redisAuth.exists(log.getToken())){
+            if(log.getOnlineFlag()==1 && !redisAuthService.exists(log.getToken())){
                 log.setOnlineFlag(0);
                 log.setLogoutType(LogoutType.expire);
                 commonDao.updateByPk(new SysLoginLog().setId(log.getId()).setOnlineFlag(log.getOnlineFlag()).setLogoutType(log.getLogoutType()));

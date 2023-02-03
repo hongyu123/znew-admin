@@ -296,4 +296,32 @@ public class StrUtil {
         }
         return str;
     }
+
+    /**
+     * 使用正则去除html标签
+     * 其它方法,利用html解析库:Jsoup,HTMLCleaner
+     * @param str
+     * @return
+     */
+    public static String trimHtml(String str){
+        //return str.replaceAll("<[^<>]+?>", "");
+        return str.replaceAll("<.+?>", "");
+    }
+
+    /**
+     * 判断字符串是否是数字
+     * @param cs
+     * @return
+     */
+    public static boolean isNumeric(CharSequence cs) {
+        if (cs==null || cs.length()<=0) {
+            return false;
+        }
+        for(int i = 0; i < cs.length(); ++i) {
+            if (!Character.isDigit(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

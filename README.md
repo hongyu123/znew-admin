@@ -224,7 +224,37 @@ znew
 
 ![image-20230113200504510](https://oscimg.oschina.net/oscnet/up-98dc0f77b993ff92d108d35109e6fcfb308.png)
 
-参考增删改demo, 注意:权限编码和Controlelr是一一对应的,前端被屏蔽了,需要去数据库查看.实现方式自行查看**Authorization**类.
+**参考增删改demo, 注意:权限编码前端被屏蔽了,需要的去数据库查看**
+
+**实现方式:基于spring security URL的权限控制, 实现请自行查看Authorization类.**
+
+**权限编码规则: 请求方法/请求url, 支持** /* /** **匹配**
+
+| 名称                        | 权限编码            | 前端按钮权限编码(web_code) |
+| --------------------------- | ------------------- | -------------------------- |
+| 分页列表(管理菜单)          | GET/sysDemo         |                            |
+| 查看(按钮)                  | GET/sysDemo/{id}    | detail                     |
+| 新增(按钮)                  | POST/sysDemo        | add                        |
+| 编辑 (按钮)                 | PUT/sysDemo         | edit                       |
+| 删除(按钮)                  | DELETE/sysDemo/{id} | del                        |
+| 多url匹配(只匹配一级)       | GET/sysDemo/*       |                            |
+| sysDemo的所有权限(匹配多级) | /sysDemo/**         |                            |
+
+# 前端权限
+
+```vue
+<!-- 表格 header 按钮 -->
+<template #tableHeader="scope">
+    <el-button type="primary" :icon="CirclePlus" @click="openEditForm('新增')" v-auth="['add']">新增</el-button>
+    <el-button type="danger" :icon="Delete" plain @click="delsModel(scope.selectedListIds)" :disabled="!scope.isSelected" v-auth="['del']" >  批量删除 </el-button>
+</template>
+<!-- 表格操作 -->
+<template #operation="scope">
+    <el-button type="primary" icon="View" link @click="openEditForm('查看', scope.row)" v-auth="['detail']">查看</el-button>
+    <el-button type="primary" icon="EditPen" link @click="openEditForm('编辑', scope.row)" v-auth="['edit']">编辑</el-button>
+    <el-button type="danger" :icon="Delete" link @click="delModel(scope.row)" v-auth="['del']">删除</el-button>
+</template>
+```
 
 # 代码生成
 
@@ -244,6 +274,7 @@ znew
 请求方法
 	提交数据推荐用 POST 方法
 	获取数据用 GET 方法
+	喜欢用restful风格的小伙伴请无视上两句
 Response Headers(响应头设置)
 	Content-Type: application/json;charset=utf-8
 请求参数

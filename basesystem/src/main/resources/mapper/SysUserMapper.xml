@@ -89,7 +89,7 @@
             and a.auth_type=1
             and a.web_code is not null
         ) p
-         join
+         left join
         (
             select a.* from sys_user_role ur
                                 join sys_role_auth ra on ur.role_id=ra.role_id

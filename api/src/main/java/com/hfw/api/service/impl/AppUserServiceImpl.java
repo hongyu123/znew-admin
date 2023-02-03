@@ -9,7 +9,7 @@ import com.hfw.basesystem.entity.AppUserExt;
 import com.hfw.basesystem.enums.SmsCodeEnum;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.service.AppService;
-import com.hfw.basesystem.service.impl.RedisAuth;
+import com.hfw.basesystem.service.RedisAuthService;
 import com.hfw.common.enums.EnableState;
 import com.hfw.common.support.GeneralException;
 import com.hfw.common.support.ParamMap;
@@ -31,7 +31,7 @@ public class AppUserServiceImpl implements AppUserService {
     @Resource
     private AppService appService;
     @Resource
-    private RedisAuth redisAuth;
+    private RedisAuthService redisAuthService;
     @Resource
     private AppUserMapper appUserMapper;
 
@@ -107,7 +107,7 @@ public class AppUserServiceImpl implements AppUserService {
         AppUser user = new AppUser().setId(loginUser.getId()).setPhone(editPhone.getPhone());
         commonDao.updateByPk(user);
         loginUser.setPhone(editPhone.getPhone());
-        redisAuth.update(loginUser.getId(), loginUser);
+        redisAuthService.update(loginUser.getId(), loginUser);
         return ApiResult.success();
     }
 
@@ -124,7 +124,7 @@ public class AppUserServiceImpl implements AppUserService {
         if( StringUtils.hasText(dto.getAvatar()) ){
             loginUser.setAvatar(dto.getAvatar());
         }
-        redisAuth.update(loginUser.getId(), loginUser);
+        redisAuthService.update(loginUser.getId(), loginUser);
         return loginUser;
     }
 

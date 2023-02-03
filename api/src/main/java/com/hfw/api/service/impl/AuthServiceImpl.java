@@ -11,18 +11,17 @@ import com.hfw.basesystem.entity.AppUser;
 import com.hfw.basesystem.entity.AppUserExt;
 import com.hfw.basesystem.enums.SmsCodeEnum;
 import com.hfw.basesystem.service.AppService;
-import com.hfw.basesystem.service.impl.RedisAuth;
+import com.hfw.basesystem.service.RedisAuthService;
 import com.hfw.basesystem.support.ValidCode;
 import com.hfw.common.enums.EnableState;
 import com.hfw.common.enums.Gender;
 import com.hfw.common.support.GeneralException;
 import com.hfw.plugins.apple.Apple;
 import com.hfw.plugins.weixin.WeixinSNS;
-import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import javax.annotation.Resource;
 
 /**
  * @author farkle
@@ -31,7 +30,7 @@ import java.util.UUID;
 @Service("authService")
 public class AuthServiceImpl implements AuthService {
     @Resource
-    private RedisAuth redisAuth;
+    private RedisAuthService redisAuthService;
     @Resource
     private AppService appService;
     @Resource
@@ -39,11 +38,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(Long userId){
-        redisAuth.logout(userId);
+        redisAuthService.logout(userId);
     }
     @Override
     public void logout(String token){
-        redisAuth.logout(token);
+        redisAuthService.logout(token);
     }
 
     //登录
@@ -51,11 +50,10 @@ public class AuthServiceImpl implements AuthService {
         if(EnableState.Enable != appUser.getEnableState()){
             throw new GeneralException(ValidCode.DISABLE_ACCOUNT.getCode(), ValidCode.DISABLE_ACCOUNT.getDesc());
         }
-        String token = UUID.randomUUID().toString().replaceAll("-","");
         LoginUser loginUser = LoginUser.of(appUser);
-        loginUser.setToken(token);
+        loginUser.setToken(redisAuthService.genToken());
 
-        redisAuth.store(loginUser.getId(), loginUser.getToken(), loginUser);
+        redisAuthService.store(loginUser.getId(), loginUser.getToken(), loginUser);
         return loginUser;
     }
 
@@ -103,7 +101,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Boolean disableUser(Long id){
-        return redisAuth.disableUser(id);
+        return redisAuthService.disableUser(id);
     }
 
 }

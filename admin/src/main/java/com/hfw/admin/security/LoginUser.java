@@ -20,7 +20,6 @@ public class LoginUser implements UserDetails {
     private String nickname;
     private String avatar;
     private String password;
-    private Integer merchantFlag;
     private boolean enabled;
     private Collection<? extends GrantedAuthority> authorities;
     private Set<String> permission;
@@ -62,13 +61,6 @@ public class LoginUser implements UserDetails {
     @Override
     public String getPassword() {
         return this.password;
-    }
-
-    public Integer getMerchantFlag() {
-        return merchantFlag;
-    }
-    public void setMerchantFlag(Integer merchantFlag) {
-        this.merchantFlag = merchantFlag;
     }
 
     public void setEnabled(boolean enabled) {

@@ -41,12 +41,18 @@ public class SysConfigServiceImpl implements SysConfigService {
 
     @Override
     public void set(String key, String value){
+        this.set(key,value,null);
+    }
+
+    @Override
+    public void set(String key, String value, String comment){
         cache.remove(key);
         int res = sysMapper.config(key,value);
         if(res<=0){
-            SysConfig sysConfig = new SysConfig().setKey(key).setValue(value);
+            SysConfig sysConfig = new SysConfig().setKey(key).setValue(value).setComment(comment);
             commonDao.insert(sysConfig);
         }
         cache.remove(key);
     }
+
 }

@@ -41,7 +41,7 @@ public class SysConfigController {
             String key = config.getCode();
             String value = params.get(key);
             if(StringUtils.hasText(value)){
-                sysConfigService.set(key,value);
+                sysConfigService.set(key,value, config.getDesc());
             }
         }
         return ApiResult.success();

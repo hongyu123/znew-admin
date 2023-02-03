@@ -60,19 +60,19 @@ public class RedisGeoServiceImpl implements RedisGeoService {
         }
         //System.out.println(searchCount+":end");
 
-        Long size = redisUtil.zsetSize(near_zset_key);
+        Long size = redisUtil.zCard(near_zset_key);
         if(searchCount>size){
             Integer distance = 10*1000;
-            Long cnt = redisUtil.geoSearchAndStore(near_geo_key, near_zset_key, new Point(lng, lat), new Distance(distance, Metrics.METERS), searchCount);
+            Long cnt = redisUtil.geoSearchStore(near_geo_key, near_zset_key, new Point(lng, lat), new Distance(distance, Metrics.METERS), searchCount);
             //System.out.println(distance);
             while (cnt < requestCount && distance<max_distance){
                 distance *= 10;
-                cnt = redisUtil.geoSearchAndStore(near_geo_key, near_zset_key, new Point(lng, lat), new Distance(distance, Metrics.METERS), searchCount);
+                cnt = redisUtil.geoSearchStore(near_geo_key, near_zset_key, new Point(lng, lat), new Distance(distance, Metrics.METERS), searchCount);
             }
             //System.out.println(distance+":end");
             redisUtil.expire(near_zset_key, 60*60);
         }
-        return redisUtil.zsetRangeWithScores(near_zset_key, page.getStart(),page.getEnd());
+        return redisUtil.zRangeWithScores(near_zset_key, page.getStart(),page.getEnd());
     }
 
     public Long geoAdd(double lng, double lat, Object obj){

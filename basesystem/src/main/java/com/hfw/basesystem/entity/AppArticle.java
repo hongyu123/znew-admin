@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 /**
 * app文章
@@ -44,6 +45,9 @@ public class AppArticle extends BaseEntity {
 
     /** 文章位置(方便显示用) **/
     private String location;
+
+    /** 创建时间 */
+    private LocalDateTime createTime;
 
 
     /** 图文详情 **/

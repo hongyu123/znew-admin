@@ -1,7 +1,8 @@
 package com.hfw.api.support;
 
-import com.hfw.basesystem.service.impl.RedisAuth;
 import javax.annotation.Resource;
+
+import com.hfw.basesystem.service.RedisAuthService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,7 +21,7 @@ public class CrossAndAuthInterceptor implements HandlerInterceptor {
     private static final String token = "token";
 
     @Resource
-    private RedisAuth redisAuth;
+    private RedisAuthService redisAuthService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -29,7 +30,7 @@ public class CrossAndAuthInterceptor implements HandlerInterceptor {
             token = request.getParameter(CrossAndAuthInterceptor.token);
         }
         if(StringUtils.hasText(token)){
-            LoginUser loginUser = redisAuth.validToken(token);
+            LoginUser loginUser = redisAuthService.validToken(token);
             if(loginUser!=null){
                 loginUser.setToken(token);
                 LoginUser.setContext(loginUser);
