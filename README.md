@@ -149,12 +149,15 @@ CommonService:通用增删改服务
  * @date 2022-12-08
  */
 public interface CommonService<T> {
+    List<T> listAll(Class<T> clazz);
     List<T> list(T t);
-    T detail(Class<T> clazz, Long id);
+    List<T> list(T t, Integer pageNumber, Integer pageSize);
+    <T> T getOne(T t);
+    T getById(Class<T> clazz, Long id);
     Long count(T t);
     int save(T t);
     int edit(T t);
-    int update(T t, T cond);
+    int edit(T t, T cond);
     int del(Class<T> clazz, Long id);
     int dels(Class<T> clazz, List<Long> ids);
 }
@@ -164,11 +167,20 @@ public class CommonServiceImpl<T> implements CommonService<T> {
     @Resource
     private CommonDao commonDao;
 
-    public List<T> list(T t){
-        return commonDao.list(t);
+    public List<T> listAll(Class<T> clazz){
+        return commonDao.select(clazz);
     }
-    public T detail(Class<T> clazz, Long id){
-        return commonDao.findByPk(clazz, id);
+    public List<T> list(T t){
+        return commonDao.select(t);
+    }
+    public List<T> list(T t, Integer pageNumber, Integer pageSize){
+        return commonDao.select(t,pageNumber,pageSize);
+    }
+    public <T> T getOne(T t){
+        return commonDao.selectOne(t);
+    }
+    public T getById(Class<T> clazz, Long id){
+        return commonDao.selectByPk(clazz, id);
     }
     public Long count(T t){
         return commonDao.count(t);
@@ -179,7 +191,7 @@ public class CommonServiceImpl<T> implements CommonService<T> {
     public int edit(T t){
         return commonDao.updateByPk(t);
     }
-    public int update(T t, T cond){
+    public int edit(T t, T cond){
         return  commonDao.update(t,cond);
     }
     public int del(Class<T> clazz, Long id){
@@ -188,6 +200,7 @@ public class CommonServiceImpl<T> implements CommonService<T> {
     public int dels(Class<T> clazz, List<Long> ids){
         return commonDao.deleteBatch(clazz, ids);
     }
+
 }
 ```
 
@@ -230,15 +243,15 @@ znew
 
 **权限编码规则: 请求方法/请求url, 支持** /* /** **匹配**
 
-| 名称                        | 权限编码            | 前端按钮权限编码(web_code) |
-| --------------------------- | ------------------- | -------------------------- |
-| 分页列表(管理菜单)          | GET/sysDemo         |                            |
-| 查看(按钮)                  | GET/sysDemo/{id}    | detail                     |
-| 新增(按钮)                  | POST/sysDemo        | add                        |
-| 编辑 (按钮)                 | PUT/sysDemo         | edit                       |
-| 删除(按钮)                  | DELETE/sysDemo/{id} | del                        |
-| 多url匹配(只匹配一级)       | GET/sysDemo/*       |                            |
-| sysDemo的所有权限(匹配多级) | /sysDemo/**         |                            |
+| 名称                        | 权限编码         | 前端按钮权限编码(web_code) |
+| --------------------------- | ---------------- | -------------------------- |
+| 分页列表(管理菜单)          | GET/sysDemo/page |                            |
+| 查看(按钮)                  | GET/sysDemo      | view                       |
+| 新增(按钮)                  | POST/sysDemo     | add                        |
+| 编辑 (按钮)                 | PUT/sysDemo      | edit                       |
+| 删除(按钮)                  | DELETE/sysDemo   | del                        |
+| 多url匹配(只匹配一级)       | GET/sysDemo/*    |                            |
+| sysDemo的所有权限(匹配多级) | /sysDemo/**      |                            |
 
 # 前端权限
 
@@ -250,7 +263,7 @@ znew
 </template>
 <!-- 表格操作 -->
 <template #operation="scope">
-    <el-button type="primary" icon="View" link @click="openEditForm('查看', scope.row)" v-auth="['detail']">查看</el-button>
+    <el-button type="primary" icon="View" link @click="openEditForm('查看', scope.row)" v-auth="['view']">查看</el-button>
     <el-button type="primary" icon="EditPen" link @click="openEditForm('编辑', scope.row)" v-auth="['edit']">编辑</el-button>
     <el-button type="danger" :icon="Delete" link @click="delModel(scope.row)" v-auth="['del']">删除</el-button>
 </template>

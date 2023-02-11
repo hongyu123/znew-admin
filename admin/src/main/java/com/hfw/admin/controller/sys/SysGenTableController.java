@@ -27,13 +27,13 @@ public class SysGenTableController {
     @Resource
     private SysGenTableService sysGenTableService;
 
-    @GetMapping
+    @GetMapping("/page")
     public PageResult page(SysGenTableDTO dto){
         return sysGenTableService.page(dto);
     }
 
-    @GetMapping("/{id}")
-    public ApiResult detail(@PathVariable("id") Long id){
+    @GetMapping
+    public ApiResult detail(@RequestParam Long id){
         return ApiResult.data( sysGenTableService.detail(id) );
     }
 

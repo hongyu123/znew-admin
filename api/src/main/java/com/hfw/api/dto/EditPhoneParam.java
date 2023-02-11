@@ -14,20 +14,25 @@ import javax.validation.constraints.Pattern;
 @Data
 public class EditPhoneParam {
 
-    @NotBlank(message = "手机号码不能为空")
-    @Pattern(regexp = ValidUtil.phoneReg, message = "手机号码格式错误(11位数字)")
     /**
      * 手机号码
      */
+    @NotBlank(message = "手机号码不能为空")
+    @Pattern(regexp = ValidUtil.phoneReg, message = "手机号码格式错误(11位数字)")
     private String phone;
 
-    @NotBlank(message = "验证码不能为空")
     /**
      * 验证码
      */
+    @NotBlank(message = "验证码不能为空")
     private String code;
 
-    @NotBlank(message = "editToken不能为空")
-    private String editToken;
+    /**
+     * 原手机验证码
+     */
+    @NotBlank(message = "原手机验证码不能为空")
+    private String oldCode;
+    //@NotBlank(message = "editToken不能为空")
+    //private String editToken;
 
 }

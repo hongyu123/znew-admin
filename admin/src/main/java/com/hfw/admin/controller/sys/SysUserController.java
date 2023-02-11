@@ -31,13 +31,13 @@ public class SysUserController {
     @Resource
     private SysUserService sysUserService;
 
-    @GetMapping
+    @GetMapping("/page")
     public PageResult page(SysUserDTO dto){
         return sysUserService.page(dto);
     }
 
-    @GetMapping("/{id}")
-    public ApiResult detail(@PathVariable Long id){
+    @GetMapping
+    public ApiResult detail(@RequestParam Long id){
         return ApiResult.data( sysUserService.detail(id) );
     }
 
@@ -61,8 +61,8 @@ public class SysUserController {
     }
 
     @AdminLog("删除系统用户")
-    @DeleteMapping("/{id}")
-    public ApiResult del(@PathVariable("id") Long id){
+    @DeleteMapping
+    public ApiResult del(@RequestParam Long id){
         sysUserService.del(id);
         return ApiResult.success();
     }

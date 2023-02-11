@@ -28,13 +28,13 @@ public class AppArticleController {
     @Resource
     private AppArticleService appArticleService;
 
-    @GetMapping
+    @GetMapping("/page")
     public PageResult page(AppArticleDTO dto){
         return appArticleService.page(dto);
     }
 
-    @GetMapping("/{id}")
-    public ApiResult detail(@PathVariable("id") Long id){
+    @GetMapping
+    public ApiResult detail(@RequestParam Long id){
         return ApiResult.data( appArticleService.detail(id) );
     }
 
@@ -53,8 +53,8 @@ public class AppArticleController {
     }
 
     @AdminLog("删除系统文章")
-    @DeleteMapping("/{id}")
-    public ApiResult del(@PathVariable("id") Long id){
+    @DeleteMapping
+    public ApiResult del(@RequestParam Long id){
         appArticleService.del(id);
         return ApiResult.success();
     }

@@ -10,6 +10,7 @@ import com.hfw.basesystem.mapper.AppMapper;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.dto.SendCodeParam;
 import com.hfw.basesystem.service.AppService;
+import com.hfw.common.support.GeneralException;
 import com.hfw.common.util.RandomUtil;
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,11 @@ public class AppServiceImpl implements AppService {
 
     @Override
     public void sendCode(SendCodeParam codeParam){
+        //限制同一手机号码一分钟发送一次
+        Boolean res = redisUtil.setNxEx(SmsCodeEnum.redis_key + codeParam.getPhone(), 1, 55);
+        if(!res){
+            throw new GeneralException("验证码已发送,请稍后再试(1分钟)!");
+        }
         /**
          * TODO:发送短信
          */
@@ -53,12 +59,18 @@ public class AppServiceImpl implements AppService {
     public boolean validCode(SmsCodeEnum type, String phone, String code){
         String key = SmsCodeEnum.redis_key + type.toString()+"_"+phone;
         String storeCode = redisUtil.get(key);
-        boolean res = storeCode!=null && storeCode.equals(code);
+        return storeCode!=null && storeCode.equals(code);
+    }
+    @Override
+    public boolean validAndDelIfSuccess(SmsCodeEnum type, String phone, String code){
+        boolean res = validCode(type, phone, code);
         if(res){
+            String key = SmsCodeEnum.redis_key + type.toString()+"_"+phone;
             redisUtil.del(key);
         }
         return res;
     }
+
     @Override
     public String editPhoneToken(String phone){
         String editToken = UUID.randomUUID().toString().replaceAll("-","");

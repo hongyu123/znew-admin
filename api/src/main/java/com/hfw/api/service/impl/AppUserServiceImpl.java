@@ -88,17 +88,24 @@ public class AppUserServiceImpl implements AppUserService {
         if(!appService.validCode(SmsCodeEnum.valid_phone, loginUser.getPhone(), code)){
             return ApiResult.error("验证码错误或已过期!");
         }
-        String editToken = appService.editPhoneToken(loginUser.getPhone());
-        return ApiResult.data(ParamMap.create().put("editToken",editToken));
+        /*String editToken = appService.editPhoneToken(loginUser.getPhone());
+        return ApiResult.data(ParamMap.create().put("editToken",editToken));*/
+        return ApiResult.success();
     }
     @Override
     public ApiResult editPhone(EditPhoneParam editPhone){
         LoginUser loginUser = LoginUser.getLoginUser();
-        if(!appService.validEditPhoneToken(loginUser.getPhone(), editPhone.getEditToken())){
-            return ApiResult.error("验证码已过期!请先校验当前用户的手机号码");
+        if(editPhone.getPhone().equals(loginUser.getPhone())){
+            return ApiResult.error("修改手机号码不能和原手机号码相同!");
         }
-        if(!appService.validCode(SmsCodeEnum.edit_phone, editPhone.getPhone(), editPhone.getCode())){
+        if(!appService.validAndDelIfSuccess(SmsCodeEnum.edit_phone, editPhone.getPhone(), editPhone.getCode())){
             return ApiResult.error("验证码错误!");
+        }
+        /*if(!appService.validEditPhoneToken(loginUser.getPhone(), editPhone.getEditToken())){
+            return ApiResult.error("验证码已过期!请先校验当前用户的手机号码");
+        }*/
+        if(!appService.validAndDelIfSuccess(SmsCodeEnum.valid_phone, loginUser.getPhone(), editPhone.getOldCode())){
+            return ApiResult.error("原手机验证码错误!");
         }
         Long cnt = commonDao.count(new AppUser().setPhone(editPhone.getPhone()));
         if(cnt>0){

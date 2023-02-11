@@ -1,6 +1,5 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { showFullScreenLoading, tryHideFullScreenLoading } from "@/config/serviceLoading";
-import { ResultData } from "@/api/interface";
 import { ResultEnum } from "@/enums/httpEnum";
 import { checkStatus } from "./helper/checkStatus";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -111,10 +110,10 @@ class RequestHttp {
     return this.service.post(url, params, _object);
   }
 
-  put<T>(url: string, params?: object, _object = {}): Promise<ResultData<T>> {
+  put<T>(url: string, params?: object, _object = {}): Promise<T> {
     return this.service.put(url, params, _object);
   }
-  delete<T>(url: string, params?: any, _object = {}): Promise<ResultData<T>> {
+  delete<T>(url: string, params?: any, _object = {}): Promise<T> {
     return this.service.delete(url, { data: params, ..._object });
   }
 }

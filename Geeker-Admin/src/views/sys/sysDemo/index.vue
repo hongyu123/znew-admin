@@ -17,7 +17,7 @@
       </template>
       <!-- 表格操作 -->
       <template #operation="scope">
-        <el-button type="primary" icon="View" link @click="openEditForm('查看', scope.row)" v-auth="['detail']">查看</el-button>
+        <el-button type="primary" icon="View" link @click="openEditForm('查看', scope.row)" v-auth="['view']">查看</el-button>
         <el-button type="primary" icon="EditPen" link @click="openEditForm('编辑', scope.row)" v-auth="['edit']">编辑</el-button>
         <el-button type="danger" :icon="Delete" link @click="delModel(scope.row)" v-auth="['del']">删除</el-button>
       </template>

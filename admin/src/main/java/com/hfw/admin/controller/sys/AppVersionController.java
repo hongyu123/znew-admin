@@ -28,14 +28,14 @@ public class AppVersionController {
     @Resource
     private AppVersionService appVersionService;
 
-    @GetMapping
+    @GetMapping("/page")
     public PageResult page(AppVersionDTO dto){
         return appVersionService.page(dto);
     }
 
-    @GetMapping("/{id}")
-    public ApiResult detail(@PathVariable("id") Long id){
-        return ApiResult.data( commonService.detail(AppVersion.class, id) );
+    @GetMapping
+    public ApiResult detail(@RequestParam Long id){
+        return ApiResult.data( commonService.getById(AppVersion.class, id) );
     }
 
     @AdminLog("新增APP版本")
@@ -53,8 +53,8 @@ public class AppVersionController {
     }
 
     @AdminLog("删除APP版本")
-    @DeleteMapping("/{id}")
-    public ApiResult del(@PathVariable("id") Long id){
+    @DeleteMapping
+    public ApiResult del(@RequestParam Long id){
         commonService.del(AppVersion.class, id);
         return ApiResult.success();
     }

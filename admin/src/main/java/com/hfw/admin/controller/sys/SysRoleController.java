@@ -5,15 +5,15 @@ import com.hfw.admin.security.LoginUser;
 import com.hfw.basesystem.dto.SysRoleDTO;
 import com.hfw.basesystem.dto.SysUserRoleDTO;
 import com.hfw.basesystem.entity.SysRole;
-import com.hfw.basesystem.service.SysRoleService;
-import com.hfw.common.entity.PageResult;
-import com.hfw.basesystem.support.validation.ValidGroup;
-import com.hfw.common.support.jackson.ApiResult;
 import com.hfw.basesystem.service.CommonService;
-import javax.annotation.Resource;
+import com.hfw.basesystem.service.SysRoleService;
+import com.hfw.basesystem.support.validation.ValidGroup;
+import com.hfw.common.entity.PageResult;
+import com.hfw.common.support.jackson.ApiResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,13 +31,13 @@ public class SysRoleController {
     @Resource
     private SysRoleService sysRoleService;
 
-    @GetMapping
+    @GetMapping("/page")
     public PageResult page(SysRoleDTO dto){
         return sysRoleService.page(dto);
     }
 
-    @GetMapping("/{id}")
-    public ApiResult detail(@PathVariable("id") Long id){
+    @GetMapping
+    public ApiResult detail(@RequestParam Long id){
         return ApiResult.data( sysRoleService.detail(id) );
     }
 
@@ -60,8 +60,8 @@ public class SysRoleController {
     }
 
     @AdminLog("删除系统角色")
-    @DeleteMapping("/{id}")
-    public ApiResult del(@PathVariable Long id){
+    @DeleteMapping
+    public ApiResult del(@RequestParam Long id){
         sysRoleService.del(id);
         return ApiResult.success();
     }

@@ -96,6 +96,12 @@ public class LocalDateUtil {
         }
         return LocalDateTime.parse(date, DateTimeFormatter.ofPattern(entry.key().toString()));
     }
+    public static LocalDate parseDate(String date, String pattern){
+        return LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern));
+    }
+    public static LocalDateTime parseDateTime(String date, String pattern){
+        return LocalDateTime.parse(date, DateTimeFormatter.ofPattern(pattern));
+    }
 
     private static boolean isDatePattern(String pattern){
         int dateIndex = 0;

@@ -7,8 +7,8 @@ import com.hfw.basesystem.service.SysLoginLogService;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.support.jackson.ApiResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -27,14 +27,14 @@ public class SysLoginLogController {
     @Resource
     private SysLoginLogService sysLoginLogService;
 
-    @GetMapping
+    @GetMapping("/page")
     public PageResult page(SysLoginLogDTO dto){
         return sysLoginLogService.page(dto);
     }
 
-    @GetMapping("/{id}")
-    public ApiResult detail(@PathVariable("id") Long id){
-        return ApiResult.data( commonService.detail(SysLoginLog.class, id) );
+    @GetMapping
+    public ApiResult detail(@RequestParam Long id){
+        return ApiResult.data( commonService.getById(SysLoginLog.class, id) );
     }
 
 }

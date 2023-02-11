@@ -27,14 +27,14 @@ public class ${className}Controller {
     @Resource
     private ${className}Service ${beanName}Service;
 
-    @GetMapping
+    @GetMapping("/page")
     public PageResult page(${className}DTO dto){
         return ${beanName}Service.page(dto);
     }
 
-    @GetMapping("/{id}")
-    public ApiResult detail(@PathVariable("id") Long id){
-        return ApiResult.data( commonService.detail(${className}.class, id) );
+    @GetMapping
+    public ApiResult detail(@RequestParam Long id){
+        return ApiResult.data( commonService.getById(${className}.class, id) );
     }
 
     @AdminLog("新增${tableComment}")
@@ -52,8 +52,8 @@ public class ${className}Controller {
     }
 
     @AdminLog("删除${tableComment}")
-    @DeleteMapping("/{id}")
-    public ApiResult del(@PathVariable("id") Long id){
+    @DeleteMapping
+    public ApiResult del(@RequestParam Long id){
         commonService.del(${className}.class, id);
         return ApiResult.success();
     }

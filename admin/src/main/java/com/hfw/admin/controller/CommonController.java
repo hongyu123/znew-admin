@@ -1,24 +1,16 @@
 package com.hfw.admin.controller;
 
+import com.hfw.basesystem.service.SysUploadService;
 import com.hfw.common.enums.IEnum;
 import com.hfw.common.support.ParamMap;
 import com.hfw.common.support.jackson.ApiResult;
-import com.hfw.common.util.DateUtil;
-import com.hfw.common.util.StrUtil;
-import com.hfw.plugins.objstore.Qiniu;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import javax.annotation.Resource;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author farkle
@@ -72,27 +64,20 @@ public class CommonController {
         String className  = "com.hfw.basesystem.enums."+code;
         return ApiResult.list( this.getEnums(className,filter) );
     }
-
-    @PostMapping("/qiniu")
-    public ApiResult qiniu(@RequestPart MultipartFile file) throws IOException {
-        return ApiResult.data( Qiniu.upload(file) );
+    @GetMapping("/enum/model")
+    public ApiResult modelEnum(
+            @RequestParam String code,
+            @RequestParam(defaultValue = "") String filter){
+        String className  = "com.hfw.model.enums."+code;
+        return ApiResult.list( this.getEnums(className,filter) );
     }
 
-    @Value("${server-url}")
-    private String serverUrl;
-    @Value("${upload-path}")
-    private String uploadPath;
+    @Resource
+    private SysUploadService sysUploadService;
+
     @PostMapping("/upload")
-    public ApiResult upload(@RequestPart MultipartFile file) throws IOException {
-        String now = DateUtil.toString(new Date(),"yyyyMM");
-        String uploadPath = this.uploadPath+ now;
-        Path path = Paths.get(uploadPath);
-        if(!Files.exists(path)){
-            Files.createDirectories(path);
-        }
-        String fileName = UUID.randomUUID().toString() +"."+ StrUtil.getFilenameExtension(file.getOriginalFilename());
-        file.transferTo(Paths.get(uploadPath, fileName));
-        return ApiResult.data(ParamMap.create().put("url",serverUrl+"/upload/"+now+"/"+fileName));
+    public ApiResult upload(@RequestPart MultipartFile file) throws Exception {
+        return ApiResult.data( sysUploadService.upload(file) );
     }
 
 }

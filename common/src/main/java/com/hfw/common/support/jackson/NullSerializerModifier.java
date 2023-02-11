@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -66,6 +67,10 @@ public class NullSerializerModifier extends BeanSerializerModifier {
             }
             //字符串
             else if (CharSequence.class.isAssignableFrom(clazz) || Character.class.isAssignableFrom(clazz)) {
+                writer.assignNullSerializer(nullString);
+            }
+            //BigDecimal
+            else if (clazz.equals(BigDecimal.class)) {
                 writer.assignNullSerializer(nullString);
             }
             //数字

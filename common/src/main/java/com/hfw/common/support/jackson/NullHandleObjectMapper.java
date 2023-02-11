@@ -13,6 +13,7 @@ import com.hfw.common.util.LocalDateUtil;
 import com.hfw.common.util.StrUtil;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,6 +58,7 @@ public class NullHandleObjectMapper{
 
         //自定义类型序列化和反序列化
         JavaTimeModule module = new JavaTimeModule();
+        module.addSerializer(BigDecimal.class, new BigDecimalSerializer());
         module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         module.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         module.addDeserializer(LocalDateTime.class, new JsonDeserializer<>() {

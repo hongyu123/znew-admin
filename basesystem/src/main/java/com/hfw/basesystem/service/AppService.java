@@ -27,6 +27,14 @@ public interface AppService {
      * @return
      */
     boolean validCode(SmsCodeEnum type, String phone, String code);
+    /**
+     * 验证码校验并删除
+     * @param type
+     * @param phone
+     * @param code
+     * @return
+     */
+    boolean validAndDelIfSuccess(SmsCodeEnum type, String phone, String code);
 
     /**
      * 更新手机号码token

@@ -11,7 +11,8 @@ public interface CommonService<T> {
     List<T> listAll(Class<T> clazz);
     List<T> list(T t);
     List<T> list(T t, Integer pageNumber, Integer pageSize);
-    T detail(Class<T> clazz, Long id);
+    <T> T getOne(T t);
+    T getById(Class<T> clazz, Long id);
     Long count(T t);
     int save(T t);
     int edit(T t);

@@ -13,7 +13,7 @@ import java.util.List;
  * @author ${author}
  * @date ${.now?string('yyyy-MM-dd')}
  */
-@Service("${beanName}")
+@Service("${beanName}Service")
 public class ${className}ServiceImpl implements ${className}Service {
 
     @Resource

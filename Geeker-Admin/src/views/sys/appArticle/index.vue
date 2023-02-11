@@ -85,7 +85,7 @@ const openEditForm = (title: string, rowData: Partial<any> = {}) => {
 
 //删除
 const delModel = async (params: any) => {
-  await useHandleData(del, params.id, `删除【${params.name}】`);
+  await useHandleData(del, params.id, `删除【${params.title}】`);
   proTable.value.getTableList();
 };
 </script>

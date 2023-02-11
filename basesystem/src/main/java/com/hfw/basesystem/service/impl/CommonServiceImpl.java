@@ -14,7 +14,6 @@ import java.util.List;
  */
 @Service("commonService")
 public class CommonServiceImpl<T> implements CommonService<T> {
-
     @Resource
     private CommonDao commonDao;
 
@@ -27,7 +26,10 @@ public class CommonServiceImpl<T> implements CommonService<T> {
     public List<T> list(T t, Integer pageNumber, Integer pageSize){
         return commonDao.select(t,pageNumber,pageSize);
     }
-    public T detail(Class<T> clazz, Long id){
+    public <T> T getOne(T t){
+        return commonDao.selectOne(t);
+    }
+    public T getById(Class<T> clazz, Long id){
         return commonDao.selectByPk(clazz, id);
     }
     public Long count(T t){

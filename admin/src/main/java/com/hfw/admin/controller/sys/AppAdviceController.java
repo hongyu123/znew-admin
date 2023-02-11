@@ -29,14 +29,14 @@ public class AppAdviceController {
     @Resource
     private AppAdviceService appAdviceService;
 
-    @GetMapping
+    @GetMapping("/page")
     public PageResult page(AppAdviceDTO dto){
         return appAdviceService.page(dto);
     }
 
-    @GetMapping("/{id}")
-    public ApiResult detail(@PathVariable("id") Long id){
-        return ApiResult.data( commonService.detail(AppAdvice.class, id) );
+    @GetMapping
+    public ApiResult detail(@RequestParam Long id){
+        return ApiResult.data( commonService.getById(AppAdvice.class, id) );
     }
 
     //未读数量
@@ -47,8 +47,8 @@ public class AppAdviceController {
     }
 
     @AdminLog("建议已读")
-    @PostMapping("/read/{id}")
-    public ApiResult read(@PathVariable("id") Long id){
+    @PostMapping("/read")
+    public ApiResult read(@RequestParam Long id){
         commonService.edit(new AppAdvice().setId(id).setReadFlag(1));
         return ApiResult.success();
     }

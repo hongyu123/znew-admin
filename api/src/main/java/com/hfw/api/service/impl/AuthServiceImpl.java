@@ -59,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginUser loginByPhone(PhoneCodeParam loginParam){
-        if(!appService.validCode(SmsCodeEnum.login, loginParam.getPhone(), loginParam.getCode())){
+        if(!appService.validAndDelIfSuccess(SmsCodeEnum.login, loginParam.getPhone(), loginParam.getCode())){
             throw new GeneralException("验证码错误或已过期!");
         }
         AppUser appUser = appUserService.loginByPhone(loginParam.getPhone());

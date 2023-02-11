@@ -3,7 +3,7 @@
     <ProTable ref="proTable" title="app用户列表" :columns="columns" :requestApi="getTableList" :toolButton="false">
       <!-- 表格操作 -->
       <template #operation="scope">
-        <el-button type="primary" icon="View" link @click="openEditForm('查看', scope.row)" v-auth="['detail']">详情</el-button>
+        <el-button type="primary" icon="View" link @click="openEditForm('查看', scope.row)" v-auth="['view']">详情</el-button>
       </template>
     </ProTable>
 

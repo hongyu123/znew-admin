@@ -10,6 +10,7 @@ import java.util.Set;
 
 /**
  * 自定义路由验证
+ * 不采用@PathVariable
  * @author farkle
  * @date 2022-12-17
  */
@@ -47,12 +48,11 @@ public class Authorization {
             uri = parentPath(uri);
         }
 
-        //匹配 GET/{id} 和 DELETE/{id}
+        /*//匹配 GET/{id} 和 DELETE/{id}
         String idUri = this.getUriMatchId(request);
         if(idUri!=null && permission.contains(idUri)){
             return true;
-        }
-
+        }*/
         return false;
     }
 

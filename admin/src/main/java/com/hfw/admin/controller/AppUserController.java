@@ -30,14 +30,14 @@ public class AppUserController {
     @Resource
     private AppUserService appUserService;
 
-    @GetMapping
+    @GetMapping("/page")
     public PageResult page(AppUserDTO dto){
         return appUserService.page(dto);
     }
 
-    @GetMapping("/{id}")
-    public ApiResult detail(@PathVariable("id") Long id){
-        return ApiResult.data( commonService.detail(AppUser.class, id) );
+    @GetMapping
+    public ApiResult detail(@RequestParam Long id){
+        return ApiResult.data( commonService.getById(AppUser.class, id) );
     }
 
     //@PostMapping("/add")

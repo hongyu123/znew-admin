@@ -2,10 +2,10 @@ import http from "@/api";
 import { ApiResult, PageResult } from "@/api/interface/znew";
 
 export const page = (params: {}) => {
-  return http.get<PageResult>("/sysAuth", params);
+  return http.get<PageResult>("/sysAuth/page", params);
 };
 export const detail = (id: number) => {
-  return http.get<ApiResult>(`/sysAuth/${id}`);
+  return http.get<ApiResult>(`/sysAuth?id=${id}`);
 };
 export const save = (params: {}) => {
   return http.post<ApiResult>("/sysAuth", params);
@@ -14,7 +14,7 @@ export const edit = (params: {}) => {
   return http.put<ApiResult>("/sysAuth", params);
 };
 export const del = (id: number) => {
-  return http.delete<ApiResult>(`/sysAuth/${id}`);
+  return http.delete<ApiResult>(`/sysAuth?id=${id}`);
 };
 export const dels = (params: string[]) => {
   return http.delete<ApiResult>("/sysAuth/dels", params);

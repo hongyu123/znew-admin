@@ -30,14 +30,14 @@ public class SysAuthController {
     @Resource
     private SysAuthService sysAuthService;
 
-    @GetMapping
+    @GetMapping("/page")
     public PageResult page(SysAuthDTO dto){
         return sysAuthService.page(dto);
     }
 
-    @GetMapping("/{id}")
-    public ApiResult detail(@PathVariable("id") Long id){
-        return ApiResult.data( commonService.detail(SysAuth.class, id) );
+    @GetMapping
+    public ApiResult detail(@RequestParam Long id){
+        return ApiResult.data( commonService.getById(SysAuth.class, id) );
     }
 
     @AdminLog("新增系统权限")
@@ -64,8 +64,8 @@ public class SysAuthController {
     }
 
     @AdminLog("删除系统权限")
-    @DeleteMapping("/{id}")
-    public ApiResult del(@PathVariable("id") Long id){
+    @DeleteMapping
+    public ApiResult del(@RequestParam Long id){
         Long cnt = commonService.count(new SysAuth().setParentId(id));
         if(cnt>0){
             return ApiResult.error("节点下有子节点,无法删除!");

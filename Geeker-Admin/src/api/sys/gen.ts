@@ -28,10 +28,10 @@ export const genFormToProject = (params: object) => {
 };
 
 export const page = (params: object) => {
-  return http.get<PageResult>("/sysGenTable", params);
+  return http.get<PageResult>("/sysGenTable/page", params);
 };
 export const detail = (id: any) => {
-  return http.get<ApiResult>(`/sysGenTable/${id}`);
+  return http.get<ApiResult>(`/sysGenTable?id=${id}`);
 };
 export const saveGenFormRecord = (params: object) => {
   return http.post<ApiResult>(`/sysGenTable`, params);

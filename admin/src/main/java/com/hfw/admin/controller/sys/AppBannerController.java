@@ -24,13 +24,13 @@ public class AppBannerController {
     @Resource
     private AppBannerService appBannerService;
 
-    @GetMapping
+    @GetMapping("/page")
     public PageResult page(AppBannerDTO dto){
         return appBannerService.page(dto);
     }
 
-    @GetMapping("/{id}")
-    public ApiResult detail(@PathVariable("id") Long id){
+    @GetMapping
+    public ApiResult detail(@RequestParam Long id){
         return ApiResult.data( appBannerService.detail(id) );
     }
 
@@ -49,8 +49,8 @@ public class AppBannerController {
     }
 
     @AdminLog("删除app轮播图")
-    @DeleteMapping("/{id}")
-    public ApiResult del(@PathVariable("id") Long id){
+    @DeleteMapping
+    public ApiResult del(@RequestParam Long id){
         appBannerService.del(id);
         return ApiResult.success();
     }

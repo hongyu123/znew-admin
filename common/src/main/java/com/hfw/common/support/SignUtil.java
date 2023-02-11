@@ -1,6 +1,8 @@
 package com.hfw.common.support;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * 签名工具类
@@ -32,10 +34,14 @@ public class SignUtil {
      * @return
      * @throws Exception
      */
-    public static String md5(String s) throws Exception {
+    public static String md5(String s) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        return md5(s.getBytes("utf-8"));
+    }
+
+    public static String md5(byte[] bytes) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
-        byte[] bytes = md.digest(s.getBytes("utf-8"));
-        return byte2hex(bytes);
+        byte[] digest = md.digest(bytes);
+        return byte2hex(digest);
     }
 
     /**
