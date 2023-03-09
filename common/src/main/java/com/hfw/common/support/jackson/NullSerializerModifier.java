@@ -73,8 +73,8 @@ public class NullSerializerModifier extends BeanSerializerModifier {
             else if (clazz.equals(BigDecimal.class)) {
                 writer.assignNullSerializer(nullString);
             }
-            //数字
-            else if (Number.class.isAssignableFrom(clazz)) {
+            //数字, 特殊的排序字段
+            else if (Number.class.isAssignableFrom(clazz) /*&& !"sort".equals(writer.getName())*/ ){
                 writer.assignNullSerializer(nullNumber);
             }
             //boolean

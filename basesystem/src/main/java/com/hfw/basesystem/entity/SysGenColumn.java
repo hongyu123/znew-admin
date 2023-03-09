@@ -1,21 +1,21 @@
 package com.hfw.basesystem.entity;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.Length;
-import com.hfw.common.entity.BaseEntity;
 import com.hfw.basesystem.support.validation.ValidGroup;
+import com.hfw.common.entity.BaseEntity;
+import lombok.*;
+import org.hibernate.validator.constraints.Length;
+
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
 * 表单生成字段
 * @author 
 * @date 2023-01-04
 */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "sys_gen_column")
 public class SysGenColumn extends BaseEntity {
 

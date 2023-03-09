@@ -4,8 +4,7 @@ import com.hfw.basesystem.enums.AppArticleEnum;
 import com.hfw.basesystem.enums.AppArticleType;
 import com.hfw.basesystem.mybatis.FieldIgnore;
 import com.hfw.common.entity.BaseEntity;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.*;
 
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -15,8 +14,8 @@ import java.time.LocalDateTime;
 * @author farkle
 * @date 2022-11-25
 */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "app_article")
 public class AppArticle extends BaseEntity {
     /** id **/

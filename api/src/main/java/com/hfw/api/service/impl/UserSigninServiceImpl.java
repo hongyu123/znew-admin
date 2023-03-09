@@ -41,9 +41,9 @@ public class UserSigninServiceImpl implements UserSigninService {
 
         LocalDate now = LocalDate.now();
         //今日签到情况
-        UserSignin today = commonDao.selectOne(new UserSignin().setSigninDate(now).setUserId(userId));
+        UserSignin today = commonDao.selectOne( UserSignin.builder().signinDate(now).userId(userId).build() );
         //昨日签到情况
-        UserSignin yesterday = commonDao.selectOne(new UserSignin().setSigninDate(now.plusDays(-1)).setUserId(userId));
+        UserSignin yesterday = commonDao.selectOne( UserSignin.builder().signinDate(now.plusDays(-1)).userId(userId).build() );
         if(yesterday!=null){
             info.setContinueDays(yesterday.getContinueDays());
             info.setTodayIntegral( integral(baseIntegral,plusIntegral,yesterday.getContinueDays()+1) );
@@ -66,12 +66,12 @@ public class UserSigninServiceImpl implements UserSigninService {
     private void signin(Long userId, Integer baseIntegral, Integer plusIntegral){
         LocalDate now = LocalDate.now();
         //今日签到情况
-        UserSignin today = commonDao.selectOne(new UserSignin().setSigninDate(now).setUserId(userId));
+        UserSignin today = commonDao.selectOne( UserSignin.builder().signinDate(now).userId(userId).build() );
         if(today!=null){
             throw new GeneralException("今日已经签到过了哟~");
         }
         //昨日签到情况
-        UserSignin yesterday = commonDao.selectOne(new UserSignin().setSigninDate(now.plusDays(-1)).setUserId(userId));
+        UserSignin yesterday = commonDao.selectOne( UserSignin.builder().signinDate(now.plusDays(-1)).userId(userId).build() );
         Integer continueDays = yesterday==null ?1:yesterday.getContinueDays()+1;
         Integer integral = integral(baseIntegral,plusIntegral, continueDays);
 

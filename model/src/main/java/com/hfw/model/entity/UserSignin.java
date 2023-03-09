@@ -1,19 +1,19 @@
 package com.hfw.model.entity;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
+import com.hfw.basesystem.support.validation.ValidGroup;
+import com.hfw.common.entity.BaseEntity;
+import lombok.*;
+
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import com.hfw.common.entity.BaseEntity;
-import com.hfw.basesystem.support.validation.ValidGroup;
 
 /**
  * 用户-签到明细
  * @author
  * @date 2023-01-12
  */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "user_signin")
 public class UserSignin extends BaseEntity {
 

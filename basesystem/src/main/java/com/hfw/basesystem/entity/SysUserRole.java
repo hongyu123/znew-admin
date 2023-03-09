@@ -1,8 +1,7 @@
 package com.hfw.basesystem.entity;
 
 import com.hfw.common.entity.BaseEntity;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.*;
 
 import javax.persistence.Table;
 
@@ -11,8 +10,8 @@ import javax.persistence.Table;
 * @author farkle
 * @date 2022-12-14
 */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "sys_user_role")
 public class SysUserRole extends BaseEntity {
 

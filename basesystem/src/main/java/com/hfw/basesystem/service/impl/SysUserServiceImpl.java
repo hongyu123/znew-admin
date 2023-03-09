@@ -12,15 +12,13 @@ import com.hfw.basesystem.vo.MenuVO;
 import com.hfw.common.entity.PageResult;
 import com.hfw.common.enums.EnableState;
 import com.hfw.common.support.GeneralException;
-import com.hfw.common.util.ListUtil;
-import javax.annotation.Resource;
-
 import com.hfw.common.util.TreeUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +53,7 @@ public class SysUserServiceImpl implements SysUserService {
     public SysUserDTO detail(Long id){
         SysUser sysUser = commonDao.selectByPk(SysUser.class, id);
         SysUserDTO dto = SysUserDTO.of(sysUser);
-        List<SysUserRole> list = commonDao.select(new SysUserRole().setUserId(dto.getId()));
+        List<SysUserRole> list = commonDao.select( SysUserRole.builder().userId(dto.getId()).build() );
         if(!CollectionUtils.isEmpty(list)){
             dto.setRoleList( list.stream().map( userRole->userRole.getRoleId() ).collect(Collectors.toList()) );
         }
@@ -65,7 +63,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     @Transactional
     public void save(SysUserDTO dto){
-        Long cnt = commonDao.count(new SysUser().setAccount(dto.getAccount()));
+        Long cnt = commonDao.count( SysUser.builder().account(dto.getAccount()).build() );
         if(cnt>0){
             throw new GeneralException("该账号已存在!!");
         }
@@ -73,8 +71,12 @@ public class SysUserServiceImpl implements SysUserService {
         sysUser.setPassword(passwordEncoder.encode(dto.getPassword()));
         sysUser.setCreateTime(LocalDateTime.now());
         commonDao.insert(sysUser);
-        List<SysUserRole> roleList = dto.getRoleList().stream()
-                .map(id -> new SysUserRole().setUserId(sysUser.getId()).setRoleId(id)).collect(Collectors.toList());
+        List<SysUserRole> roleList = dto.getRoleList().stream().map(id -> {
+            SysUserRole userRole = new SysUserRole();
+            userRole.setUserId(sysUser.getId());
+            userRole.setRoleId(id);
+            return userRole;
+        }).collect(Collectors.toList());
         commonDao.insertBatch(roleList);
     }
 
@@ -91,9 +93,13 @@ public class SysUserServiceImpl implements SysUserService {
         SysUser sysUser = dto.updateFilter().toEntity();
         commonDao.updateByPk(sysUser);
         if(!CollectionUtils.isEmpty(dto.getRoleList())){
-            commonDao.delete(new SysUserRole().setUserId(dto.getId()));
-            List<SysUserRole> roleList = dto.getRoleList().stream()
-                    .map(id -> new SysUserRole().setUserId(sysUser.getId()).setRoleId(id)).collect(Collectors.toList());
+            commonDao.delete( SysUserRole.builder().userId(dto.getId()).build() );
+            List<SysUserRole> roleList = dto.getRoleList().stream().map(id -> {
+                SysUserRole userRole = new SysUserRole();
+                userRole.setUserId(sysUser.getId());
+                userRole.setRoleId(id);
+                return userRole;
+            }).collect(Collectors.toList());
             commonDao.insertBatch(roleList);
         }
         if(sysUser.getState()!=null && sysUser.getState() == EnableState.Disable){
@@ -108,7 +114,7 @@ public class SysUserServiceImpl implements SysUserService {
         if(origin.getId()==1 || origin.getSystemFlag()==1){
             throw new GeneralException("系统内置用户,无法删除!");
         }
-        commonDao.delete(new SysUserRole().setUserId(id));
+        commonDao.delete( SysUserRole.builder().userId(id).build() );
         commonDao.deleteByPk(SysUser.class, id);
     }
 
@@ -118,13 +124,15 @@ public class SysUserServiceImpl implements SysUserService {
         if(!passwordEncoder.matches(dto.getOld_password(), origin.getPassword())){
             throw new GeneralException("原密码错误!");
         }
-        SysUser up = new SysUser().setId(dto.getId());
+        SysUser up = new SysUser();
+        up.setId(dto.getId());
         up.setPassword(passwordEncoder.encode(dto.getPassword()));
         return commonDao.updateByPk(up);
     }
     @Override
     public int resetPassword(SysUser sysUser){
-        SysUser up = new SysUser().setId(sysUser.getId());
+        SysUser up = new SysUser();
+        up.setId(sysUser.getId());
         up.setPassword(passwordEncoder.encode("123456"));
         return commonDao.updateByPk(up);
     }

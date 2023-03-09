@@ -3,8 +3,8 @@ package com.hfw.basesystem.entity;
 import com.hfw.basesystem.enums.DeviceEnum;
 import com.hfw.basesystem.mybatis.FieldIgnore;
 import com.hfw.common.entity.BaseEntity;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.*;
+
 import javax.persistence.Table;
 
 /**
@@ -12,8 +12,8 @@ import javax.persistence.Table;
 * @author farkle
 * @date 2022-11-25
 */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "app_version")
 public class AppVersion extends BaseEntity {
     /** id */

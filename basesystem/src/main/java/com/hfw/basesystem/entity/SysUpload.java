@@ -2,8 +2,7 @@ package com.hfw.basesystem.entity;
 
 import com.hfw.basesystem.support.validation.ValidGroup;
 import com.hfw.common.entity.BaseEntity;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Table;
@@ -15,8 +14,8 @@ import javax.validation.constraints.NotNull;
  * @author farkle
  * @date 2023-02-10
  */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "sys_upload")
 public class SysUpload extends BaseEntity {
 

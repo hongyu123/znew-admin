@@ -1,13 +1,11 @@
 package com.hfw.basesystem.entity;
 
 import com.hfw.common.entity.BaseEntity;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-
 import java.time.LocalDateTime;
 
 /**
@@ -15,8 +13,8 @@ import java.time.LocalDateTime;
 * @author farkle
 * @date 2022-11-25
 */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "app_advice")
 public class AppAdvice extends BaseEntity {
     /** id **/

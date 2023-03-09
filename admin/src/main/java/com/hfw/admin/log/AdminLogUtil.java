@@ -13,9 +13,14 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 系统日志
@@ -57,7 +62,14 @@ public class AdminLogUtil {
            // System.out.println("前置通知");
             //1.获取参数
             Object[] args = point.getArgs();
-            log.setRequestBody( StrUtil.limitLength(JSON.toJSONString(args),2000) );
+            List argList = new ArrayList();
+            for(Object arg : args){
+                if (arg instanceof ServletRequest || arg instanceof ServletResponse || arg instanceof MultipartFile){
+                    continue;
+                }
+                argList.add(arg);
+            }
+            log.setRequestBody( StrUtil.limitLength(JSON.toJSONString(argList),2000) );
             //2.执⾏切⼊点⽅法
             returnValue = point.proceed(args);
             //后置通知

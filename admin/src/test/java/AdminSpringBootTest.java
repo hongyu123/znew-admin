@@ -1,10 +1,11 @@
 import com.hfw.admin.AdminApplication;
-import com.hfw.basesystem.gen.GenService;
+import com.hfw.basesystem.config.ScanSupport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import javax.annotation.Resource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.annotation.Resource;
 
 
 /**
@@ -16,11 +17,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class AdminSpringBootTest {
 
     @Resource
-    private GenService genService;
+    private ScanSupport scanSupport;
 
     @Test
-    //代码生成
-    public void gen() throws Exception {
+    public void test() throws Exception {
+        scanSupport.scan("com.hfw.common.enums");
+        scanSupport.scan("com.hfw.basesystem.enums");
+        scanSupport.scan("com.hfw.model.enums");
     }
 
 }

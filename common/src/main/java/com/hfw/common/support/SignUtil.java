@@ -56,4 +56,16 @@ public class SignUtil {
         return byte2hex(bytes);
     }
 
+    /**
+     * SHA1签名
+     * @param s
+     * @return
+     * @throws Exception
+     */
+    public static String sha1(String s) throws Exception{
+        MessageDigest md = MessageDigest.getInstance("SHA1");
+        byte[] bytes = md.digest(s.getBytes("utf-8"));
+        return byte2hex(bytes);
+    }
+
 }

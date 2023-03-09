@@ -5,8 +5,7 @@ import com.hfw.basesystem.enums.SysAuthEnum;
 import com.hfw.basesystem.support.validation.ValidGroup;
 import com.hfw.common.entity.BaseEntity;
 import com.hfw.common.enums.EnableState;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Table;
@@ -18,8 +17,8 @@ import javax.validation.constraints.NotNull;
 * @author farkle
 * @date 2022-12-14
 */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "sys_auth")
 public class SysAuth extends BaseEntity {
 

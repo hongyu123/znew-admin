@@ -30,7 +30,7 @@ public class CommonDaoDemo {
     }
     //查询一条数据,推荐
     public SysDemo findByName(String name){
-        return commonDao.selectOne(new SysDemo().setName(name));
+        return commonDao.selectOne( SysDemo.builder().name(name).build() );
     }
     //查询一条数据2
     public SysDemo findByName2(String name){
@@ -38,7 +38,7 @@ public class CommonDaoDemo {
     }
     //列表查询,推荐
     public List<SysDemo> list(String name){
-        return commonDao.select(new SysDemo().setName(name));
+        return commonDao.select( SysDemo.builder().name(name).build() );
     }
     //列表查询2
     public List<SysDemo> list2(String name){
@@ -53,7 +53,9 @@ public class CommonDaoDemo {
      * @return
      */
     public List<SysDemo> listPage(String name, Integer pageNumber, Integer pageSize){
-        return commonDao.select((SysDemo)new SysDemo().setName(name).setSortByField("id").setSortByWay(SortByWay.desc), pageNumber,pageSize);
+        SysDemo cond = SysDemo.builder().name(name).build();
+        cond.setSortByField("id").setSortByWay(SortByWay.desc);
+        return commonDao.select(cond, pageNumber,pageSize);
     }
     //分页查询2
     public List<SysDemo> listPage2(String name, Integer pageNumber, Integer pageSize){
@@ -61,7 +63,7 @@ public class CommonDaoDemo {
     }
     //统计,推荐
     public Long count(String name){
-        return commonDao.count(new SysDemo().setName(name));
+        return commonDao.count( SysDemo.builder().name(name).build() );
     }
     //统计2
     public Long count2(String name){
@@ -69,7 +71,9 @@ public class CommonDaoDemo {
     }
     //带统计数量的分页,推荐
     public PageResult<SysDemo> page(String name, Integer pageNumber, Integer pageSize){
-        PageResult<SysDemo> pageResult = commonDao.page((SysDemo) new SysDemo().setName(name).setSortByField("id").setSortByWay(SortByWay.desc), pageNumber, pageSize);
+        SysDemo cond = SysDemo.builder().name(name).build();
+        cond.setSortByField("id").setSortByWay(SortByWay.desc);
+        PageResult<SysDemo> pageResult = commonDao.page(cond, pageNumber, pageSize);
         System.out.println(pageResult.getTotal());
         System.out.println(pageResult.getData());
         return pageResult;
@@ -110,7 +114,7 @@ public class CommonDaoDemo {
     public int update(){
         SysDemo update = new SysDemo();
         update.setName("所有男的都叫小明");
-        return commonDao.update(update, new SysDemo().setGender(Gender.Male));
+        return commonDao.update(update, SysDemo.builder().gender(Gender.Male).build() );
     }
     //主键删除
     public int deleteByPk(Long id){
@@ -123,6 +127,6 @@ public class CommonDaoDemo {
     //条件删除
     public int delete(){
         //删除所有男性
-        return commonDao.delete(new SysDemo().setGender(Gender.Male));
+        return commonDao.delete( SysDemo.builder().gender(Gender.Male).build() );
     }
 }

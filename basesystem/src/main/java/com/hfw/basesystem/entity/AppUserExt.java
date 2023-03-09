@@ -1,19 +1,19 @@
 package com.hfw.basesystem.entity;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
+import com.hfw.basesystem.support.validation.ValidGroup;
+import com.hfw.common.entity.BaseEntity;
+import lombok.*;
+
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import com.hfw.common.entity.BaseEntity;
-import com.hfw.basesystem.support.validation.ValidGroup;
 
 /**
  * app用户扩展信息
  * @author
  * @date 2023-01-09
  */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "app_user_ext")
 public class AppUserExt extends BaseEntity {
 

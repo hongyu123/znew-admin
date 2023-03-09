@@ -44,4 +44,9 @@ public class OpenIPApi {
         return "";
     }
 
+    /**
+     * 其它免费查询接口
+     * https://ip.useragentinfo.com/json?ip=220.163.124.202
+     * https://api.vore.top/api/IPdata?ip=220.163.124.202
+     */
 }

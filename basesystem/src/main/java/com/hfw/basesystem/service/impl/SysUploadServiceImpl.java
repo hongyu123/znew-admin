@@ -39,7 +39,7 @@ public class SysUploadServiceImpl implements SysUploadService {
     @Override
     public SysUpload upload(MultipartFile file) throws Exception {
         String md5 = SignUtil.md5(file.getBytes());
-        SysUpload sysUpload = commonDao.selectOne(new SysUpload().setMd5(md5));
+        SysUpload sysUpload = commonDao.selectOne(SysUpload.builder().md5(md5).build());
         if(sysUpload!=null){
             return sysUpload;
         }

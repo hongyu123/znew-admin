@@ -1,7 +1,6 @@
 package ${packageName}.model.entity;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.*;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.NotBlank;
@@ -17,8 +16,8 @@ import com.hfw.basesystem.mybatis.FieldLogic;
 * @author ${author}
 * @date ${.now?string('yyyy-MM-dd')}
 */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "${tableName}")
 public class ${className} extends BaseEntity {
 

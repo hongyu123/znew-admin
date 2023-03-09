@@ -76,7 +76,11 @@ public class AppUserController {
         if(appUser.getEnableState() == EnableState.Disable){
             redisUtil.del("appuser:"+ appUser.getId());
         }
-        commonService.edit(new AppUser().setId(appUser.getId()).setEnableState(appUser.getEnableState()).setComment(appUser.getComment()));
+        AppUser update = new AppUser();
+        update.setId(appUser.getId());
+        update.setEnableState(appUser.getEnableState());
+        update.setComment(appUser.getComment());
+        commonService.edit(update);
         return ApiResult.success();
     }
 

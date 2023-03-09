@@ -4,8 +4,7 @@ import com.hfw.basesystem.support.validation.ValidGroup;
 import com.hfw.common.entity.BaseEntity;
 import com.hfw.common.enums.EnableState;
 import com.hfw.common.enums.Gender;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.*;
 
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -15,8 +14,8 @@ import javax.validation.constraints.NotNull;
  * @author
  * @date 2023-01-09
  */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "app_user")
 public class AppUser extends BaseEntity {
 

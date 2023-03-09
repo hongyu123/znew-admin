@@ -3,8 +3,7 @@ package com.hfw.basesystem.entity;
 import com.hfw.basesystem.enums.AppBannerEnum;
 import com.hfw.basesystem.support.validation.ValidGroup;
 import com.hfw.common.entity.BaseEntity;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Table;
@@ -16,8 +15,8 @@ import javax.validation.constraints.NotNull;
 * @author farkle
 * @date 2023-01-29
 */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "app_banner")
 public class AppBanner extends BaseEntity {
 

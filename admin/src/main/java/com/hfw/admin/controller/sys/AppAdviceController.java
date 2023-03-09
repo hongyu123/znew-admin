@@ -42,14 +42,17 @@ public class AppAdviceController {
     //未读数量
     @GetMapping("/unreadCount")
     public ApiResult unreadCount(){
-        Long count = commonService.count(new AppAdvice().setReadFlag(0));
+        Long count = commonService.count( AppAdvice.builder().readFlag(0).build() );
         return ApiResult.data(ParamMap.create().put("count", count));
     }
 
     @AdminLog("建议已读")
     @PostMapping("/read")
     public ApiResult read(@RequestParam Long id){
-        commonService.edit(new AppAdvice().setId(id).setReadFlag(1));
+        AppAdvice advice = new AppAdvice();
+        advice.setId(id);
+        advice.setReadFlag(1);
+        commonService.edit(advice);
         return ApiResult.success();
     }
 

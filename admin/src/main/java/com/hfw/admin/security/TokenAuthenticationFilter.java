@@ -48,7 +48,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 request.setAttribute("username", loginUser.getUsername());
             } else {
-                SysLoginLog log = commonDao.selectOne(new SysLoginLog().setToken(token));
+                SysLoginLog log = commonDao.selectOne( SysLoginLog.builder().token(token).build() );
                 if (log!=null && LogoutType.pushed_off==log.getLogoutType()) {
                     RequestUtil.json(response, ApiResult.message(ValidCode.NO_LOGIN.getCode(), "您的账号在"+log.getLocation()+"登录,被挤下线!"));
                     return;

@@ -44,11 +44,10 @@ public class AppServiceImpl implements AppService {
         if(!res){
             throw new GeneralException("验证码已发送,请稍后再试(1分钟)!");
         }
-        /**
-         * TODO:发送短信
-         */
         String code = RandomUtil.randomNumer(6);
-        if(!"prod".equals(profiles)){
+        if("prod".equals(profiles)){
+            //TODO:发送短信
+        }else{
             code = "123456";
         }
         String key = SmsCodeEnum.redis_key + codeParam.getType().toString()+"_"+codeParam.getPhone();
@@ -92,7 +91,8 @@ public class AppServiceImpl implements AppService {
     public AppVersion appVersion(DeviceEnum device, String version){
         AppVersion appVersion = appMapper.lastVersion(device);
         if(appVersion==null){
-            return new AppVersion().setVersion(version).setHasUpdate(0);
+            appVersion = new AppVersion();
+            appVersion.setVersion(version);
         }
         appVersion.setHasUpdate( version.equals(appVersion.getVersion()) ?0:1 );
         return appVersion;

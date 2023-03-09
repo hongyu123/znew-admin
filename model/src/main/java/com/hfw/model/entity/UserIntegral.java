@@ -1,22 +1,22 @@
 package com.hfw.model.entity;
 
 import com.hfw.basesystem.enums.PaymentsType;
-import lombok.Data;
-import lombok.experimental.Accessors;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.Length;
-import com.hfw.common.entity.BaseEntity;
 import com.hfw.basesystem.support.validation.ValidGroup;
+import com.hfw.common.entity.BaseEntity;
+import lombok.*;
+import org.hibernate.validator.constraints.Length;
+
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * 用户积分明细
  * @author
  * @date 2023-01-12
  */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "user_integral")
 public class UserIntegral extends BaseEntity {
 

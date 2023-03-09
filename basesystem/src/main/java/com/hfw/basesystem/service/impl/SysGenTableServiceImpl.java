@@ -35,7 +35,7 @@ public class SysGenTableServiceImpl implements SysGenTableService {
     @Override
     public SysGenTable detail(Long id){
         SysGenTable sysGenTable = commonDao.selectByPk(SysGenTable.class, id);
-        List<SysGenColumn> columnList = commonDao.select(new SysGenColumn().setTableName(sysGenTable.getTableName()));
+        List<SysGenColumn> columnList = commonDao.select( SysGenColumn.builder().tableName(sysGenTable.getTableName()).build() );
         sysGenTable.setColumnList(columnList);
         return sysGenTable;
     }
@@ -44,7 +44,7 @@ public class SysGenTableServiceImpl implements SysGenTableService {
     public void saveGenFormRecord(SysGenTable table){
         table.getColumnList().forEach( c->c.setId(null));
         //commonDao.delete(new SysGenTable().setTableName(table.getTableName()));
-        commonDao.delete(new SysGenColumn().setTableName(table.getTableName()));
+        commonDao.delete( SysGenColumn.builder().tableName(table.getTableName()).build() );
         if(table.getId()==null || table.getId()<=0){
             table.setId(null);
             commonDao.insert(table);

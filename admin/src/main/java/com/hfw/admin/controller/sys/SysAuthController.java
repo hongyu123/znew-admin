@@ -66,7 +66,7 @@ public class SysAuthController {
     @AdminLog("删除系统权限")
     @DeleteMapping
     public ApiResult del(@RequestParam Long id){
-        Long cnt = commonService.count(new SysAuth().setParentId(id));
+        Long cnt = commonService.count( SysAuth.builder().parentId(id).build() );
         if(cnt>0){
             return ApiResult.error("节点下有子节点,无法删除!");
         }

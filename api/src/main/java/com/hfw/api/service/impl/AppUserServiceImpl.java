@@ -43,9 +43,11 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public AppUser loginByPhone(String phone){
-        AppUser appUser = commonDao.selectOne(new AppUser().setPhone(phone));
+        AppUser appUser = commonDao.selectOne( AppUser.builder().phone(phone).build() );
         if(appUser==null){
-            appUser = new AppUser().setPhone(phone).setEnableState(EnableState.Enable);
+            appUser = new AppUser();
+            appUser.setPhone(phone);
+            appUser.setEnableState(EnableState.Enable);
             commonDao.insert(appUser);
         }
         return appUser;
@@ -78,7 +80,9 @@ public class AppUserServiceImpl implements AppUserService {
     @Transactional
     @Override
     public AppUser loginByExt(AppUserExt ext){
-        return this.loginByExt(new AppUser().setEnableState(EnableState.Enable), ext);
+        AppUser appUser = new AppUser();
+        appUser.setEnableState(EnableState.Enable);
+        return this.loginByExt(appUser,ext);
     }
 
 
@@ -107,11 +111,13 @@ public class AppUserServiceImpl implements AppUserService {
         if(!appService.validAndDelIfSuccess(SmsCodeEnum.valid_phone, loginUser.getPhone(), editPhone.getOldCode())){
             return ApiResult.error("原手机验证码错误!");
         }
-        Long cnt = commonDao.count(new AppUser().setPhone(editPhone.getPhone()));
+        Long cnt = commonDao.count( AppUser.builder().phone(editPhone.getPhone()).build() );
         if(cnt>0){
             throw new GeneralException("该手机号码已存在!");
         }
-        AppUser user = new AppUser().setId(loginUser.getId()).setPhone(editPhone.getPhone());
+        AppUser user = new AppUser();
+        user.setId(loginUser.getId());
+        user.setPhone(editPhone.getPhone());
         commonDao.updateByPk(user);
         loginUser.setPhone(editPhone.getPhone());
         redisAuthService.update(loginUser.getId(), loginUser);

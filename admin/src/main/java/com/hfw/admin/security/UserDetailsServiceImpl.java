@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SysUser sysUser = commonDao.selectOne(new SysUser().setAccount(username));
+        SysUser sysUser = commonDao.selectOne( SysUser.builder().account(username).build() );
         if(sysUser==null){
             throw new UsernameNotFoundException("用户名不存在");
         }

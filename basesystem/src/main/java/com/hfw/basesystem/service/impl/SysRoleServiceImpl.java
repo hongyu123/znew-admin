@@ -43,9 +43,13 @@ public class SysRoleServiceImpl implements SysRoleService {
     public SysRoleDTO detail(Long id){
         SysRole sysRole = commonDao.selectByPk(SysRole.class, id);
         SysRoleDTO dto = SysRoleDTO.of(sysRole);
-        List<SysRoleAuth> ruleAuthList = commonDao.select(new SysRoleAuth().setRoleId(dto.getId()));
+        List<SysRoleAuth> ruleAuthList = commonDao.select( SysRoleAuth.builder().roleId(dto.getId()).build() );
         if(!CollectionUtils.isEmpty(ruleAuthList)){
-            List<SysAuth> authList = ruleAuthList.stream().map(ruleAuth -> new SysAuth().setId(ruleAuth.getAuthId())).collect(Collectors.toList());
+            List<SysAuth> authList = ruleAuthList.stream().map(ruleAuth -> {
+                SysAuth sysAuth = new SysAuth();
+                sysAuth.setId(ruleAuth.getAuthId());
+                return sysAuth;
+            }).collect(Collectors.toList());
             dto.setAuthList(authList);
         }
         return dto;
@@ -57,8 +61,12 @@ public class SysRoleServiceImpl implements SysRoleService {
         SysRole sysRole = dto.saveFilter().toEntity();
         commonDao.insert(sysRole);
         if(!CollectionUtils.isEmpty(dto.getAuthList())){
-            List<SysRoleAuth> ruleAuthList = dto.getAuthList().stream()
-                    .map(auth -> new SysRoleAuth().setRoleId(sysRole.getId()).setAuthId(auth.getId())).collect(Collectors.toList());
+            List<SysRoleAuth> ruleAuthList = dto.getAuthList().stream().map(auth -> {
+                SysRoleAuth sysRoleAuth = new SysRoleAuth();
+                sysRoleAuth.setRoleId(sysRole.getId());
+                sysRoleAuth.setAuthId(auth.getId());
+                return sysRoleAuth;
+            }).collect(Collectors.toList());
             commonDao.insertBatch(ruleAuthList);
         }
     }
@@ -72,10 +80,14 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
         SysRole sysRole = dto.updateFilter().toEntity();
         commonDao.updateByPk(sysRole);
-        commonDao.delete(new SysRoleAuth().setRoleId(sysRole.getId()));
+        commonDao.delete( SysRoleAuth.builder().roleId(sysRole.getId()).build() );
         if(!CollectionUtils.isEmpty(dto.getAuthList())){
-            List<SysRoleAuth> ruleAuthList = dto.getAuthList().stream()
-                    .map(auth -> new SysRoleAuth().setRoleId(sysRole.getId()).setAuthId(auth.getId())).collect(Collectors.toList());
+            List<SysRoleAuth> ruleAuthList = dto.getAuthList().stream().map(auth -> {
+                SysRoleAuth sysRoleAuth = new SysRoleAuth();
+                sysRoleAuth.setRoleId(sysRole.getId());
+                sysRoleAuth.setAuthId(auth.getId());
+                return sysRoleAuth;
+            }).collect(Collectors.toList());
             commonDao.insertBatch(ruleAuthList);
         }
     }
@@ -87,7 +99,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         if(origin.getSystemFlag()==1){
             throw new GeneralException("系统内置角色,不允许删除!");
         }
-        commonDao.delete(new SysRoleAuth().setRoleId(id));
+        commonDao.delete( SysRoleAuth.builder().roleId(id).build() );
         commonDao.deleteByPk(SysRole.class, id);
     }
 
@@ -102,7 +114,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
     @Override
     public boolean exists(Long roleId, Long userId){
-        Long cnt = commonDao.count(new SysUserRole().setUserId(userId).setRoleId(roleId));
+        Long cnt = commonDao.count( SysUserRole.builder().userId(userId).roleId(roleId).build() );
         return cnt>0;
     }
     @Override
@@ -113,7 +125,10 @@ public class SysRoleServiceImpl implements SysRoleService {
         List<SysUserRole> list = new ArrayList<>();
         dto.getUserIds().forEach( userId->{
             if(!exists(dto.getRoleId(),userId)){
-                list.add(new SysUserRole().setUserId(userId).setRoleId(dto.getRoleId()));
+                SysUserRole userRole = new SysUserRole();
+                userRole.setUserId(userId);
+                userRole.setRoleId(dto.getRoleId());
+                list.add(userRole);
             }
         });
         return commonDao.insertBatch(list);
@@ -124,7 +139,7 @@ public class SysRoleServiceImpl implements SysRoleService {
             return 0;
         }
         int cnt = dto.getUserIds().stream().mapToInt(userId -> {
-            return commonDao.delete(new SysUserRole().setUserId(userId).setRoleId(dto.getRoleId()));
+            return commonDao.delete( SysUserRole.builder().userId(userId).roleId(dto.getRoleId()).build() );
         }).sum();
         return cnt;
     }

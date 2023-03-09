@@ -80,12 +80,15 @@ public class AuthServiceImpl implements AuthService {
         info.put("nickname","nickname");
         info.put("headimgurl","headimgurl");
         info.put("sex",1);
-        AppUser userInfo = new AppUser()
-                .setNickname(info.getString("nickname"))
-                .setAvatar(info.getString("headimgurl"))
-                .setGender(Gender.of(info.getInteger("sex")))
-                .setEnableState(EnableState.Enable);
-        AppUser appUser = appUserService.loginByExt(userInfo, new AppUserExt().setOpenid(openid));
+        AppUser userInfo = new AppUser();
+        userInfo.setNickname(info.getString("nickname"));
+        userInfo.setAvatar(info.getString("headimgurl"));
+        userInfo.setGender(Gender.of(info.getInteger("sex")));
+        userInfo.setEnableState(EnableState.Enable);
+
+        AppUserExt ext = new AppUserExt();
+        ext.setOpenid(openid);
+        AppUser appUser = appUserService.loginByExt(userInfo,ext);
         return this.login(appUser);
     }
 
@@ -95,7 +98,9 @@ public class AuthServiceImpl implements AuthService {
     public LoginUser loginByApple(AppleLoginParam loginParam) throws Exception {
         //String appleid = apple.verify(loginParam.getToken());
         String appleid = loginParam.getToken();
-        AppUser appUser = appUserService.loginByExt(new AppUserExt().setAppleid(appleid));
+        AppUserExt ext = new AppUserExt();
+        ext.setAppleid(appleid);
+        AppUser appUser = appUserService.loginByExt(ext);
         return this.login(appUser);
     }
 

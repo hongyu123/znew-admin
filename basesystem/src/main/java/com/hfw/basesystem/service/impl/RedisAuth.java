@@ -138,7 +138,7 @@ public class RedisAuth {
         //被挤下线
         if(!auth.getValidToken().contains(token)){
             if("sysuser:".equals(redis_user_key)){
-                SysLoginLog log = commonDao.selectOne(new SysLoginLog().setToken(token));
+                SysLoginLog log = commonDao.selectOne(SysLoginLog.builder().token(token).build());
                 if(log!=null){
                     throw new GeneralException("您的账号在"+log.getLocation()+"登录,被挤下线!");
                 }

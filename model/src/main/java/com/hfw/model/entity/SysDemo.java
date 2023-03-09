@@ -7,8 +7,7 @@ import com.hfw.basesystem.mybatis.FieldLogic;
 import com.hfw.basesystem.support.validation.ValidGroup;
 import com.hfw.common.entity.BaseEntity;
 import com.hfw.common.enums.Gender;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Table;
@@ -21,8 +20,8 @@ import java.util.List;
  * @author
  * @date 2023-01-05
  */
-@Data
-@Accessors(chain = true)
+@Getter @Setter @ToString
+@Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "sys_demo")
 public class SysDemo extends BaseEntity {
 

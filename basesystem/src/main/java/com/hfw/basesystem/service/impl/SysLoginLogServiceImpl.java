@@ -44,7 +44,11 @@ public class SysLoginLogServiceImpl implements SysLoginLogService {
             if(log.getOnlineFlag()==1 && !redisAuthService.exists(log.getToken())){
                 log.setOnlineFlag(0);
                 log.setLogoutType(LogoutType.expire);
-                commonDao.updateByPk(new SysLoginLog().setId(log.getId()).setOnlineFlag(log.getOnlineFlag()).setLogoutType(log.getLogoutType()));
+                SysLoginLog update = new SysLoginLog();
+                update.setId(log.getId());
+                update.setOnlineFlag(log.getOnlineFlag());
+                update.setLogoutType(log.getLogoutType());
+                commonDao.updateByPk(update);
             }
         }
         page.setList(list);
@@ -59,7 +63,7 @@ public class SysLoginLogServiceImpl implements SysLoginLogService {
         log.setToken(token);
         log.setAccount(account);
         log.setIp(ip);
-        log.setLocation(OpenIPApi.baidu("ip"));
+        log.setLocation(OpenIPApi.baidu(ip));
         log.setBrowser(browser.get("browser"));
         log.setOs(browser.get("system"));
         log.setMessage( StrUtil.limitLength(message,255) );

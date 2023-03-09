@@ -40,8 +40,9 @@ public class UserIntegralController {
     @GetMapping("/list")
     public ApiResult<List<UserIntegral>> list(Integer pageNumber, Integer pageSize){
         LoginUser loginUser = LoginUser.getLoginUser();
-        UserIntegral cond = (UserIntegral) new UserIntegral().setUserId(loginUser.getId()).setPageNumber(pageNumber).setPageSize(pageSize)
-                .setSortByField("id").setSortByWay(SortByWay.desc);
+        UserIntegral cond = UserIntegral.builder().userId(loginUser.getId()).build();
+        cond.setPageNumber(pageNumber).setPageSize(pageSize);
+        cond.setSortByField("id").setSortByWay(SortByWay.desc);
         List<UserIntegral> list = userIntegralService.list(cond);
         return ApiResult.list(list);
     }
@@ -92,8 +93,9 @@ public class UserIntegralController {
     @GetMapping("/balance/list")
     public ApiResult<List<UserBalance>> balanceList(Integer pageNumber, Integer pageSize){
         LoginUser loginUser = LoginUser.getLoginUser();
-        UserBalance cond = (UserBalance) new UserBalance().setUserId(loginUser.getId()).setPageNumber(pageNumber).setPageSize(pageSize)
-                .setSortByField("id").setSortByWay(SortByWay.desc);
+        UserBalance cond = UserBalance.builder().userId(loginUser.getId()).build();
+        cond.setPageNumber(pageNumber).setPageSize(pageSize);
+        cond.setSortByField("id").setSortByWay(SortByWay.desc);
         List<UserBalance> list = userBalanceService.list(cond);
         return ApiResult.list(list);
     }
