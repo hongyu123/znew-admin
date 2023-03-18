@@ -70,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable(); //关闭csrf防护
-        http.anonymous().disable(); //禁用匿名登录
+        //http.anonymous().disable(); //禁用匿名登录
         http.httpBasic().disable(); //禁用BasicAuthenticationFilter
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//禁用session
         http.formLogin().disable(); //禁用表单登录
@@ -80,7 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(tokenAuthenticationFilter, LogoutFilter.class); //自定义token校验过滤器
         http.logout().logoutUrl("/logout").logoutSuccessHandler(ajaxLogoutHandler);//自定义登出处理
 
-        http.authorizeRequests().antMatchers("/login").permitAll() //放行登录请求
+        http.authorizeRequests().antMatchers("/login","/captcha/**").permitAll() //放行请求
                 //基于URL的权限控制
                 //.antMatchers("/stu/**").hasAuthority("stu:all")
                 //.antMatchers("/test/stu").hasAuthority("stu:all")

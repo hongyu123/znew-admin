@@ -16,8 +16,7 @@ import com.hfw.basesystem.mybatis.FieldLogic;
 * @author ${author}
 * @date ${.now?string('yyyy-MM-dd')}
 */
-@Getter @Setter @ToString
-@Builder @NoArgsConstructor @AllArgsConstructor
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
 @Table(name = "${tableName}")
 public class ${className} extends BaseEntity {
 

@@ -1,6 +1,9 @@
 package com.hfw.common.entity;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.write.style.ContentFontStyle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hfw.common.enums.SortByWay;
 
 import java.io.Serializable;
@@ -14,9 +17,9 @@ public class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @JsonIgnore
+    @JsonIgnore @ExcelIgnore
     private int pageNumber = 1;
-    @JsonIgnore
+    @JsonIgnore @ExcelIgnore
     private int pageSize = 10;
     public BaseEntity setPageNumber(int pageNumber) {
         if(pageNumber>0){
@@ -47,11 +50,11 @@ public class BaseEntity implements Serializable {
     }
 
     /** 排序字段 */
-    @JsonIgnore
+    @JsonIgnore @ExcelIgnore
     private String sortByField;
 
     /** 排序方式 */
-    @JsonIgnore
+    @JsonIgnore @ExcelIgnore
     private SortByWay sortByWay;
 
     public String getSortByField() {
@@ -68,4 +71,18 @@ public class BaseEntity implements Serializable {
         this.sortByWay = sortByWay;
         return this;
     }
+
+    /** excel导入校验错误信息 **/
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    //@ContentStyle(fillPatternType = FillPatternTypeEnum.SOLID_FOREGROUND, fillForegroundColor = 10)
+    @ContentFontStyle(color=10)
+    private String error;
+    public String getError() {
+        return error;
+    }
+    public BaseEntity setError(String error) {
+        this.error = error;
+        return this;
+    }
+
 }

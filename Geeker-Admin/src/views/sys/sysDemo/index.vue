@@ -4,6 +4,8 @@
       <!-- 表格 header 按钮 -->
       <template #tableHeader="scope">
         <el-button type="primary" :icon="CirclePlus" @click="openEditForm('新增')" v-auth="['add']">新增</el-button>
+        <el-button type="primary" icon="Upload" plain @click="importFile" v-auth="['import']">导入</el-button>
+        <el-button type="primary" icon="Download" plain @click="exportFile" v-auth="['export']">导出</el-button>
         <el-button
           type="danger"
           :icon="Delete"
@@ -24,6 +26,7 @@
     </ProTable>
 
     <EditModelForm ref="editModelFormRef" />
+    <ImportExcel ref="importRef" />
   </div>
 </template>
 
@@ -31,12 +34,14 @@
 import { ref } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import ProTable from "@/components/ProTable/index.vue";
+import ImportExcel from "@/components/ImportExcel/index.vue";
 import EditModelForm from "@/views/sys/sysDemo/edit.vue";
 import { Delete, CirclePlus } from "@element-plus/icons-vue";
-import { page, add, edit, del, dels } from "@/api/sys/sysDemo";
+import { page, add, edit, del, dels, exp, imp } from "@/api/sys/sysDemo";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import { GenderEnum } from "@/api/modules/enum";
+import { useDownload } from "@/hooks/useDownload";
 
 //页面权限按钮
 const { BUTTONS } = useAuthButtons();
@@ -136,5 +141,22 @@ const delsModel = async (ids: string[]) => {
   await useHandleData(dels, ids, "删除所选");
   proTable.value.clearSelection();
   proTable.value.getTableList();
+};
+
+// 导出
+const exportFile = async () => {
+  useDownload(exp, "导出示例", proTable.value.searchParam);
+};
+// 导入
+const importRef = ref();
+const importFile = () => {
+  let params = {
+    title: "导入示例",
+    template: "SysDemo",
+    tempApi: exp,
+    importApi: imp,
+    getTableList: proTable.value.getTableList
+  };
+  importRef.value.acceptParams(params);
 };
 </script>

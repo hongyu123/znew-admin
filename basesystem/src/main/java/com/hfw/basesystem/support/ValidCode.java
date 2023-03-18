@@ -10,6 +10,7 @@ import com.hfw.common.enums.IEnum;
 public enum ValidCode implements IEnum {
     NO_LOGIN(100,"登录失效,请重新登录!")
     ,DISABLE_ACCOUNT(101,"被禁用的账号,请联系管理员!")
+    ,CAPTCHA_FAIL(102,"验证失败或失效!")
     ,permission_denied(403,"permission denied(权限不足!!)")
     ;
 

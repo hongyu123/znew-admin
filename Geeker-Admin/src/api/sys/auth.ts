@@ -5,7 +5,7 @@ import { ApiResult } from "@/api/interface/znew";
 
 //登录
 export const loginApi = (params: Login.ReqLoginForm) => {
-  return http.post<Login.ResLogin>("/login", params, { headers: { noLoading: true } });
+  return http.post<ApiResult<Login.ResLogin>>("/login", params, { headers: { noLoading: true } });
 };
 //登出
 export const logoutApi = () => {
@@ -20,4 +20,10 @@ export const getAuthMenuListApi = () => {
   return http.get<ApiResult<Menu.MenuOptions[]>>("/auth/menu", {}, { headers: { noLoading: true } });
   // 如果想让菜单变为本地数据，注释上一行代码，并引入本地 dynamicRouter.json 数据
   return DynamicRouter;
+};
+export const genCaptcha = () => {
+  return http.get<any>("/captcha/gen", {}, { headers: { noLoading: true } });
+};
+export const checkCaptcha = (id: string, params: any) => {
+  return http.post<ApiResult>(`/captcha/check?id=${id}`, params, { headers: { noLoading: true } });
 };

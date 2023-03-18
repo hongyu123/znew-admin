@@ -53,7 +53,35 @@ public class BeanUtil {
 		}
 		return t;
 	}
-	
+
+	/**
+	 * targe 非空属性拷贝
+	 * @param source
+	 * @param target
+	 */
+	public static <T> void copyNotNullProperties(T source, T target) {
+		Class<?> clazz = source.getClass();
+		if(clazz != target.getClass()){
+			return;
+		}
+		Field[] fields = clazz.getDeclaredFields();
+		if(fields==null || fields.length<=0) {
+			return ;
+		}
+		for(Field field : fields) {
+			try {
+				field.setAccessible(true);
+				Object sourceValue = field.get(source);
+				Object targetValue = field.get(target);
+				if(sourceValue!=null && targetValue==null){
+					field.set(target, sourceValue);
+				}
+			} catch (Exception e) {
+				//e.printStackTrace();
+			}
+		}
+	}
+
 	/**
 	 * 从一个List<bean> 转换到另一个List<bean>（相同属性赋值）
 	 * @param list 要转换的List<bean>

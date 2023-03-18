@@ -14,6 +14,10 @@
         </template>
       </el-input>
     </el-form-item>
+    <el-form-item prop="captcha">
+      <el-input type="hidden" v-model="loginForm.captcha" />
+      <Captcha v-model:id="loginForm.captcha"></Captcha>
+    </el-form-item>
   </el-form>
   <div class="login-btn">
     <el-button :icon="CircleClose" round @click="resetForm(loginFormRef)" size="large">重置</el-button>
@@ -27,7 +31,7 @@
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Login } from "@/api/interface";
-import { ElNotification } from "element-plus";
+import { ElMessage, ElNotification } from "element-plus";
 //import { loginApi } from "@/api/modules/login";
 import { loginApi } from "@/api/sys/auth";
 import { GlobalStore } from "@/stores";
@@ -38,6 +42,7 @@ import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
 import { CircleClose, UserFilled } from "@element-plus/icons-vue";
 import type { ElForm } from "element-plus";
 //import md5 from "js-md5";
+import Captcha from "./Captcha.vue";
 
 const router = useRouter();
 const tabsStore = TabsStore();
@@ -48,11 +53,12 @@ type FormInstance = InstanceType<typeof ElForm>;
 const loginFormRef = ref<FormInstance>();
 const loginRules = reactive({
   username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-  password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+  captcha: [{ required: true, message: "请验证", trigger: "change" }]
 });
 
 const loading = ref(false);
-const loginForm = reactive<Login.ReqLoginForm>({ username: "", password: "" });
+const loginForm = reactive<Login.ReqLoginForm>({ username: "", password: "", captcha: "" });
 const login = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.validate(async valid => {
@@ -62,8 +68,13 @@ const login = (formEl: FormInstance | undefined) => {
       // 1.执行登录接口
       //const res = await loginApi({ ...loginForm, password: md5(loginForm.password) });
       const res = await loginApi({ ...loginForm, password: loginForm.password });
-      globalStore.setToken(res.access_token);
-      globalStore.setUserInfo(res);
+      if (res.code == 103) {
+        loginForm.captcha = "";
+        ElMessage.error(res.message);
+        return;
+      }
+      globalStore.setToken(res.data.access_token);
+      globalStore.setUserInfo(res.data);
 
       // 2.添加动态路由
       await initDynamicRouter();
@@ -75,7 +86,7 @@ const login = (formEl: FormInstance | undefined) => {
       router.push(HOME_URL);
       ElNotification({
         title: getTimeState(),
-        message: `欢迎登录: ${res.nickname || res.account}`,
+        message: `欢迎登录: ${res.data.nickname || res.data.account}`,
         type: "success",
         duration: 3000
       });

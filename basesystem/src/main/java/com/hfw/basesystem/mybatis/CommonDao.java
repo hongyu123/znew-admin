@@ -23,10 +23,7 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 通用Dao
@@ -594,7 +591,7 @@ public class CommonDao{
             executor.close(false);
         }
     }
-    public int deleteBatch(Class clazz, List<Long> ids){
+    public int deleteBatch(Class clazz, Collection<Long> ids){
         if(ids==null || ids.size()<=0){
             return 0;
         }

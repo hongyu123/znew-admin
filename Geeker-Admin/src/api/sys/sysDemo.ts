@@ -4,6 +4,12 @@ import { ApiResult, PageResult } from "@/api/interface/znew";
 export const page = (params: {}) => {
   return http.get<PageResult>("/sysDemo/page", params);
 };
+export const exp = (params: {}) => {
+  return http.get<BlobPart>("/sysDemo/export", params, { responseType: "blob" });
+};
+export const imp = (params: FormData) => {
+  return http.post("/sysDemo/import", params);
+};
 export const detail = (id: number) => {
   return http.get<ApiResult>(`/sysDemo?id=${id}`);
 };

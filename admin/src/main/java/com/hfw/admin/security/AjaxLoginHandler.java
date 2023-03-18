@@ -56,7 +56,7 @@ public class AjaxLoginHandler implements AuthenticationSuccessHandler ,Authentic
         sysLoginLogService.pushedOff(pushedOffToken);
         ParamMap info = ParamMap.create().put("access_token", access_token).put("account", loginUser.getUsername()).put("nickname", loginUser.getNickname())
                 .put("avatar",loginUser.getAvatar());
-        RequestUtil.json(response, info);
+        RequestUtil.json(response, ApiResult.data(info) );
     }
 
     @Override

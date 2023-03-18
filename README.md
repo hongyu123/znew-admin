@@ -42,7 +42,7 @@ public class CommonDaoDemo {
     }
     //查询一条数据,推荐
     public SysDemo findByName(String name){
-        return commonDao.selectOne(new SysDemo().setName(name));
+        return commonDao.selectOne( SysDemo.builder().name(name).build() );
     }
     //查询一条数据2
     public SysDemo findByName2(String name){
@@ -50,7 +50,7 @@ public class CommonDaoDemo {
     }
     //列表查询,推荐
     public List<SysDemo> list(String name){
-        return commonDao.select(new SysDemo().setName(name));
+        return commonDao.select( SysDemo.builder().name(name).build() );
     }
     //列表查询2
     public List<SysDemo> list2(String name){
@@ -65,7 +65,9 @@ public class CommonDaoDemo {
      * @return
      */
     public List<SysDemo> listPage(String name, Integer pageNumber, Integer pageSize){
-        return commonDao.select((SysDemo)new SysDemo().setName(name).setSortByField("id").setSortByWay(SortByWay.desc), pageNumber,pageSize);
+        SysDemo cond = SysDemo.builder().name(name).build();
+        cond.setSortByField("id").setSortByWay(SortByWay.desc);
+        return commonDao.select(cond, pageNumber,pageSize);
     }
     //分页查询2
     public List<SysDemo> listPage2(String name, Integer pageNumber, Integer pageSize){
@@ -73,7 +75,7 @@ public class CommonDaoDemo {
     }
     //统计,推荐
     public Long count(String name){
-        return commonDao.count(new SysDemo().setName(name));
+        return commonDao.count( SysDemo.builder().name(name).build() );
     }
     //统计2
     public Long count2(String name){
@@ -81,7 +83,9 @@ public class CommonDaoDemo {
     }
     //带统计数量的分页,推荐
     public PageResult<SysDemo> page(String name, Integer pageNumber, Integer pageSize){
-        PageResult<SysDemo> pageResult = commonDao.page((SysDemo) new SysDemo().setName(name).setSortByField("id").setSortByWay(SortByWay.desc), pageNumber, pageSize);
+        SysDemo cond = SysDemo.builder().name(name).build();
+        cond.setSortByField("id").setSortByWay(SortByWay.desc);
+        PageResult<SysDemo> pageResult = commonDao.page(cond, pageNumber, pageSize);
         System.out.println(pageResult.getTotal());
         System.out.println(pageResult.getData());
         return pageResult;
@@ -122,7 +126,7 @@ public class CommonDaoDemo {
     public int update(){
         SysDemo update = new SysDemo();
         update.setName("所有男的都叫小明");
-        return commonDao.update(update, new SysDemo().setGender(Gender.Male));
+        return commonDao.update(update, SysDemo.builder().gender(Gender.Male).build() );
     }
     //主键删除
     public int deleteByPk(Long id){
@@ -135,7 +139,7 @@ public class CommonDaoDemo {
     //条件删除
     public int delete(){
         //删除所有男性
-        return commonDao.delete(new SysDemo().setGender(Gender.Male));
+        return commonDao.delete( SysDemo.builder().gender(Gender.Male).build() );
     }
 }
 ```
@@ -281,7 +285,24 @@ znew
 
 ![image-20230113202149469](https://oscimg.oschina.net/oscnet/up-790d7bccdbc7d3115c73907dd5bc0f08ab6.png)
 
-# 接口规范
+# 规范
+
+## 后端规范
+
+- 后端接口使用restful风格api, 不推荐使用 @PathVariable, 因为Authorization基于uri做权限控制, 如: /test/{id} 和 /test/test 不是特别好区分
+- 复杂请求参数强制使用 @RequestBody
+- 后端运行使用 entity 和 dto(继承entity) 直接接口参数, 但是必须实现 saveFilter 和 updateFilter 进行不接受的字段过滤
+- 属性拷贝推荐用 org.springframework.cglib.beans.BeanCopier
+- 分页使用 PageResult.startPage 或直接调用 PageHelper.startPage
+- excel导入导出: 使用easyexcel, 数据处理服务实现EasyExcelDataHander, 监听器使用ExtListener, 参考SysDemoController
+
+## 接口规范
+
+- 接收数据原则上不运行直接使用entity或entity的继承类
+- 接收数据必须做数据校验, 实现用 @Validated
+- 返回数据原则上用VO(视图对象)
+
+- 接口规范文档
 
 ```
 请求方法
@@ -412,7 +433,7 @@ Response Headers(响应头设置)
 
 2. 升级至Springboot3
 
-3. 后台管理列表通用导入,导出功能
+3. 后台管理列表通用导入,导出功能, 已完成
 
 4. 集成工作流
 

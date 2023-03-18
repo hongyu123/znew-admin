@@ -1,6 +1,7 @@
 package com.hfw.basesystem.util;
 
 import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.cglib.core.Converter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class BeanCopierUtil {
      * @param source 源对象
      * @param target 目标对象
      */
-    public static void copy(Object source, Object target) {
+    public static void copyProperties(Object source, Object target) {
         String key = source.getClass().getName()+"-"+target.getClass().getName();
         BeanCopier copier = beanCopierMap.get(key);
         if(copier==null){

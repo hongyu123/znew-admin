@@ -1,5 +1,7 @@
 package com.hfw.common.support;
 
+import java.util.UUID;
+
 /**
  * 雪花算法
  * 雪花算法可以保证：
@@ -110,4 +112,7 @@ public class IdWorker{
         return idWorker.nextId();
     }
 
+    public static String uuid(){
+        return UUID.randomUUID().toString().replaceAll("-","");
+    }
 }

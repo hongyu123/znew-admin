@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hfw.basesystem.mybatis.CommonDao;
 import com.hfw.basesystem.mybatis.SqlHelper;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -35,6 +36,7 @@ public class RedisConfig {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         //序列化时带有类型信息
         objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance,ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
+        objectMapper.registerModule(new JavaTimeModule());
         jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
 
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();

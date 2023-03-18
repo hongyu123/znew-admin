@@ -31,16 +31,19 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtil {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
-    //@Resource
-    //private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     /*************************string操作*****************************/
-    /*public void setStr(String key, String value){
+    public void setStr(String key, String value){
         stringRedisTemplate.opsForValue().set(key,value);
+    }
+    public void setStrEx(String key, String value, long expire){
+        stringRedisTemplate.opsForValue().set(key, value, expire, TimeUnit.SECONDS);
     }
     public String getStr(String key){
         return stringRedisTemplate.opsForValue().get(key);
-    }*/
+    }
 
     public <T> T get(String key) {
         return (T)redisTemplate.opsForValue().get(key);

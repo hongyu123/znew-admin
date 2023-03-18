@@ -25,6 +25,8 @@ public class ApiResult<T> {
     public static final String SUCCESS_MESSAGE = "操作成功";
     /** 错误消息 */
     public static final String ERROR_MESSAGE = "操作失败";
+    public static final Integer SUCCESS_CODE =  1;
+    public static final Integer ERROR_CODE =  0;
     public static final String includeFilter = "includeFilter";
 
     public ApiResult(){
@@ -34,15 +36,18 @@ public class ApiResult<T> {
         this.message = message;
         this.data = data;
     }
+    public boolean isSuccess(){
+        return this.code == SUCCESS_CODE;
+    }
 
     public static ApiResult success(){
-        return new ApiResult(1,SUCCESS_MESSAGE,"");
+        return new ApiResult(SUCCESS_CODE,SUCCESS_MESSAGE,"");
     }
     public static ApiResult success(String message){
-        return new ApiResult(1,message,"");
+        return new ApiResult(SUCCESS_CODE,message,"");
     }
     public static ApiResult error(String message){
-        return new ApiResult(0,message,"");
+        return new ApiResult(ERROR_CODE,message,"");
     }
     public static ApiResult message(int code, String message){
         return new ApiResult(code,message,"");
@@ -55,19 +60,25 @@ public class ApiResult<T> {
         if(data == null){
             data = new Object();
         }
-        return new ApiResult(1,null,data);
+        return new ApiResult(SUCCESS_CODE,"", data);
+    }
+    public static ApiResult data(int code, Object data){
+        if(data == null){
+            data = new Object();
+        }
+        return new ApiResult(code,"", data);
     }
     public static ApiResult str(String data){
         if(data == null){
             data = "";
         }
-        return new ApiResult(1,null,data);
+        return new ApiResult(SUCCESS_CODE,null,data);
     }
     public static ApiResult list(List list){
         if(list == null){
             list = new ArrayList<>();
         }
-        return new ApiResult(1,null,list);
+        return new ApiResult(SUCCESS_CODE,null,list);
     }
 
     private static String json(ApiResult apiResult,String filterName, String... fields) throws JsonProcessingException {
@@ -83,14 +94,14 @@ public class ApiResult<T> {
         if(list == null){
             list = new ArrayList<>();
         }
-        ApiResult apiResult = new ApiResult(1, null, list);
+        ApiResult apiResult = new ApiResult(SUCCESS_CODE, null, list);
         return json(apiResult,filterName,fields);
     }
     public static String jsonData(Object data,String filterName, String... fields) throws JsonProcessingException {
         if(data == null){
             data = new Object();
         }
-        ApiResult apiResult = new ApiResult(1, null, data);
+        ApiResult apiResult = new ApiResult(SUCCESS_CODE, null, data);
         return json(apiResult,filterName,fields);
     }
 }
