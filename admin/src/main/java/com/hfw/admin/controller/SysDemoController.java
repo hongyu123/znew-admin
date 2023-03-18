@@ -98,7 +98,7 @@ public class SysDemoController {
     public ApiResult<ImportResult> imp(@RequestPart MultipartFile file, @RequestParam(defaultValue = "auto") ImportEnum importType, @RequestParam(defaultValue = "insert") DataHandleEnum dataHandleType) throws IOException {
         try(ExcelReader excelReader = EasyExcel.read(file.getInputStream())/*.extraRead(CellExtraTypeEnum.MERGE)*/.build()){
             ExtListener<SysDemo> listener = new ExtListener<>(sysDemoService, importType, dataHandleType);
-            listener.setBacthCnt(5);
+            //listener.setBacthCnt(5);
             ReadSheet sheet =  EasyExcel.readSheet(0).headRowNumber(1).head(SysDemo.class).registerReadListener(listener).build();
             excelReader.read(sheet);
 

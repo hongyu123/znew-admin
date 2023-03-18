@@ -1,6 +1,8 @@
 package com.hfw.admin.security;
 
 import javax.annotation.Resource;
+
+import com.hfw.basesystem.config.RedisUtil;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
@@ -18,10 +20,12 @@ public class AjaxLoginConfig extends SecurityConfigurerAdapter<DefaultSecurityFi
 
     @Resource
     private AjaxLoginHandler ajaxLoginHandler;
+    @Resource
+    private RedisUtil redisUtil;
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        AjaxLoginFilter filter = new AjaxLoginFilter();
+        AjaxLoginFilter filter = new AjaxLoginFilter(redisUtil);
         filter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
         filter.setAuthenticationSuccessHandler(ajaxLoginHandler);
         filter.setAuthenticationFailureHandler(ajaxLoginHandler);

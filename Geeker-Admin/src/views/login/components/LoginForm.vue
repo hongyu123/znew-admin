@@ -68,7 +68,7 @@ const login = (formEl: FormInstance | undefined) => {
       // 1.执行登录接口
       //const res = await loginApi({ ...loginForm, password: md5(loginForm.password) });
       const res = await loginApi({ ...loginForm, password: loginForm.password });
-      if (res.code == 103) {
+      if (res.code == 102) {
         loginForm.captcha = "";
         ElMessage.error(res.message);
         return;

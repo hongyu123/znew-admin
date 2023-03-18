@@ -23,6 +23,12 @@ public class CaptchaController {
     @Autowired
     private ImageCaptchaApplication imageCaptchaApplication;
 
+    /**
+     * 生成验证码
+     * @param request
+     * @param type
+     * @return
+     */
     @GetMapping("/gen")
     @ResponseBody
     public CaptchaResponse<ImageCaptchaVO> genCaptcha(HttpServletRequest request, @RequestParam(value = "type", required = false)String type) {
@@ -35,6 +41,14 @@ public class CaptchaController {
 
     @Resource
     private RedisUtil redisUtil;
+
+    /**
+     * 校验验证码
+     * @param id
+     * @param imageCaptchaTrack
+     * @param request
+     * @return
+     */
     @PostMapping("/check")
     @ResponseBody
     public ApiResult checkCaptcha(@RequestParam("id") String id,
