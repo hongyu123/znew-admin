@@ -324,4 +324,21 @@ public class StrUtil {
         }
         return true;
     }
+
+    /**
+     * 处理html富文本中的src中的转义
+     * name=1&age=2 会被转义成 name=1&amp;age=2
+     * @param html
+     * @return
+     */
+    public static String handHtmlSrcEscape(String html){
+        Pattern pattern = Pattern.compile("src=\"(.+?)\"");
+        Matcher matcher = pattern.matcher(html);
+        StringBuilder sb = new StringBuilder();
+        while (matcher.find()){
+            matcher.appendReplacement(sb, matcher.group().replaceAll("&amp;","&"));
+        }
+        return sb.length()>0 ?sb.toString():html;
+    }
+
 }

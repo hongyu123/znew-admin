@@ -2,7 +2,11 @@ package com.hfw.admin.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.fill.FillConfig;
+import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import com.hfw.admin.dto.SysDemoDTO;
 import com.hfw.admin.easyexcel.*;
 import com.hfw.admin.log.AdminLog;
@@ -19,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -89,6 +94,24 @@ public class SysDemoController {
             RequestUtil.json(response, ApiResult.error(e.getMessage()));
         }finally {
             os.close();
+        }
+    }
+
+    //模板导出
+    @GetMapping("/exp_tmp")
+    public void exportTemplate(SysDemoDTO dto, HttpServletResponse response) throws IOException {
+        String fileName = URLEncoder.encode("exp_tmp.xlsx", "UTF-8");
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment;filename="+fileName);
+        List<SysDemo> list = sysDemoService.list(dto);
+        try(OutputStream os = response.getOutputStream();
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream("template/demo.xlsx");
+            ExcelWriter excelWriter = EasyExcel.write(os).withTemplate(is).build()
+        ){
+            WriteSheet writeSheet = EasyExcel.writerSheet().build();
+            FillConfig fillConfig = FillConfig.builder().build();
+            excelWriter.fill(new FillWrapper("list", list), fillConfig, writeSheet);
+            excelWriter.fill(dto, writeSheet);
         }
     }
 
