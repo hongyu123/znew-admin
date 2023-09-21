@@ -55,6 +55,8 @@ public class LocalDateUtil {
                     sb.append(ch);
                     dateIndex++;
                 }
+            }else if(c == 'T'){
+                sb.append("'T'");
             }else{
                 sb.append(c);
             }

@@ -1,5 +1,6 @@
-package com.hfw.common.support;
+package com.dx.model.support;
 
+import java.net.InetAddress;
 import java.util.UUID;
 
 /**
@@ -20,7 +21,7 @@ import java.util.UUID;
  * @author farkle
  * @date 2022-04-07
  */
-public class IdWorker{
+public class IdWorker {
     //10位工作机器id,由5位datacenterId和5位workerId组成
     private long workerId;//工作id
     private long datacenterId;//数据id
@@ -42,10 +43,6 @@ public class IdWorker{
         this.datacenterId = datacenterId;
         this.sequence = sequence;
     }
-    public IdWorker(){
-        this(1,1,0);
-    }
-
     private long twepoch = 1288834974657L;
 
     private long workerIdBits = 5L;
@@ -107,12 +104,46 @@ public class IdWorker{
         return System.currentTimeMillis();
     }
 
-    private static IdWorker idWorker = new IdWorker();
+    private static IdWorker IDWORKER = IdWorker.init();
+    public static IdWorker init(){
+        long workerId = 1L;
+        try {
+            String ip = InetAddress.getLocalHost().getHostAddress();
+            workerId =
+                    IdWorker.ip2Int(ip);
+        } catch (Exception e) {
+        }
+        return new IdWorker(workerId, System.currentTimeMillis(),0);
+    }
     public static long id(){
-        return idWorker.nextId();
+        return IDWORKER.nextId();
     }
 
     public static String uuid(){
         return UUID.randomUUID().toString().replaceAll("-","");
     }
+
+    /**
+     * 把字符串IP转换成long
+     * @param ip 字符串IP
+     * @return IP对应的long值
+     */
+    public static int ip2Int(String ip) {
+        String[] ipArr = ip.split("\\.");
+        return (Integer.parseInt(ipArr[0]) << 24) + (Integer.parseInt(ipArr[1]) << 16)
+                + (Integer.parseInt(ipArr[2]) << 8) + Integer.parseInt(ipArr[3]);
+    }
+
+    /**
+     * 把IP的long值转换成字符串
+     * @param ipValue IP的long值
+     * @return long值对应的字符串
+     */
+    public static String int2Ip(int ipValue) {
+        return (ipValue >>> 24) + "." +
+                ((ipValue >>> 16) & 0xFF) + "." +
+                ((ipValue >>> 8) & 0xFF) + "." +
+                (ipValue & 0xFF);
+    }
+
 }
