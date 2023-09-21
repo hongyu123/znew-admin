@@ -1,4 +1,4 @@
-package com.dx.model.support;
+package com.hfw.common.support;
 
 import java.net.InetAddress;
 import java.util.UUID;
