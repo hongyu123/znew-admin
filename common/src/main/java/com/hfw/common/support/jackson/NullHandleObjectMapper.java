@@ -68,6 +68,14 @@ public class NullHandleObjectMapper{
                 if(!StrUtil.hasText(text)){
                     return null;
                 }
+                /**
+                 * 时间戳转日期
+                try {
+                    Long timestamp  = Long.valueOf(text);
+                    return LocalDateUtil.toLocalDateTime(timestamp);
+                }catch (NumberFormatException e){
+                    return LocalDateUtil.parseDateTime(text);
+                } */
                 return LocalDateUtil.parseDateTime(text);
             }
         });

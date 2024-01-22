@@ -2,8 +2,10 @@ package com.hfw.common.util;
 
 import com.hfw.common.support.Entry;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayDeque;
 
@@ -14,6 +16,17 @@ import java.util.ArrayDeque;
  * @date 2022-11-10
  */
 public class LocalDateUtil {
+    /**
+     * 默认日期格式-24小时
+     */
+    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    /**
+     * 日期格式-12小时
+     */
+    public static final String DATE_TIME_FORMAT_12 = "yyyy-MM-dd hh:mm:ss a";
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String TIME_FORMAT = "HH:mm:ss";
+
     private static ArrayDeque<Character> queue = getPatternQueue();
 
     private static ArrayDeque<Character> getPatternQueue(){
@@ -76,6 +89,9 @@ public class LocalDateUtil {
         return LocalDate.parse(date, DateTimeFormatter.ofPattern(entry.key().toString()));
     }
     public static LocalDate parse(String date){
+        if(!StrUtil.hasText(date)){
+            return null;
+        }
         ArrayDeque<Character> queue = getPatternQueue();
         Entry<StringBuilder, Integer> entry = parsePattern(date,queue);
         if(entry.value()==8){
@@ -88,6 +104,9 @@ public class LocalDateUtil {
         return dateTime.toLocalDate();
     }
     public static LocalDateTime parseDateTime(String date){
+        if(!StrUtil.hasText(date)){
+            return null;
+        }
         ArrayDeque<Character> queue = getPatternQueue();
         Entry<StringBuilder, Integer> entry = parsePattern(date,queue);
         if(entry.value()==8){
@@ -122,11 +141,24 @@ public class LocalDateUtil {
         LocalDateTime localDateTime = date.atStartOfDay();
         return localDateTime.format(DateTimeFormatter.ofPattern(pattern));
     }
+    public static String toString(LocalDate date){
+        if(date==null){
+            return null;
+        }
+        return date.format( DateTimeFormatter.ofPattern(DATE_FORMAT) );
+    }
     public static String toString(LocalDateTime dateTime, String pattern){
         if(isDatePattern(pattern)){
             return dateTime.toLocalDate().format( DateTimeFormatter.ofPattern(pattern) );
         }
         return dateTime.format(DateTimeFormatter.ofPattern(pattern));
+    }
+    public static String toString(LocalDateTime dateTime){
+        return dateTime.format( DateTimeFormatter.ofPattern(DATE_TIME_FORMAT) );
+    }
+
+    public static LocalDateTime toLocalDateTime(Long milliseconds){
+        return Instant.ofEpochMilli(milliseconds).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     public static void main(String[] args) {

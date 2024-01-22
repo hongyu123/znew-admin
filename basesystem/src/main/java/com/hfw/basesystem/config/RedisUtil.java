@@ -643,7 +643,7 @@ public class RedisUtil {
      * @return
      */
     public Boolean bfExists(String key, String value) {
-        DefaultRedisScript<Long> script = new DefaultRedisScript();
+        DefaultRedisScript<Long> script = new DefaultRedisScript<>();
         script.setResultType(Long.class);
         script.setScriptSource(new StaticScriptSource("return redis.call('bf.exists', KEYS[1], KEYS[2])"));
         Long res = redisTemplate.execute(script, Arrays.asList(key, value));

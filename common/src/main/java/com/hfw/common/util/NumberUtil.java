@@ -1,5 +1,7 @@
 package com.hfw.common.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 /**
@@ -33,6 +35,11 @@ public class NumberUtil {
 	 */
 	public static String scale2(Number n) {
 		return new DecimalFormat("####.##").format(n);
+	}
+
+	//单位分转单位元
+	public static BigDecimal yuan(long fen){
+		return new BigDecimal(fen).divide(new BigDecimal("100"),2, RoundingMode.DOWN);
 	}
 
 }

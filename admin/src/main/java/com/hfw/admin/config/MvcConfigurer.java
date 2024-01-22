@@ -1,13 +1,13 @@
 package com.hfw.admin.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hfw.basesystem.support.LocalDateConverter;
 import com.hfw.basesystem.support.LocalDateTimeConverter;
-import com.hfw.basesystem.support.NullHandleMappingJackson2HttpMessageConverter;
+import com.hfw.common.support.jackson.NullHandleObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -29,9 +29,13 @@ public class MvcConfigurer implements WebMvcConfigurer {
 
     //jackson返回配置
     @Bean
+    public ObjectMapper objectMapper(){
+        return NullHandleObjectMapper.getInstance();
+    }
+    /*@Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(){
         return new NullHandleMappingJackson2HttpMessageConverter();
-    }
+    }*/
 
     @Override
     public void addFormatters(FormatterRegistry registry) {

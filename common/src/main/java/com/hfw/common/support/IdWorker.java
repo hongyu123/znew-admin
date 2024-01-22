@@ -1,6 +1,7 @@
 package com.hfw.common.support;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.UUID;
 
 /**
@@ -104,17 +105,35 @@ public class IdWorker {
         return System.currentTimeMillis();
     }
 
-    private static IdWorker IDWORKER = IdWorker.init();
-    public static IdWorker init(){
+    public IdWorker(){
         long workerId = 1L;
+        long datacenterId = 1L;
         try {
-            String ip = InetAddress.getLocalHost().getHostAddress();
-            workerId =
-                    IdWorker.ip2Int(ip);
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            String ip = inetAddress.getHostAddress();
+            workerId = IdWorker.ip2Long(ip) & this.maxWorkerId;
+
+            NetworkInterface network = NetworkInterface.getByInetAddress(inetAddress);
+            byte[] hardwareAddress = network.getHardwareAddress();
+            for (byte b : hardwareAddress){
+                datacenterId += b;
+            }
+            datacenterId =  datacenterId & this.maxDatacenterId;
         } catch (Exception e) {
         }
-        return new IdWorker(workerId, System.currentTimeMillis(),0);
+        if (workerId > maxWorkerId || workerId < 0) {
+            throw new IllegalArgumentException(String.format("worker Id can't be greater than %d or less than 0",maxWorkerId));
+        }
+        if (datacenterId > maxDatacenterId || datacenterId < 0) {
+            throw new IllegalArgumentException(String.format("datacenter Id can't be greater than %d or less than 0",maxDatacenterId));
+        }
+        this.workerId = workerId;
+        this.datacenterId = datacenterId;
+        //System.out.println(this.workerId);
+        //System.out.println(this.datacenterId);
+        this.sequence = 0;
     }
+    private static IdWorker IDWORKER = new IdWorker();
     public static long id(){
         return IDWORKER.nextId();
     }
@@ -128,10 +147,10 @@ public class IdWorker {
      * @param ip 字符串IP
      * @return IP对应的long值
      */
-    public static int ip2Int(String ip) {
+    public static long ip2Long(String ip) {
         String[] ipArr = ip.split("\\.");
-        return (Integer.parseInt(ipArr[0]) << 24) + (Integer.parseInt(ipArr[1]) << 16)
-                + (Integer.parseInt(ipArr[2]) << 8) + Integer.parseInt(ipArr[3]);
+        return (Long.parseLong(ipArr[0]) << 24) + (Long.parseLong(ipArr[1]) << 16)
+                + (Long.parseLong(ipArr[2]) << 8) + Long.parseLong(ipArr[3]);
     }
 
     /**

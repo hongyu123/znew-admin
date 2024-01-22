@@ -3,9 +3,9 @@ package com.hfw.common.support;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
@@ -13,44 +13,78 @@ import java.util.Base64;
  * @date 2022-11-09
  */
 public class AesUtil {
-    private static final String key = "ythCloudPlatform";
-    private static final String ALGORITHMSTR = "AES/ECB/PKCS5Padding";
+    private String algorithm = "AES";
+    //密钥
+    private String key = "";
+    //加密模式
+    private String transformation = "AES/ECB/PKCS5Padding";
 
-    public static String binary(byte[] bytes, int radix) {
-        return (new BigInteger(1, bytes)).toString(radix);
+    public String getAlgorithm() {
+        return algorithm;
     }
 
-    public static String base64Encode(byte[] bytes) {
-        return Base64.getEncoder().encodeToString(bytes);
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
     }
 
-    public static byte[] base64Decode(String base64Code) throws Exception {
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getTransformation() {
+        return transformation;
+    }
+
+    public void setTransformation(String transformation) {
+        this.transformation = transformation;
+    }
+
+    public String base64Encode(byte[] bytes) {
+        return new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
+    }
+
+    public byte[] base64Decode(String base64Code) {
         return StringUtils.isEmpty(base64Code) ? null : Base64.getDecoder().decode(base64Code);
     }
 
-    public static byte[] aesEncryptToBytes(String content, String encryptKey) throws Exception {
-        KeyGenerator kgen = KeyGenerator.getInstance("AES");
-        kgen.init(128);
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        cipher.init(1, new SecretKeySpec(encryptKey.getBytes(), "AES"));
-        return cipher.doFinal(content.getBytes("utf-8"));
+    public byte[] aesEncryptToBytes(String content, String encryptKey) throws Exception {
+        Cipher cipher = Cipher.getInstance(transformation);
+        SecretKeySpec key = new SecretKeySpec(encryptKey.getBytes(), algorithm);
+        //向量
+        IvParameterSpec iv = new IvParameterSpec(new byte[16]);
+        cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+        return cipher.doFinal(content.getBytes(StandardCharsets.UTF_8));
     }
 
-    public static String aesEncrypt(String content, String encryptKey) throws Exception {
-        return base64Encode(aesEncryptToBytes(content, encryptKey));
+    public String aesEncrypt(String content) throws Exception {
+        return base64Encode(aesEncryptToBytes(content, this.key));
     }
 
-    public static String aesDecryptByBytes(byte[] encryptBytes, String decryptKey) throws Exception {
-        KeyGenerator kgen = KeyGenerator.getInstance("AES");
-        kgen.init(128);
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        cipher.init(2, new SecretKeySpec(decryptKey.getBytes(), "AES"));
+    public String aesDecryptByBytes(byte[] encryptBytes, String decryptKey) throws Exception {
+        Cipher cipher = Cipher.getInstance(transformation);
+        SecretKeySpec key = new SecretKeySpec(decryptKey.getBytes(), algorithm);
+        //向量
+        IvParameterSpec iv = new IvParameterSpec(new byte[16]);
+        cipher.init(Cipher.DECRYPT_MODE, key, iv);
         byte[] decryptBytes = cipher.doFinal(encryptBytes);
-        return new String(decryptBytes);
+        return new String(decryptBytes, StandardCharsets.UTF_8);
     }
 
-    public static String aesDecrypt(String encryptStr, String decryptKey) throws Exception {
-        return StringUtils.isEmpty(encryptStr) ? null : aesDecryptByBytes(base64Decode(encryptStr), decryptKey);
+    public String aesDecrypt(String encryptStr) throws Exception {
+        return StringUtils.isEmpty(encryptStr) ? null : aesDecryptByBytes(base64Decode(encryptStr), this.key);
     }
 
+    public static void main(String[] args) throws Exception {
+        AesUtil aes = new AesUtil();
+        aes.setTransformation("AES/CBC/PKCS5Padding");
+        aes.setKey("1234567890123456");
+        String enc = aes.aesEncrypt("abcdefghigklmnopqrstuvwxyz0123456789");
+        String dec = aes.aesDecrypt(enc);
+        System.out.println(enc);
+        System.out.println(dec);
+    }
 }
