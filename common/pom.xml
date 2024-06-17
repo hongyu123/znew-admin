@@ -86,5 +86,12 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- AES/ECB/PKCS7Padding 加密提供 -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15to18</artifactId>
+            <version>1.76</version>
+        </dependency>
+
     </dependencies>
 </project>

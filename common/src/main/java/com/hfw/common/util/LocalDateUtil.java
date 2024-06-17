@@ -160,6 +160,9 @@ public class LocalDateUtil {
     public static LocalDateTime toLocalDateTime(Long milliseconds){
         return Instant.ofEpochMilli(milliseconds).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
+    public static long toEpochMilli(LocalDateTime localDateTime){
+        return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    }
 
     public static void main(String[] args) {
         System.out.println( parse("2022-11") );
