@@ -1,10 +1,8 @@
-const toString = Object.prototype.toString;
-
 /**
  * @description: 判断值是否未某个类型
  */
 export function is(val: unknown, type: string) {
-  return toString.call(val) === `[object ${type}]`;
+  return Object.prototype.toString.call(val) === `[object ${type}]`;
 }
 
 /**
@@ -21,9 +19,13 @@ export const isDef = <T = unknown>(val?: T): val is T => {
   return typeof val !== "undefined";
 };
 
+/**
+ * @description: 是否未定义
+ */
 export const isUnDef = <T = unknown>(val?: T): val is T => {
   return !isDef(val);
 };
+
 /**
  * @description: 是否为对象
  */
@@ -94,25 +96,30 @@ export const isWindow = (val: any): val is Window => {
   return typeof window !== "undefined" && is(val, "Window");
 };
 
+/**
+ * @description: 是否为 element 元素
+ */
 export const isElement = (val: unknown): val is Element => {
   return isObject(val) && !!val.tagName;
 };
 
-export const isServer = typeof window === "undefined";
-
-// 是否为图片节点
-export function isImageDom(o: Element) {
-  return o && ["IMAGE", "IMG"].includes(o.tagName);
-}
-
+/**
+ * @description: 是否为 null
+ */
 export function isNull(val: unknown): val is null {
   return val === null;
 }
 
-export function isNullAndUnDef(val: unknown): val is null | undefined {
-  return isUnDef(val) && isNull(val);
-}
-
+/**
+ * @description: 是否为 null || undefined
+ */
 export function isNullOrUnDef(val: unknown): val is null | undefined {
   return isUnDef(val) || isNull(val);
 }
+
+/**
+ * @description: 是否为 16 进制颜色
+ */
+export const isHexColor = (str: string) => {
+  return /^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(str);
+};

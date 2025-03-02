@@ -1,18 +1,15 @@
 <template>
   <div class="tool-bar-lf">
     <CollapseIcon id="collapseIcon" />
-    <Breadcrumb id="breadcrumb" v-if="themeConfig.breadcrumb" />
+    <Breadcrumb v-show="globalStore.breadcrumb" id="breadcrumb" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { GlobalStore } from "@/stores";
+import { useGlobalStore } from "@/stores/modules/global";
 import CollapseIcon from "./components/CollapseIcon.vue";
 import Breadcrumb from "./components/Breadcrumb.vue";
-
-const globalStore = GlobalStore();
-const themeConfig = computed(() => globalStore.themeConfig);
+const globalStore = useGlobalStore();
 </script>
 
 <style scoped lang="scss">
@@ -20,5 +17,7 @@ const themeConfig = computed(() => globalStore.themeConfig);
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
 }
 </style>

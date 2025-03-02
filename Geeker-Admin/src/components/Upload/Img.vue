@@ -1,8 +1,8 @@
 <template>
   <div class="upload-box">
     <el-upload
-      action="#"
       :id="uuid"
+      action="#"
       :class="['upload', self_disabled ? 'disabled' : '', drag ? 'no-border' : '']"
       :multiple="false"
       :disabled="self_disabled"
@@ -17,7 +17,7 @@
       <template v-if="imageUrl">
         <img :src="imageUrl" class="upload-image" />
         <div class="upload-handle" @click.stop>
-          <div class="handle-icon" @click="editImg" v-if="!self_disabled">
+          <div v-if="!self_disabled" class="handle-icon" @click="editImg">
             <el-icon><Edit /></el-icon>
             <span>编辑</span>
           </div>
@@ -25,7 +25,7 @@
             <el-icon><ZoomIn /></el-icon>
             <span>查看</span>
           </div>
-          <div class="handle-icon" @click="deleteImg" v-if="!self_disabled">
+          <div v-if="!self_disabled" class="handle-icon" @click="deleteImg">
             <el-icon><Delete /></el-icon>
             <span>删除</span>
           </div>
@@ -35,7 +35,7 @@
         <div class="upload-empty">
           <slot name="empty">
             <el-icon><Plus /></el-icon>
-            <span>请上传图片</span>
+            <!-- <span>请上传图片</span> -->
           </slot>
         </div>
       </template>
@@ -43,28 +43,16 @@
     <div class="el-upload__tip">
       <slot name="tip"></slot>
     </div>
-    <el-image-viewer v-if="imgViewVisible" @close="imgViewVisible = false" :url-list="[imageUrl]" />
+    <el-image-viewer v-if="imgViewVisible" :url-list="[imageUrl]" @close="imgViewVisible = false" />
   </div>
 </template>
 
 <script setup lang="ts" name="UploadImg">
 import { ref, computed, inject } from "vue";
-import { upload } from "@/api/modules/common";
-import { generateUUID } from "@/utils/util";
+import { generateUUID } from "@/utils";
+import { uploadImg } from "@/api/modules/upload";
 import { ElNotification, formContextKey, formItemContextKey } from "element-plus";
 import type { UploadProps, UploadRequestOptions } from "element-plus";
-
-type FileTypes =
-  | "image/apng"
-  | "image/bmp"
-  | "image/gif"
-  | "image/jpeg"
-  | "image/pjpeg"
-  | "image/png"
-  | "image/svg+xml"
-  | "image/tiff"
-  | "image/webp"
-  | "image/x-icon";
 
 interface UploadFileProps {
   imageUrl: string; // 图片地址 ==> 必传
@@ -72,7 +60,7 @@ interface UploadFileProps {
   drag?: boolean; // 是否支持拖拽上传 ==> 非必传（默认为 true）
   disabled?: boolean; // 是否禁用上传组件 ==> 非必传（默认为 false）
   fileSize?: number; // 图片大小限制 ==> 非必传（默认为 5M）
-  fileType?: FileTypes[]; // 图片类型限制 ==> 非必传（默认为 ["image/jpeg", "image/png", "image/gif"]）
+  fileType?: File.ImageMimeType[]; // 图片类型限制 ==> 非必传（默认为 ["image/jpeg", "image/png", "image/gif"]）
   height?: string; // 组件高度 ==> 非必传（默认为 150px）
   width?: string; // 组件宽度 ==> 非必传（默认为 150px）
   borderRadius?: string; // 组件边框圆角 ==> 非必传（默认为 8px）
@@ -83,7 +71,7 @@ const props = withDefaults(defineProps<UploadFileProps>(), {
   imageUrl: "",
   drag: true,
   disabled: false,
-  fileSize: 10,
+  fileSize: 5,
   fileType: () => ["image/jpeg", "image/png", "image/gif"],
   height: "150px",
   width: "150px",
@@ -106,23 +94,20 @@ const self_disabled = computed(() => {
 
 /**
  * @description 图片上传
- * @param options 上传的文件
+ * @param options upload 所有配置项
  * */
-interface UploadEmits {
-  (e: "update:imageUrl", value: string): void;
-  (e: "check-validate"): void;
-}
-const emit = defineEmits<UploadEmits>();
+const emit = defineEmits<{
+  "update:imageUrl": [value: string];
+}>();
 const handleHttpUpload = async (options: UploadRequestOptions) => {
   let formData = new FormData();
   formData.append("file", options.file);
   try {
-    const api = props.api ?? upload;
+    const api = props.api ?? uploadImg;
     const { data } = await api(formData);
-    emit("update:imageUrl", data.url);
+    emit("update:imageUrl", data.fileUrl);
     // 调用 el-form 内部的校验方法（可自动校验）
     formItemContext?.prop && formContext?.validateField([formItemContext.prop as string]);
-    emit("check-validate");
   } catch (error) {
     options.onError(error as any);
   }
@@ -145,27 +130,31 @@ const editImg = () => {
 
 /**
  * @description 文件上传之前判断
- * @param rawFile 上传的文件
+ * @param rawFile 选择的文件
  * */
 const beforeUpload: UploadProps["beforeUpload"] = rawFile => {
   const imgSize = rawFile.size / 1024 / 1024 < props.fileSize;
-  const imgType = props.fileType;
-  if (!imgType.includes(rawFile.type as FileTypes))
+  const imgType = props.fileType.includes(rawFile.type as File.ImageMimeType);
+  if (!imgType)
     ElNotification({
       title: "温馨提示",
       message: "上传图片不符合所需的格式！",
       type: "warning"
     });
   if (!imgSize)
-    ElNotification({
-      title: "温馨提示",
-      message: `上传图片大小不能超过 ${props.fileSize}M！`,
-      type: "warning"
-    });
-  return imgType.includes(rawFile.type as FileTypes) && imgSize;
+    setTimeout(() => {
+      ElNotification({
+        title: "温馨提示",
+        message: `上传图片大小不能超过 ${props.fileSize}M！`,
+        type: "warning"
+      });
+    }, 0);
+  return imgType && imgSize;
 };
 
-// 图片上传成功提示
+/**
+ * @description 图片上传成功
+ * */
 const uploadSuccess = () => {
   ElNotification({
     title: "温馨提示",
@@ -174,7 +163,9 @@ const uploadSuccess = () => {
   });
 };
 
-// 图片上传错误提示
+/**
+ * @description 图片上传错误
+ * */
 const uploadError = () => {
   ElNotification({
     title: "温馨提示",
@@ -183,6 +174,7 @@ const uploadError = () => {
   });
 };
 </script>
+
 <style scoped lang="scss">
 .is-error {
   .upload {
@@ -215,6 +207,9 @@ const uploadError = () => {
   :deep(.upload) {
     .el-upload {
       position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: v-bind(width);
       height: v-bind(height);
       overflow: hidden;

@@ -1,20 +1,24 @@
 <template>
   <!-- 分页组件 -->
   <el-pagination
-    :current-page="pageable.pageNumber"
-    :page-size="pageable.pageSize"
-    :page-sizes="[10, 50, 100, 500]"
     :background="true"
-    layout="total, sizes, prev, pager, next, jumper"
+    :current-page="pageable.pageNum"
+    :page-size="pageable.pageSize"
+    :page-sizes="[10, 25, 50, 100]"
     :total="pageable.total"
+    :size="globalStore?.assemblySize ?? 'default'"
+    layout="total, sizes, prev, pager, next, jumper"
     @size-change="handleSizeChange"
     @current-change="handleCurrentChange"
   ></el-pagination>
 </template>
 
-<script setup lang="ts" name="pagination">
+<script setup lang="ts" name="Pagination">
+import { useGlobalStore } from "@/stores/modules/global";
+const globalStore = useGlobalStore();
+
 interface Pageable {
-  pageNumber: number;
+  pageNum: number;
   pageSize: number;
   total: number;
 }

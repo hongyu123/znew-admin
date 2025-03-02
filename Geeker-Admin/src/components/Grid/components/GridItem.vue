@@ -1,5 +1,5 @@
 <template>
-  <div :style="style" v-show="isShow">
+  <div v-show="isShow" :style="style">
     <slot></slot>
   </div>
 </template>
@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
   xl: undefined
 });
 
-const attrs = useAttrs() as any;
+const attrs = useAttrs() as { index: string };
 const isShow = ref(true);
 
 // 注入断点
@@ -39,14 +39,14 @@ watch(
   () => [shouldHiddenIndex.value, breakPoint.value],
   n => {
     if (!!attrs.index) {
-      isShow.value = !(n[0] !== -1 && parseInt(attrs.index) >= n[0]);
+      isShow.value = !(n[0] !== -1 && parseInt(attrs.index) >= Number(n[0]));
     }
   },
   { immediate: true }
 );
 
 const gap = inject("gap", 0);
-const cols = inject<Ref<number>>("cols", ref(4));
+const cols = inject("cols", ref(4));
 const style = computed(() => {
   let span = props[breakPoint.value]?.span ?? props.span;
   let offset = props[breakPoint.value]?.offset ?? props.offset;

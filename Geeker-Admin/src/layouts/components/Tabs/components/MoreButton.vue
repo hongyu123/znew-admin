@@ -1,9 +1,8 @@
 <template>
-  <el-dropdown trigger="click">
-    <el-button size="small" type="primary">
-      <span>{{ $t("tabs.more") }}</span>
-      <el-icon class="el-icon--right"><arrow-down /></el-icon>
-    </el-button>
+  <el-dropdown trigger="click" :teleported="false">
+    <div class="more-button">
+      <i :class="'iconfont icon-xiala'"></i>
+    </div>
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item @click="refresh">
@@ -15,7 +14,13 @@
         <el-dropdown-item divided @click="closeCurrentTab">
           <el-icon><Remove /></el-icon>{{ $t("tabs.closeCurrent") }}
         </el-dropdown-item>
-        <el-dropdown-item @click="closeOtherTab">
+        <el-dropdown-item @click="tabStore.closeTabsOnSide(route.fullPath, 'left')">
+          <el-icon><DArrowLeft /></el-icon>{{ $t("tabs.closeLeft") }}
+        </el-dropdown-item>
+        <el-dropdown-item @click="tabStore.closeTabsOnSide(route.fullPath, 'right')">
+          <el-icon><DArrowRight /></el-icon>{{ $t("tabs.closeRight") }}
+        </el-dropdown-item>
+        <el-dropdown-item divided @click="tabStore.closeMultipleTab(route.fullPath)">
           <el-icon><CircleClose /></el-icon>{{ $t("tabs.closeOther") }}
         </el-dropdown-item>
         <el-dropdown-item @click="closeAllTab">
@@ -27,40 +32,41 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject } from "vue";
-import { ElMessage } from "element-plus";
-import { HOME_URL } from "@/config/config";
-import { GlobalStore } from "@/stores";
-import { TabsStore } from "@/stores/modules/tabs";
+import { inject, nextTick } from "vue";
+import { HOME_URL } from "@/config";
+import { useTabsStore } from "@/stores/modules/tabs";
+import { useGlobalStore } from "@/stores/modules/global";
+import { useKeepAliveStore } from "@/stores/modules/keepAlive";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
-const tabStore = TabsStore();
-const globalStore = GlobalStore();
-const themeConfig = computed(() => globalStore.themeConfig);
-const reload: Function = inject("refresh") as Function;
+const tabStore = useTabsStore();
+const globalStore = useGlobalStore();
+const keepAliveStore = useKeepAliveStore();
 
 // refresh current page
+const refreshCurrentPage: Function = inject("refresh") as Function;
 const refresh = () => {
-  ElMessage({ type: "success", message: "刷新当前页面 🚀" });
-  reload();
+  setTimeout(() => {
+    route.meta.isKeepAlive && keepAliveStore.removeKeepAliveName(route.fullPath as string);
+    refreshCurrentPage(false);
+    nextTick(() => {
+      route.meta.isKeepAlive && keepAliveStore.addKeepAliveName(route.fullPath as string);
+      refreshCurrentPage(true);
+    });
+  }, 0);
 };
 
 // maximize current page
 const maximize = () => {
-  globalStore.setThemeConfig({ ...themeConfig.value, maximize: true });
+  globalStore.setGlobalState("maximize", true);
 };
 
 // Close Current
 const closeCurrentTab = () => {
   if (route.meta.isAffix) return;
   tabStore.removeTabs(route.fullPath);
-};
-
-// Close Other
-const closeOtherTab = () => {
-  tabStore.closeMultipleTab(route.fullPath);
 };
 
 // Close All

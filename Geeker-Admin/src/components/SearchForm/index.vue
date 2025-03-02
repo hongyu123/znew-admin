@@ -1,16 +1,25 @@
 <template>
-  <div class="card table-search" v-if="columns.length">
-    <el-form ref="formRef" :model="searchParam" label-width="auto">
+  <div v-if="columns.length" class="card table-search">
+    <el-form ref="formRef" :model="searchParam">
       <Grid ref="gridRef" :collapsed="collapsed" :gap="[20, 0]" :cols="searchCol">
         <GridItem v-for="(item, index) in columns" :key="item.prop" v-bind="getResponsive(item)" :index="index">
-          <el-form-item :label="`${item.label} :`">
-            <SearchFormItem :column="item" :searchParam="searchParam" />
+          <el-form-item>
+            <template #label>
+              <el-space :size="4">
+                <span>{{ `${item.search?.label ?? item.label}` }}</span>
+                <el-tooltip v-if="item.search?.tooltip" effect="dark" :content="item.search?.tooltip" placement="top">
+                  <i :class="'iconfont icon-yiwen'"></i>
+                </el-tooltip>
+              </el-space>
+              <span>&nbsp;:</span>
+            </template>
+            <SearchFormItem :column="item" :search-param="searchParam" />
           </el-form-item>
         </GridItem>
         <GridItem suffix>
           <div class="operation">
-            <el-button type="primary" :icon="Search" @click="search">搜索</el-button>
-            <el-button :icon="Refresh" @click="reset">重置</el-button>
+            <el-button type="primary" :icon="Search" @click="search"> 搜索 </el-button>
+            <el-button :icon="Delete" @click="reset"> 重置 </el-button>
             <el-button v-if="showCollapse" type="primary" link class="search-isOpen" @click="collapsed = !collapsed">
               {{ collapsed ? "展开" : "合并" }}
               <el-icon class="el-icon--right">
@@ -27,7 +36,7 @@
 import { computed, ref } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { BreakPoint } from "@/components/Grid/interface";
-import { Refresh, Search, ArrowDown, ArrowUp } from "@element-plus/icons-vue";
+import { Delete, Search, ArrowDown, ArrowUp } from "@element-plus/icons-vue";
 import SearchFormItem from "./components/SearchFormItem.vue";
 import Grid from "@/components/Grid/index.vue";
 import GridItem from "@/components/Grid/components/GridItem.vue";
@@ -76,7 +85,7 @@ const showCollapse = computed(() => {
     if (typeof props.searchCol !== "number") {
       if (prev >= props.searchCol[breakPoint.value]) show = true;
     } else {
-      if (prev > props.searchCol) show = true;
+      if (prev >= props.searchCol) show = true;
     }
     return prev;
   }, 0);

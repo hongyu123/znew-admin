@@ -1,10 +1,10 @@
 export namespace Table {
   export interface Pageable {
-    pageNumber: number;
+    pageNum: number;
     pageSize: number;
     total: number;
   }
-  export interface TableStateProps {
+  export interface StateProps {
     tableData: any[];
     pageable: Pageable;
     searchParam: {
@@ -24,4 +24,9 @@ export namespace Table {
 
 export namespace HandleData {
   export type MessageType = "" | "success" | "warning" | "info" | "error";
+}
+
+export namespace Theme {
+  export type ThemeType = "light" | "inverted" | "dark";
+  export type GreyOrWeakType = "grey" | "weak";
 }

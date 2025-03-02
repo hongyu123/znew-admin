@@ -1,54 +1,39 @@
 <template>
   <div class="maximize" @click="exitMaximize">
-    <el-icon><Close /></el-icon>
+    <i :class="'iconfont icon-tuichu'"></i>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from "vue";
-import { GlobalStore } from "@/stores";
+import { useGlobalStore } from "@/stores/modules/global";
 
-const globalStore = GlobalStore();
-const themeConfig = computed(() => globalStore.themeConfig);
+const globalStore = useGlobalStore();
 const exitMaximize = () => {
-  globalStore.setThemeConfig({ ...themeConfig.value, maximize: false });
+  globalStore.setGlobalState("maximize", false);
 };
-
-// 监听当前页是否全屏，动态添加 class
-watch(
-  () => themeConfig.value.maximize,
-  () => {
-    const app = document.getElementById("app") as HTMLElement;
-    if (themeConfig.value.maximize) app.classList.add("main-maximize");
-    else app.classList.remove("main-maximize");
-  },
-  { immediate: true }
-);
 </script>
 
 <style scoped lang="scss">
 .maximize {
   position: fixed;
   top: -25px;
-  left: 50%;
+  right: -25px;
   z-index: 999;
-  width: 45px;
-  height: 45px;
+  width: 55px;
+  height: 55px;
   cursor: pointer;
-  background-color: var(--el-color-info-light-3);
+  background-color: var(--el-color-info);
   border-radius: 50%;
-  opacity: 0.7;
-  transform: translateX(-50%);
+  opacity: 0.9;
   &:hover {
-    background-color: var(--el-color-info);
+    background-color: var(--el-color-info-dark-2);
   }
-  .el-icon {
+  .iconfont {
     position: relative;
-    top: 70%;
-    left: 50%;
-    font-size: 16px;
+    top: 46%;
+    left: 19%;
+    font-size: 14px;
     color: #ffffff;
-    transform: translate(-50%, -50%);
   }
 }
 </style>

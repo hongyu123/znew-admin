@@ -1,14 +1,14 @@
 <template>
   <div class="login-container flx-center">
-    <SwitchDark class="dark" />
     <div class="login-box">
+      <SwitchDark class="dark" />
       <div class="login-left">
-        <img src="@/assets/images/login_left0.png" alt="login" />
+        <img class="login-left-img" src="@/assets/images/login_left.png" alt="login" />
       </div>
       <div class="login-form">
         <div class="login-logo">
           <img class="login-icon" src="@/assets/images/logo.svg" alt="" />
-          <h2 class="logo-text">ZNEW</h2>
+          <h2 class="logo-text">Geeker-Admin</h2>
         </div>
         <LoginForm />
       </div>
@@ -17,8 +17,8 @@
 </template>
 
 <script setup lang="ts" name="login">
-import SwitchDark from "@/components/SwitchDark/index.vue";
 import LoginForm from "./components/LoginForm.vue";
+import SwitchDark from "@/components/SwitchDark/index.vue";
 </script>
 
 <style scoped lang="scss">

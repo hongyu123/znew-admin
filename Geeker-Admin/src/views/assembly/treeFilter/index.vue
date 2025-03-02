@@ -3,16 +3,16 @@
     <TreeFilter
       label="name"
       title="部门列表(单选)"
-      :requestApi="getUserDepartment"
-      :defaultValue="treeFilterValues.departmentId"
+      :request-api="getUserDepartment"
+      :default-value="treeFilterValue.departmentId"
       @change="changeTreeFilter"
     />
     <TreeFilter
       title="部门列表(多选)"
       multiple
       label="name"
-      :requestApi="getUserDepartment"
-      :defaultValue="treeFilterValues1.departmentId"
+      :request-api="getUserDepartment"
+      :default-value="treeFilterValue1.departmentId"
       @change="changeTreeFilter1"
     />
     <div class="descriptions-box card">
@@ -36,16 +36,16 @@ import { ElMessage } from "element-plus";
 import { getUserDepartment } from "@/api/modules/user";
 import TreeFilter from "@/components/TreeFilter/index.vue";
 
-const treeFilterValues = reactive({ departmentId: "1" });
+const treeFilterValue = reactive({ departmentId: "1" });
 const changeTreeFilter = (val: string) => {
   ElMessage.success(`你选择了 id 为 ${val} 的数据🤔`);
-  treeFilterValues.departmentId = val;
+  treeFilterValue.departmentId = val;
 };
 
-const treeFilterValues1 = reactive({ departmentId: ["11"] });
+const treeFilterValue1 = reactive({ departmentId: ["11"] });
 const changeTreeFilter1 = (val: string[]) => {
   ElMessage.success(`你选择了 id 为 ${JSON.stringify(val)} 的数据🤔`);
-  treeFilterValues1.departmentId = val;
+  treeFilterValue1.departmentId = val;
 };
 </script>
 

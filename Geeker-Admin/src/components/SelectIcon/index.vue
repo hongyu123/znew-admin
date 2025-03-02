@@ -2,11 +2,12 @@
   <div class="icon-box">
     <el-input
       ref="inputRef"
-      v-model="iconValue"
+      v-model="valueIcon"
       v-bind="$attrs"
       :placeholder="placeholder"
       :clearable="clearable"
-      @focus="openDialog"
+      @clear="clearIcon"
+      @click="openDialog"
     >
       <template #append>
         <el-button :icon="customIcons[iconValue]" />
@@ -22,7 +23,7 @@
           </div>
         </div>
       </el-scrollbar>
-      <el-empty description="未搜索到您要找的图标~" v-else />
+      <el-empty v-else description="未搜索到您要找的图标~" />
     </el-dialog>
   </div>
 </template>
@@ -38,31 +39,42 @@ interface SelectIconProps {
   placeholder?: string;
 }
 
-withDefaults(defineProps<SelectIconProps>(), {
+const props = withDefaults(defineProps<SelectIconProps>(), {
+  iconValue: "",
   title: "请选择图标",
   clearable: true,
   placeholder: "请选择图标"
 });
 
-const customIcons: { [key: string]: any } = Icons;
+// 重新接收一下，防止打包后 clearable 报错
+const valueIcon = ref(props.iconValue);
 
-// 打开 dialog
+// open Dialog
 const dialogVisible = ref(false);
-const openDialog = (e: any) => {
-  e.srcElement.blur();
-  dialogVisible.value = true;
-};
-
-const emit = defineEmits(["update:iconValue"]);
+const openDialog = () => (dialogVisible.value = true);
 
 // 选择图标(触发更新父组件数据)
+const emit = defineEmits<{
+  "update:iconValue": [value: string];
+}>();
 const selectIcon = (item: any) => {
   dialogVisible.value = false;
+  valueIcon.value = item.name;
   emit("update:iconValue", item.name);
+  setTimeout(() => inputRef.value.blur(), 0);
+};
+
+// 清空图标
+const inputRef = ref();
+const clearIcon = () => {
+  valueIcon.value = "";
+  emit("update:iconValue", "");
+  setTimeout(() => inputRef.value.blur(), 0);
 };
 
 // 监听搜索框值
 const inputValue = ref("");
+const customIcons: { [key: string]: any } = Icons;
 const iconsList = computed((): { [key: string]: any } => {
   if (!inputValue.value) return Icons;
   let result: { [key: string]: any } = {};

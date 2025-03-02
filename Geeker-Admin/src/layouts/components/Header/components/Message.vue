@@ -1,9 +1,6 @@
 <template>
-  <div class="message" v-show="otherStore.unreadCnt > -1">
-    <el-badge :value="otherStore.unreadCnt" class="item">
-      <i :class="'iconfont icon-xiaoxi'" class="toolBar-icon" @click="toAdvice"></i>
-    </el-badge>
-    <!-- <el-popover placement="bottom" :width="310" trigger="click">
+  <div class="message">
+    <el-popover placement="bottom" :width="310" trigger="click">
       <template #reference>
         <el-badge :value="5" class="item">
           <i :class="'iconfont icon-xiaoxi'" class="toolBar-icon"></i>
@@ -55,32 +52,20 @@
             <div>暂无消息</div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="代办(0)" name="third">
+        <el-tab-pane label="待办(0)" name="third">
           <div class="message-empty">
             <img src="@/assets/images/notData.png" alt="notData" />
-            <div>暂无代办</div>
+            <div>暂无待办</div>
           </div>
         </el-tab-pane>
       </el-tabs>
-    </el-popover> -->
+    </el-popover>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { OtherStore } from "@/stores/modules/other";
-//const activeName = ref("first");
-
-const otherStore = OtherStore();
-onMounted(() => {
-  otherStore.loadUnreadCnt();
-});
-
-const router = useRouter();
-const toAdvice = () => {
-  router.push(`/app/appAdvice?readFlag=0`);
-};
+import { ref } from "vue";
+const activeName = ref("first");
 </script>
 
 <style scoped lang="scss">

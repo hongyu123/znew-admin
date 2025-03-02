@@ -1,6 +1,6 @@
 <template>
   <div class="card content-box">
-    <el-button class="add" type="primary" @click="addDomain" plain>Add Input</el-button>
+    <el-button class="add" type="primary" plain @click="addDomain"> Add Input </el-button>
     <el-form ref="formRef" :model="dynamicValidateForm" label-width="100px" class="demo-dynamic">
       <el-form-item
         prop="email"
@@ -38,8 +38,8 @@
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm(formRef)">Submit</el-button>
-        <el-button @click="resetForm(formRef)">Reset</el-button>
+        <el-button type="primary" @click="submitForm(formRef)"> Submit </el-button>
+        <el-button @click="resetForm(formRef)"> Reset </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -82,14 +82,13 @@ const addDomain = () => {
   });
 };
 
-const submitForm = (formEl: FormInstance | undefined) => {
+const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  formEl.validate(valid => {
+  await formEl.validate((valid, fields) => {
     if (valid) {
       console.log("submit!");
     } else {
-      console.log("error submit!");
-      return false;
+      console.log("error submit!", fields);
     }
   });
 };

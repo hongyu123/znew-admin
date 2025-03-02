@@ -1,17 +1,14 @@
 import { defineStore } from "pinia";
 import { AuthState } from "@/stores/interface";
-//import { getAuthButtonListApi, getAuthMenuListApi } from "@/api/modules/login";
-import { getAuthButtonListApi, getAuthMenuListApi } from "@/api/sys/auth";
-import { getKeepAliveRouterName, getShowMenuList, getAllBreadcrumbList } from "@/utils/util";
-import piniaPersistConfig from "@/config/piniaPersist";
+import { getAuthButtonListApi, getAuthMenuListApi } from "@/api/modules/login";
+import { getFlatMenuList, getShowMenuList, getAllBreadcrumbList } from "@/utils";
 
-// AuthStore
-export const AuthStore = defineStore({
-  id: "AuthState",
+export const useAuthStore = defineStore({
+  id: "geeker-auth",
   state: (): AuthState => ({
     // 按钮权限列表
     authButtonList: {},
-    // menuList 作为动态路由，不会做持久化存储
+    // 菜单权限列表
     authMenuList: [],
     // 当前页面的 router name，用来做按钮权限筛选
     routeName: ""
@@ -19,45 +16,29 @@ export const AuthStore = defineStore({
   getters: {
     // 按钮权限列表
     authButtonListGet: state => state.authButtonList,
-    // 后端返回的菜单列表
+    // 菜单权限列表 ==> 这里的菜单没有经过任何处理
     authMenuListGet: state => state.authMenuList,
-    // 后端返回的菜单列表 ==> 左侧菜单栏渲染，需要去除 isHide == true
+    // 菜单权限列表 ==> 左侧菜单栏渲染，需要剔除 isHide == true
     showMenuListGet: state => getShowMenuList(state.authMenuList),
-    // 面包屑导航列表
-    breadcrumbListGet: state => getAllBreadcrumbList(state.authMenuList),
-    // 需要缓存的菜单 name，用作页面 keepAlive
-    keepAliveRouterGet: state => getKeepAliveRouterName(state.authMenuList)
+    // 菜单权限列表 ==> 扁平化之后的一维数组菜单，主要用来添加动态路由
+    flatMenuListGet: state => getFlatMenuList(state.authMenuList),
+    // 递归处理后的所有面包屑导航列表
+    breadcrumbListGet: state => getAllBreadcrumbList(state.authMenuList)
   },
   actions: {
-    // getAuthButtonList
+    // Get AuthButtonList
     async getAuthButtonList() {
       const { data } = await getAuthButtonListApi();
       this.authButtonList = data;
     },
-    // getAuthMenuList
+    // Get AuthMenuList
     async getAuthMenuList() {
-      let { data } = await getAuthMenuListApi();
-      const index = {
-        path: "/home/index",
-        name: "home",
-        component: "/home/index",
-        meta: {
-          icon: "HomeFilled",
-          title: "首页",
-          isLink: "",
-          isHide: false,
-          isFull: false,
-          isAffix: true,
-          isKeepAlive: true
-        }
-      };
-      data = [index, ...data];
+      const { data } = await getAuthMenuListApi();
       this.authMenuList = data;
     },
-    // setRouteName
+    // Set RouteName
     async setRouteName(name: string) {
       this.routeName = name;
     }
-  },
-  persist: piniaPersistConfig("AuthState", ["authButtonList", "routeName"])
+  }
 });
