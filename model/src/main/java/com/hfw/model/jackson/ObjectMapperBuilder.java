@@ -12,7 +12,6 @@ import com.hfw.model.utils.LocalDateUtil;
 import com.hfw.model.utils.StrUtil;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,7 +44,7 @@ public class ObjectMapperBuilder{
         //非法枚举序列化为null
         //objectMapper.configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true);
         //自定义字段为null处理
-        //objectMapper.setSerializerFactory(objectMapper.getSerializerFactory().withSerializerModifier(new NullSerializerModifier()));
+        objectMapper.setSerializerFactory(objectMapper.getSerializerFactory().withSerializerModifier(new NullSerializerModifier()));
         //空对象null处理
         //objectMapper.getSerializerProvider().setNullValueSerializer(new NullSerializer(NullType.NullObject));
         //设置时区
@@ -55,7 +54,8 @@ public class ObjectMapperBuilder{
 
         //自定义类型序列化和反序列化
         JavaTimeModule module = new JavaTimeModule();
-        module.addSerializer(BigDecimal.class, new BigDecimalSerializer());
+        module.addSerializer(Result.class, new ResultSerializer());
+        //module.addSerializer(BigDecimal.class, new BigDecimalSerializer());
         module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         module.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         module.addDeserializer(LocalDateTime.class, new JsonDeserializer<>() {

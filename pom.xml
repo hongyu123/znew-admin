@@ -67,11 +67,24 @@
                 <version>2.18.0</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>33.4.0-jre</version>
+            </dependency>
+
             <!-- aes加密提供 -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk18on</artifactId>
                 <version>1.80</version>
+            </dependency>
+
+            <!--freemarker 代码生成-->
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>2.3.28</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

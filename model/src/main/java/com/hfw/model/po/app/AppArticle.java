@@ -2,9 +2,9 @@ package com.hfw.model.po.app;
 
 import cn.xbatis.db.annotations.Ignore;
 import cn.xbatis.db.annotations.Table;
+import cn.xbatis.db.annotations.TableId;
 import com.hfw.model.enums.app.AppArticleEnum;
 import com.hfw.model.enums.app.AppArticleType;
-import com.hfw.model.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 */
 @Getter @Setter
 @Table("app_article")
-public class AppArticle extends BaseEntity {
-    /** id **/
+public class AppArticle {
+    @TableId
     private Long id;
 
     /** 文章类型 **/
@@ -47,7 +47,6 @@ public class AppArticle extends BaseEntity {
 
     /** 创建时间 */
     private LocalDateTime createTime;
-
 
     /** 图文详情 **/
     @Ignore

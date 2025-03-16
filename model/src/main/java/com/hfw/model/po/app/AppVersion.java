@@ -2,9 +2,10 @@ package com.hfw.model.po.app;
 
 import cn.xbatis.db.annotations.Ignore;
 import cn.xbatis.db.annotations.Table;
+import cn.xbatis.db.annotations.TableId;
 import com.hfw.model.enums.app.DeviceEnum;
-import com.hfw.model.entity.BaseEntity;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
 * app版本管理
@@ -13,8 +14,8 @@ import lombok.*;
 */
 @Getter @Setter
 @Table("app_version")
-public class AppVersion extends BaseEntity {
-    /** id */
+public class AppVersion {
+    @TableId
     private Long id;
 
     /** 设备(android,ios) */
@@ -35,4 +36,5 @@ public class AppVersion extends BaseEntity {
     /** 是否有更新(1是0否) */
     @Ignore
     private Integer hasUpdate;
+
 }

@@ -1,10 +1,9 @@
 package com.hfw.model.po.app;
 
 import cn.xbatis.db.annotations.Table;
-import com.hfw.model.entity.BaseEntity;
-import jakarta.validation.constraints.NotBlank;
-import lombok.*;
-import org.hibernate.validator.constraints.Length;
+import cn.xbatis.db.annotations.TableId;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -15,22 +14,19 @@ import java.time.LocalDateTime;
 */
 @Getter @Setter
 @Table("app_advice")
-public class AppAdvice extends BaseEntity {
-    /** id **/
+public class AppAdvice {
+    @TableId
     private Long id;
 
     /** 用户id **/
     private Long userId;
 
-    @NotBlank(message = "问题分类不能为空")
     /** 问题分类 **/
     private String category;
 
     /** 图片 **/
     private String picture;
 
-    @NotBlank(message = "建议内容不能为空")
-    @Length(max = 500, message = "反馈内容最多500字符")
     /** 建议内容 **/
     private String content;
 
@@ -42,4 +38,5 @@ public class AppAdvice extends BaseEntity {
 
     /** 是否已读 */
     private Integer readFlag;
+
 }

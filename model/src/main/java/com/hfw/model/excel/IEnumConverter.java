@@ -7,7 +7,7 @@ import cn.idev.excel.metadata.GlobalConfiguration;
 import cn.idev.excel.metadata.data.ReadCellData;
 import cn.idev.excel.metadata.data.WriteCellData;
 import cn.idev.excel.metadata.property.ExcelContentProperty;
-import com.hfw.model.enums.BaseEnum;
+import com.hfw.model.enums.sys.BaseEnum;
 
 import java.lang.reflect.Method;
 

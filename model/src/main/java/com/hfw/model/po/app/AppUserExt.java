@@ -1,10 +1,9 @@
 package com.hfw.model.po.app;
 
 import cn.xbatis.db.annotations.Table;
-import com.hfw.model.entity.BaseEntity;
-import com.hfw.model.validation.ValidGroup;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import cn.xbatis.db.annotations.TableId;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * app用户扩展信息
@@ -13,14 +12,11 @@ import lombok.*;
  */
 @Getter @Setter
 @Table("app_user_ext")
-public class AppUserExt extends BaseEntity {
-
-    /** id */
-    @NotNull(message = "id不能为空",groups = ValidGroup.Update.class)
+public class AppUserExt {
+    @TableId
     private Long id;
 
     /** 用户id */
-    @NotNull(message = "用户id不能为空", groups = ValidGroup.Add.class)
     private Long userId;
 
     /** 微信openid */

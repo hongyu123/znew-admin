@@ -19,6 +19,7 @@ import {
 
 import Fullscreen from "@iconify-icons/ri/fullscreen-fill";
 import ExitFullscreen from "@iconify-icons/ri/fullscreen-exit-fill";
+import EpSearch from "@iconify-icons/ep/search";
 import DragIcon from "@/assets/table-bar/drag.svg?component";
 import ExpandIcon from "@/assets/table-bar/expand.svg?component";
 import RefreshIcon from "@/assets/table-bar/refresh.svg?component";
@@ -53,7 +54,7 @@ const props = {
 export default defineComponent({
   name: "PureTableBar",
   props,
-  emits: ["refresh", "fullscreen"],
+  emits: ["refresh", "fullscreen", "showSearch"],
   setup(props, { emit, slots, attrs }) {
     const size = ref("default");
     const loading = ref(false);
@@ -119,6 +120,9 @@ export default defineComponent({
     function onFullscreen() {
       isFullscreen.value = !isFullscreen.value;
       emit("fullscreen", isFullscreen.value);
+    }
+    function onShowSearch() {
+      emit("showSearch");
     }
 
     function toggleRowExpansionAll(data, isExpansion) {
@@ -379,6 +383,14 @@ export default defineComponent({
                 icon={isFullscreen.value ? ExitFullscreen : Fullscreen}
                 v-tippy={isFullscreen.value ? "退出全屏" : "全屏"}
                 onClick={() => onFullscreen()}
+              />
+
+              <el-divider direction="vertical" />
+              <iconifyIconOffline
+                class={["w-[16px]", iconClass.value]}
+                icon={EpSearch}
+                v-tippy={rendTippyProps("显示/隐藏查询")}
+                onClick={() => onShowSearch()}
               />
             </div>
           </div>

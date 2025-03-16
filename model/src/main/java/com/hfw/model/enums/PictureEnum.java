@@ -1,5 +1,7 @@
 package com.hfw.model.enums;
 
+import com.hfw.model.enums.sys.BaseEnum;
+
 /**
  * 图片枚举类型
  * @author farkle

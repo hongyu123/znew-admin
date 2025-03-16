@@ -1,3 +1,4 @@
+import { ElMessage } from "element-plus";
 import Axios, {
   type AxiosInstance,
   type AxiosRequestConfig,
@@ -16,6 +17,7 @@ import { useUserStoreHook } from "@/store/modules/user";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
+  baseURL: import.meta.env.VITE_API_URL as string,
   // 请求超时时间
   timeout: 10000,
   headers: {
@@ -123,6 +125,12 @@ class PureHttp {
         const $config = response.config;
         // 关闭进度条动画
         NProgress.done();
+
+        const data = response.data;
+        if (data.code == 0 || data.code == 403) {
+          ElMessage.error(data.message);
+          return Promise.reject(data);
+        }
         // 优先判断post/get等方法是否传入回调，否则执行初始化设置等回调
         if (typeof $config.beforeResponseCallback === "function") {
           $config.beforeResponseCallback(response);
@@ -139,6 +147,8 @@ class PureHttp {
         $error.isCancelRequest = Axios.isCancel($error);
         // 关闭进度条动画
         NProgress.done();
+        if (error.message.indexOf("timeout") !== -1)
+          ElMessage.error("请求超时！请您稍后重试");
         // 所有的响应异常 区分来源为取消请求/非取消请求
         return Promise.reject($error);
       }
@@ -172,22 +182,17 @@ class PureHttp {
     });
   }
 
-  /** 单独抽离的`post`工具函数 */
-  public post<T, P>(
-    url: string,
-    params?: AxiosRequestConfig<P>,
-    config?: PureHttpRequestConfig
-  ): Promise<T> {
-    return this.request<T>("post", url, params, config);
+  get<T>(url: string, params?: object, _object = {}): Promise<T> {
+    return PureHttp.axiosInstance.get(url, { params, ..._object });
   }
-
-  /** 单独抽离的`get`工具函数 */
-  public get<T, P>(
-    url: string,
-    params?: AxiosRequestConfig<P>,
-    config?: PureHttpRequestConfig
-  ): Promise<T> {
-    return this.request<T>("get", url, params, config);
+  post<T>(url: string, params?: object, _object = {}): Promise<T> {
+    return PureHttp.axiosInstance.post(url, params, _object);
+  }
+  put<T>(url: string, params?: object, _object = {}): Promise<T> {
+    return PureHttp.axiosInstance.put(url, params, _object);
+  }
+  delete<T>(url: string, params?: any, _object = {}): Promise<T> {
+    return PureHttp.axiosInstance.delete(url, { data: params, ..._object });
   }
 }
 

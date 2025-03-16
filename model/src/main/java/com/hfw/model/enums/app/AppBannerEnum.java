@@ -1,6 +1,6 @@
 package com.hfw.model.enums.app;
 
-import com.hfw.model.enums.BaseEnum;
+import com.hfw.model.enums.sys.BaseEnum;
 
 /**
  * 轮播图枚举

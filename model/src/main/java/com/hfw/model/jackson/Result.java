@@ -1,10 +1,10 @@
 package com.hfw.model.jackson;
 
-import com.hfw.model.enums.BaseEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hfw.model.enums.sys.BaseEnum;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,49 +25,61 @@ public class Result<T> {
     private int code;
     private String message;
     private T data;
+    @JsonIgnore
+    private DataType dataType;
 
+    public Result(){}
     public Result(int code, String message, T data){
         this.code = code;
         this.message = message;
         this.data = data;
     }
+    public Result(int code, String message, T data, DataType dataType){
+        this.code = code;
+        this.message = message;
+        this.data = data;
+        this.dataType = dataType;
+    }
     public boolean successful(){
         return this.code == SUCCESS_CODE;
     }
 
-    public static Result<String> message(int code, String message){
-        return new Result<>(code, message, "");
+    public static Result<Void> success(){
+        return new Result<>(SUCCESS_CODE,SUCCESS_MESSAGE,null);
     }
-    public static Result<String> message(BaseEnum baseEnum){
-        return new Result<>(baseEnum.getCode(),baseEnum.getDesc(),"");
+    public static Result<Void> success(String message){
+        return new Result<>(SUCCESS_CODE,message,null);
     }
 
-    public static Result<String> success(){
-        return new Result<>(SUCCESS_CODE,SUCCESS_MESSAGE,"");
+    public static <T> Result<T> error(){
+        return new Result<>(ERROR_CODE,ERROR_MESSAGE,null);
     }
-    public static Result<String> success(String message){
-        return new Result<>(SUCCESS_CODE,message,"");
+    public static <T> Result<T> error(String message){
+        return new Result<>(ERROR_CODE,message,null);
     }
+
+    public static Result<Void> result(int code, String message){
+        return new Result<>(code, message, null);
+    }
+    public static Result<Void> result(BaseEnum baseEnum){
+        return new Result<>(baseEnum.getCode(),baseEnum.getDesc(),null);
+    }
+    public static Result<Void> result(int updateCount){
+        return updateCount>0 ?success() :error();
+    }
+
+    // 日期 枚举 Integer等基本类型请自行处理null, 否则同一返回{}
     public static <T> Result<T> success(T t){
-        return new Result<>(SUCCESS_CODE,"",t);
+        return new Result<>(SUCCESS_CODE,"",t, DataType.Obj);
     }
     public static <T> Result<T> success(int code, T t){
-        return new Result<>(code,"",t);
+        return new Result<>(code,"",t, DataType.Obj);
     }
     public static Result<String> string(String data){
-        if(data==null){
-            data = "";
-        }
-        return new Result<>(SUCCESS_CODE,"",data);
+        return new Result<>(SUCCESS_CODE,"",data, DataType.String);
     }
-    public static Result<List<?>> list(List<?> list){
-        if(list == null){
-            list = new ArrayList<>();
-        }
-        return new Result<>(SUCCESS_CODE,"",list);
-    }
-    public static Result<String> error(String message){
-        return new Result<>(ERROR_CODE,message,"");
+    public static <T> Result<List<T>> success(List<T> list){
+        return new Result<>(SUCCESS_CODE,"",list, DataType.List);
     }
 
 }

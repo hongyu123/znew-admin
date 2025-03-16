@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hfw.service.sys.sysOrganization.SysOrganizationMapper">
+
+    <select id="page" resultType="com.hfw.model.po.sys.SysOrganization">
+        select
+            id,
+            pid,
+            type,
+            name,
+            sort,
+            link_name,
+            link_phone,
+            link_email,
+            state,
+            creator,
+            create_time,
+            updator,
+            update_time
+        from sys_organization
+        <where>
+            <if test="po.id!=null">
+                and id=#{po.id}
+            </if>
+            <if test="po.pid!=null">
+                and pid=#{po.pid}
+            </if>
+            <if test="po.type!=null">
+                and type=#{po.type}
+            </if>
+            <if test="po.name!=null and po.name!=''">
+                and name=#{po.name}
+            </if>
+            <if test="page.params.name_like!=null and page.params.name_like!=''">
+                and name like concat(#{page.params.name_like},'%')
+            </if>
+            <if test="po.sort!=null">
+                and sort=#{po.sort}
+            </if>
+            <if test="po.linkName!=null and po.linkName!=''">
+                and link_name=#{po.linkName}
+            </if>
+            <if test="page.params.linkName_like!=null and page.params.linkName_like!=''">
+                and link_name like concat(#{page.params.linkName_like},'%')
+            </if>
+            <if test="po.linkPhone!=null and po.linkPhone!=''">
+                and link_phone=#{po.linkPhone}
+            </if>
+            <if test="page.params.linkPhone_like!=null and page.params.linkPhone_like!=''">
+                and link_phone like concat(#{page.params.linkPhone_like},'%')
+            </if>
+            <if test="po.linkEmail!=null and po.linkEmail!=''">
+                and link_email=#{po.linkEmail}
+            </if>
+            <if test="page.params.linkEmail_like!=null and page.params.linkEmail_like!=''">
+                and link_email like concat(#{page.params.linkEmail_like},'%')
+            </if>
+            <if test="po.state!=null">
+                and state=#{po.state}
+            </if>
+            <if test="po.creator!=null and po.creator!=''">
+                and creator=#{po.creator}
+            </if>
+            <if test="page.params.creator_like!=null and page.params.creator_like!=''">
+                and creator like concat(#{page.params.creator_like},'%')
+            </if>
+            <if test="po.createTime!=null">
+                and create_time=#{po.createTime}
+            </if>
+            <if test="page.params.createTime_lt!=null">
+                and create_time &lt;= #{page.params.createTime_lt}
+            </if>
+            <if test="page.params.createTime_gt!=null">
+                and create_time &gt;= #{page.params.createTime_gt}
+            </if>
+            <if test="po.updator!=null and po.updator!=''">
+                and updator=#{po.updator}
+            </if>
+            <if test="page.params.updator_like!=null and page.params.updator_like!=''">
+                and updator like concat(#{page.params.updator_like},'%')
+            </if>
+            <if test="po.updateTime!=null">
+                and update_time=#{po.updateTime}
+            </if>
+            <if test="page.params.updateTime_lt!=null">
+                and update_time &lt;= #{page.params.updateTime_lt}
+            </if>
+            <if test="page.params.updateTime_gt!=null">
+                and update_time &gt;= #{page.params.updateTime_gt}
+            </if>
+        </where>
+        <if test="page.sortByField!=null and page.sortByWay!=null">
+            order by ${page.sortByField} ${page.sortByWay}
+        </if>
+    </select>
+
+</mapper>

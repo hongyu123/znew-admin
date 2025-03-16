@@ -1,10 +1,8 @@
-import com.hfw.admin.utils.ResultUtil;
-import com.hfw.model.po.SysDemo;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.hfw.model.enums.sys.Gender;
 
 public class Test {
     public static void main(String[] args) throws Exception {
+        System.out.println(Gender.class.getTypeName());
+
     }
 }

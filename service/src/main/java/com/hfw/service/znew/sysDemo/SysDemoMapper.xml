@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hfw.service.znew.sysDemo.SysDemoMapper">
+
+    <select id="page" resultType="com.hfw.model.po.znew.SysDemo">
+        select
+            id,
+            name,
+            age,
+            score,
+            gender,
+            state,
+            interest,
+            birth,
+            regist_time,
+            avatar,
+            video,
+            photos,
+            attachment,
+            introduction,
+            detail,
+            phone,
+            location,
+            lng,
+            lat,
+            file_input
+        from sys_demo
+        <where>
+                deleted=0
+            <if test="po.id!=null">
+                and id=#{po.id}
+            </if>
+            <if test="po.name!=null and po.name!=''">
+                and name=#{po.name}
+            </if>
+            <if test="page.params.name_like!=null and page.params.name_like!=''">
+                and name like concat(#{page.params.name_like},'%')
+            </if>
+            <if test="po.age!=null">
+                and age=#{po.age}
+            </if>
+            <if test="po.score!=null">
+                and score=#{po.score}
+            </if>
+            <if test="po.gender!=null">
+                and gender=#{po.gender}
+            </if>
+            <if test="po.state!=null">
+                and state=#{po.state}
+            </if>
+            <if test="po.interest!=null and po.interest!=''">
+                and interest=#{po.interest}
+            </if>
+            <if test="page.params.interest_like!=null and page.params.interest_like!=''">
+                and interest like concat(#{page.params.interest_like},'%')
+            </if>
+            <if test="po.birth!=null">
+                and birth=#{po.birth}
+            </if>
+            <if test="page.params.birth_lt!=null">
+                and birth &lt;= #{page.params.birth_lt}
+            </if>
+            <if test="page.params.birth_gt!=null">
+                and birth &gt;= #{page.params.birth_gt}
+            </if>
+            <if test="po.registTime!=null">
+                and regist_time=#{po.registTime}
+            </if>
+            <if test="page.params.registTime_lt!=null">
+                and regist_time &lt;= #{page.params.registTime_lt}
+            </if>
+            <if test="page.params.registTime_gt!=null">
+                and regist_time &gt;= #{page.params.registTime_gt}
+            </if>
+            <if test="po.avatar!=null and po.avatar!=''">
+                and avatar=#{po.avatar}
+            </if>
+            <if test="page.params.avatar_like!=null and page.params.avatar_like!=''">
+                and avatar like concat(#{page.params.avatar_like},'%')
+            </if>
+            <if test="po.video!=null and po.video!=''">
+                and video=#{po.video}
+            </if>
+            <if test="page.params.video_like!=null and page.params.video_like!=''">
+                and video like concat(#{page.params.video_like},'%')
+            </if>
+            <if test="po.photos!=null and po.photos!=''">
+                and photos=#{po.photos}
+            </if>
+            <if test="page.params.photos_like!=null and page.params.photos_like!=''">
+                and photos like concat(#{page.params.photos_like},'%')
+            </if>
+            <if test="po.attachment!=null and po.attachment!=''">
+                and attachment=#{po.attachment}
+            </if>
+            <if test="page.params.attachment_like!=null and page.params.attachment_like!=''">
+                and attachment like concat(#{page.params.attachment_like},'%')
+            </if>
+            <if test="po.introduction!=null and po.introduction!=''">
+                and introduction=#{po.introduction}
+            </if>
+            <if test="page.params.introduction_like!=null and page.params.introduction_like!=''">
+                and introduction like concat(#{page.params.introduction_like},'%')
+            </if>
+            <if test="po.detail!=null and po.detail!=''">
+                and detail=#{po.detail}
+            </if>
+            <if test="page.params.detail_like!=null and page.params.detail_like!=''">
+                and detail like concat(#{page.params.detail_like},'%')
+            </if>
+            <if test="po.phone!=null and po.phone!=''">
+                and phone=#{po.phone}
+            </if>
+            <if test="page.params.phone_like!=null and page.params.phone_like!=''">
+                and phone like concat(#{page.params.phone_like},'%')
+            </if>
+            <if test="po.location!=null and po.location!=''">
+                and location=#{po.location}
+            </if>
+            <if test="page.params.location_like!=null and page.params.location_like!=''">
+                and location like concat(#{page.params.location_like},'%')
+            </if>
+            <if test="po.lng!=null">
+                and lng=#{po.lng}
+            </if>
+            <if test="po.lat!=null">
+                and lat=#{po.lat}
+            </if>
+            <if test="po.fileInput!=null and po.fileInput!=''">
+                and file_input=#{po.fileInput}
+            </if>
+            <if test="page.params.fileInput_like!=null and page.params.fileInput_like!=''">
+                and file_input like concat(#{page.params.fileInput_like},'%')
+            </if>
+        </where>
+        <if test="page.sortByField!=null and page.sortByWay!=null">
+            order by ${page.sortByField} ${page.sortByWay}
+        </if>
+    </select>
+
+</mapper>

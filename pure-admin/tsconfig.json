@@ -44,7 +44,7 @@
     "src/**/*.vue",
     "types/*.d.ts",
     "vite.config.ts"
-  ],
+, "src/hooks/useQueryTable.js", "src/views/sys/gen/gen.js"  ],
   "exclude": [
     "dist",
     "**/*.js",

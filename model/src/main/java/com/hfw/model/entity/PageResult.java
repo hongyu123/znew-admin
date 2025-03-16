@@ -1,7 +1,6 @@
 package com.hfw.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import cn.xbatis.core.mybatis.mapper.context.Pager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,14 +12,14 @@ import java.util.List;
  * @date 2022-04-15
  */
 @Getter @Setter
-public class PageResult<T>{
+public class PageResult<T> {
     private int code=1;
     private String message="";
     private List<T> data;
 
     private Integer pageNumber = 1;
     private Integer pageSize = 10;
-    private Long total;
+    private Integer total;
 
     public PageResult(){
     }
@@ -33,45 +32,27 @@ public class PageResult<T>{
             this.pageSize = pageSize;
         }
     }
-    public PageResult(Integer pageNumber,Integer pageSize, Long total,List<T> data){
+    public PageResult(Integer pageNumber,Integer pageSize, Integer total,List<T> data){
         this(pageNumber,pageSize);
         this.total = total;
         this.data = data;
     }
 
-    @JsonIgnore
-    public int getStart() {
+    public int start() {
         return (pageNumber-1) * pageSize;
     }
-    @JsonIgnore
-    public int getRows() {
+    public int rows() {
         return this.pageSize;
     }
-    @JsonIgnore
-    public int getEnd(){
+    public int end(){
         return pageNumber*pageSize-1;
     }
 
-    /*public PageResult(BaseEntity baseEntity){
-        this(baseEntity.getPageNumber(), baseEntity.getPageSize());
+    public static <T> PageResult<T> of(Pager<T> pager){
+        return new PageResult<>(pager.getNumber(),pager.getSize(),pager.getTotal(),pager.getResults());
+    }
+    public static <T> PageResult<T> of(Page<T> page){
+        return new PageResult<>(page.getPageNumber(),page.getPageSize(),page.getTotal(),page.getList());
     }
 
-    *//**
-     * PageHelper开启分页
-     *//*
-    public void startPage(){
-        PageHelper.startPage(this.pageNumber, this.pageSize);
-    }
-    public void startPageNoCount(){
-        PageHelper.startPage(this.pageNumber, this.pageSize, false);
-    }
-    public void setList(List<T> list){
-        if(list instanceof Page){
-            Page<T> page = (Page<T>) list;
-            this.total = page.getTotal();
-            this.data = page.getResult();
-        }else{
-            this.data = list;
-        }
-    }*/
 }

@@ -28,7 +28,7 @@ public class ResultUtil {
         if(list == null){
             list = new ArrayList<>();
         }
-        return json(Result.list(list), Result.INCLUDE_FILTER, fields);
+        return json(Result.success(list), Result.INCLUDE_FILTER, fields);
     }
     public static String jsonData(Object data, String... fields) throws JsonProcessingException {
         return json(Result.success(data), Result.INCLUDE_FILTER, fields);

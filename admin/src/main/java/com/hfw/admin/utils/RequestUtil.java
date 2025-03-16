@@ -1,6 +1,6 @@
 package com.hfw.admin.utils;
 
-import com.hfw.model.jackson.ObjectMapperBuilder;
+import com.alibaba.fastjson2.JSON;
 import com.hfw.model.utils.StrUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -89,7 +89,7 @@ public class RequestUtil {
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Content-type", "application/json;charset=UTF-8");
         try(PrintWriter printWriter = response.getWriter()){
-            printWriter.print(ObjectMapperBuilder.buildSingleton().writeValueAsString(obj));
+            printWriter.print(JSON.toJSONString(obj));
         }
     }
 

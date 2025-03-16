@@ -1,12 +1,11 @@
 package com.hfw.model.po.app;
 
 import cn.xbatis.db.annotations.Table;
-import com.hfw.model.enums.EnableState;
-import com.hfw.model.enums.Gender;
-import com.hfw.model.entity.BaseEntity;
-import com.hfw.model.validation.ValidGroup;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import cn.xbatis.db.annotations.TableId;
+import com.hfw.model.enums.sys.EnableState;
+import com.hfw.model.enums.sys.Gender;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * app用户
@@ -15,10 +14,8 @@ import lombok.*;
  */
 @Getter @Setter
 @Table("app_user")
-public class AppUser extends BaseEntity {
-
-    /** id */
-    @NotNull(message = "id不能为空",groups = ValidGroup.Update.class)
+public class AppUser {
+    @TableId
     private Long id;
 
     /** 昵称 */

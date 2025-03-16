@@ -34,13 +34,13 @@ public class NullSerializerModifier extends BeanSerializerModifier {
                 writer.assignNullSerializer(new NullSerializer(NullType.NullString));
             }
             //BigDecimal
-            else if (clazz.equals(BigDecimal.class)) {
+            /*else if (clazz.equals(BigDecimal.class)) {
                 writer.assignNullSerializer(new NullSerializer(NullType.NullString));
             }
             //数字, 特殊的排序字段
-            else if (Number.class.isAssignableFrom(clazz) /*&& !"sort".equals(writer.getName())*/ ){
+            else if (Number.class.isAssignableFrom(clazz)){
                 writer.assignNullSerializer(new NullSerializer(NullType.NullNumber));
-            }
+            }*/
             //boolean
             else if (clazz.equals(Boolean.class)) {
                 writer.assignNullSerializer(new NullSerializer(NullType.NullBoolean));
@@ -53,6 +53,9 @@ public class NullSerializerModifier extends BeanSerializerModifier {
             else if(Enum.class.isAssignableFrom(clazz)){
                 writer.assignNullSerializer(new NullSerializer(NullType.NullString));
             }
+            /*else{
+                writer.assignNullSerializer(new NullSerializer(NullType.NullObject));
+            }*/
         }
         return beanProperties;
     }

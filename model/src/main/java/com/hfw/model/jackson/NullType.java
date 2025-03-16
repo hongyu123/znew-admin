@@ -6,5 +6,6 @@ public enum NullType {
     NullNumber,
     NullBoolean,
     NullDate,
-    NullObject
+    NullObject,
+    Null
 }

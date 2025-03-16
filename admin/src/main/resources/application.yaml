@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/znew?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+    username: root
+    password: 123456
+  profiles:
+    active: dev
+
+mybatis:
+  mapper-locations: classpath*:com/hfw/service/**/*.xml
+  configuration:
+    map-underscore-to-camel-case=true: true #字段下划线映射驼峰命名
+    default-enum-type-handler:  com.hfw.model.mapper.EnumCodeTypeHandler #枚举处理
+    databaseId: MYSQL #xbatis数据库识别
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+upload:
+  storage-path: D:\\tmp\\upload
+
+gen:
+  pack: com.hfw
+  author: farkle
+  path: D:\\tmp\\admin
+  table-prefix: t_
+  db: znew
+  project-name: sys
+  logic-delete-field: deleted
