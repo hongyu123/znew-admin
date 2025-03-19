@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import { useGlobal } from "@pureadmin/utils";
 
 /**
  *
@@ -74,7 +75,16 @@ export function useQueryTable(tableRef, getTableList) {
     tableRef.value.getTableRef().clearSelection();
   }
 
+  //搜索表单和表格配置
+  const colProps = { xs: 24, sm: 12, md: 8, lg: 6, xl: 4 };
+  const { $storage } = useGlobal();
+  const adaptiveConfig = ref({
+    offsetBottom: $storage?.configure.hideFooter ? 86 : 106
+  });
+
   return {
+    colProps,
+    adaptiveConfig,
     queryParams,
     showSearch,
     handleSearch,

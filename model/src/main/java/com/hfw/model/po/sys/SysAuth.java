@@ -1,11 +1,15 @@
 package com.hfw.model.po.sys;
 
+import cn.xbatis.db.annotations.Ignore;
 import cn.xbatis.db.annotations.Table;
+import cn.xbatis.db.annotations.TableField;
 import cn.xbatis.db.annotations.TableId;
 import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.enums.sys.SysAuthEnum;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
 * 系统权限
@@ -26,8 +30,6 @@ public class SysAuth {
 
     /** 权限编码 **/
     private String code;
-    //包含权限
-    private String containsCode;
 
     /** 前端权限编码 **/
     private String webCode;
@@ -65,30 +67,26 @@ public class SysAuth {
     /** 状态 **/
     private EnableState state;
 
-    /** 创建账号 **/
-    private String creator;
-
-    /** 创建时间 **/
-    private java.time.LocalDateTime createTime;
-
-    /** 更新账号 **/
-    private String updator;
-
-    /** 更新时间 **/
-    private java.time.LocalDateTime updateTime;
-
     /** 备注 **/
     private String remark;
 
+    /** 创建账号 */
+    @TableField(defaultValue = "{CREATE_USER}")
+    private String createUser;
 
-    public void saveFilter(){
-        this.setId(null);
-        this.setUpdator(null);
-        this.setUpdateTime(null);
-    }
-    public void updateFilter(){
-        this.setCreator(null);
-        this.setCreateTime(null);
-    }
+    /** 创建时间 */
+    @TableField(defaultValue = "{CREATE_TIME}")
+    private java.time.LocalDateTime createTime;
+
+    /** 更新账号 */
+    @TableField(updateDefaultValue = "{UPDATE_USER}")
+    private String updateUser;
+
+    /** 更新时间 */
+    @TableField(updateDefaultValue = "{UPDATE_TIME}")
+    private java.time.LocalDateTime updateTime;
+
+    @Ignore
+    private List<SysAuth> children;
 
 }

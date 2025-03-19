@@ -16,10 +16,10 @@ public class AdminApplication {
          return "admin";
         });
         XbatisConfig.setDefaultValue("{CREATE_TIME}", (entityClass, fieldClass) -> {
-            return "admin";
+            return LocalDateTime.now();
         });
         XbatisConfig.setDefaultValue("{UPDATE_USER}", (entityClass, fieldClass) -> {
-            return LocalDateTime.now();
+            return "admin";
         });
         XbatisConfig.setDefaultValue("{UPDATE_TIME}", (entityClass, fieldClass) -> {
             return LocalDateTime.now();

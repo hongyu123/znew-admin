@@ -18,8 +18,8 @@ public class NullSerializer extends JsonSerializer<Object> {
     public void serialize(Object o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         switch (nullType){
             case NullArray:
-                jsonGenerator.writeStartObject();
-                jsonGenerator.writeEndObject();
+                jsonGenerator.writeStartArray();
+                jsonGenerator.writeEndArray();
                 break;
             case NullString:
                 jsonGenerator.writeString("");
@@ -34,7 +34,8 @@ public class NullSerializer extends JsonSerializer<Object> {
                 jsonGenerator.writeString("");
                 break;
             case NullObject:
-                jsonGenerator.writeObject(new Object());
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeEndObject();
                 break;
             default:
                 jsonGenerator.writeNull();

@@ -6,10 +6,10 @@ package com.hfw.model.enums.sys;
  * @date 2022-12-14
  */
 public enum SysAuthEnum implements BaseEnum {
-    menu(1,"菜单")
-    ,dir(2, "目录")
-    ,button(3, "按钮")
-    ,auth(4, "权限")
+    Menu(1,"菜单")
+    ,Dir(2, "目录")
+    ,Button(3, "按钮")
+    ,Auth(4, "权限")
     ;
 
     private final int code;

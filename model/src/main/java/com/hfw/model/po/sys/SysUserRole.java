@@ -1,9 +1,12 @@
 package com.hfw.model.po.sys;
 
+import cn.xbatis.db.annotations.Ignore;
 import cn.xbatis.db.annotations.Table;
 import cn.xbatis.db.annotations.TableId;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
 * 系统用户-角色
@@ -21,5 +24,8 @@ public class SysUserRole {
 
     /** 角色id **/
     private Long roleId;
+
+    @Ignore
+    private List<Long> userIds;
 
 }

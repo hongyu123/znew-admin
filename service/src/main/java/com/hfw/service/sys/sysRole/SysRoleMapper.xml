@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hfw.service.sys.sysRole.SysRoleMapper">
+
+    <select id="page" resultType="com.hfw.model.po.sys.SysRole">
+        select
+        id,
+        name,
+        code,
+        sort,
+        state,
+        system_flag,
+        remark,
+        create_user,
+        create_time,
+        update_user,
+        update_time
+        from sys_role
+        <where>
+            <if test="po.id!=null">
+                and id=#{po.id}
+            </if>
+            <if test="po.name!=null and po.name!=''">
+                and name=#{po.name}
+            </if>
+            <if test="page.params.name_like!=null and page.params.name_like!=''">
+                and name like concat(#{page.params.name_like},'%')
+            </if>
+            <if test="po.code!=null and po.code!=''">
+                and code=#{po.code}
+            </if>
+            <if test="po.state!=null">
+                and state=#{po.state}
+            </if>
+            <if test="po.systemFlag!=null">
+                and system_flag=#{po.systemFlag}
+            </if>
+        </where>
+        <if test="page.sortByField!=null and page.sortByWay!=null">
+            order by ${page.sortByField} ${page.sortByWay}
+        </if>
+    </select>
+
+    <select id="users" resultType="com.hfw.model.po.sys.SysUser">
+        select u.* from sys_user u join sys_user_role r on u.id=r.user_id
+        where r.role_id=#{roleId}
+        <if test="page.params.account_like!=null and page.params.account_like!=''">
+            and u.account like concat('%',#{page.params.account_like},'%')
+        </if>
+        <if test="page.params.phone_like!=null and page.params.phone_like!=''">
+            and u.phone like concat('%',#{page.params.phone_like},'%')
+        </if>
+        <if test="page.params.nickname_like!=null and page.params.nickname_like!=''">
+            and u.nickname like concat('%',#{page.params.nickname_like},'%')
+        </if>
+        order by r.id desc
+    </select>
+
+</mapper>

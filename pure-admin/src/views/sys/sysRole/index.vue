@@ -16,7 +16,7 @@
     />
 
     <PureTableBar
-      title="${tableRemark}"
+      title="系统角色"
       :columns="tableColumns"
       @refresh="handleSearch"
       @showSearch="onShowSearch"
@@ -46,7 +46,7 @@
           :icon="useRenderIcon(EpCirclePlus)"
           @click="openEdit()"
         >
-          新增${tableRemark}
+          新增系统角色
         </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
@@ -133,91 +133,68 @@ import { useQueryTable } from "@/hooks/useQueryTable";
 
 import EditDrawer from "./edit.vue";
 import { enums } from "@/api/sys/common";
-import { page, detail, del, dels } from "./${beanName}";
+import { page, detail, del, dels } from "./sysRole";
 
 onMounted(() => {
   getTableList();
-<#list columnList as c>
-  <#if c.formType=='enum' && c.searchFlag==1>
-  enums("${c.columnRemark}").then(res => {
-    searchColumns.find(item => item.prop == "${c.property}").options = res.data;
-  });
-  </#if>
-</#list>
 });
 
 const searchColumns = reactive([
-<#list columnList as c>
-<#if c.searchFlag==1>
   {
-    label: "${c.label}",
-  <#if c.formType=='input' || c.formType=='phone'>
-    prop: "params.${c.property}_like",
-  <#else>
-    prop: "${c.property}",
-  </#if>
-  <#if c.formType=='date' || c.formType=='datetime'>
-    valueType: "date-picker",
-    fieldProps: { format: "YYYY-MM-DD", valueFormat: "YYYY-MM-DD" }
-  <#elseif c.formType=='select' || c.formType=='radio'>
-    valueType: "select",
-    options: [
-      { label: "启用", value: "1" },
-      { label: "禁用", value: "0" }
-    ]
-  <#elseif c.formType=='enum'>
-    valueType: "select",
-    options: []
-  </#if>
+    label: "角色名",
+    prop: "params.name_like"
   },
-</#if>
-</#list>
+  {
+    label: "角色编码",
+    prop: "params.code_like"
+  }
 ]);
 
-const inputColumns = [<#list columnList as c><#if c.searchFlag==1 && (c.formType=='input' || c.formType=='phone')>"params.${c.property}_like", </#if></#list>];
+const inputColumns = ["params.name_like", "params.code_like"];
 /** 搜索表单字段变化处理 */
 const handleSearchChange = (values, column) => {
-  if (inputColumns.indexOf(column.prop) < 0) {
-    getTableList();
-  }
+  // if (inputColumns.indexOf(column.prop) < 0) {
+  //   getTableList();
+  // }
 };
 
 const tableRef = ref();
 const tableColumns = [
   { label: "勾选列", type: "selection" },
-<#list columnList as c>
-<#if c.listFlag==1>
   {
-  <#if c.formType=='enum'>
-    prop: "${c.property}Desc",
-  <#else>
-    prop: "${c.property}",
-  </#if>
-    label: "${c.label}",
-  <#if c.formType=='phone'>
-    minWidth: 120
-  <#elseif c.formType=='date'>
-    minWidth: 110,
-  <#elseif c.formType=='datetime'>
-    minWidth: 180
-  <#elseif c.formType=='select' || c.formType=='radio'>
+    prop: "name",
+    label: "角色名"
+  },
+  {
+    prop: "code",
+    label: "角色编码"
+  },
+  {
+    prop: "sort",
+    label: "排序"
+  },
+  {
+    prop: "state",
+    label: "状态",
     cellRenderer: ({ row, props }) =>
       row.state ? (
         <el-tag type="success">启用</el-tag>
       ) : (
         <el-tag type="danger">禁用</el-tag>
       )
-  <#elseif c.formType=='picture'>
-    cellRenderer: ({ row, props }) => (
-      <el-avatar shape="square" fit="contain" src={row.${c.property}}></el-avatar>
-    )
-  </#if>
   },
-</#if>
-</#list>
+  {
+    prop: "remark",
+    label: "备注"
+  },
+  {
+    prop: "createTime",
+    label: "创建时间",
+    minWidth: 180
+  },
   {
     label: "操作",
-    fixed: "right",
+    //fixed: "right",
     slot: "operation",
     width: 210 //3个图标+按钮210
   }
@@ -244,14 +221,14 @@ const openEdit = async (row, isView) => {
 
 /** 删除 */
 const handleDelete = async row => {
-  await useHandleData(del, row.id, `${r'删除【${row.id}】'}`);
+  await useHandleData(del, row.id, `删除【${row.id}】`);
   getTableList();
 };
 
 /** 批量删除 */
 const handleDeleteBatch = async () => {
   const ids = selectedData.value.map(item => item.id);
-  await useHandleData(dels, ids, `${r'删除${ids.length}条选中数据'}`);
+  await useHandleData(dels, ids, `删除${ids.length}条选中数据`);
   selectedData.value = [];
   tableRef.value.getTableRef().clearSelection();
   getTableList();

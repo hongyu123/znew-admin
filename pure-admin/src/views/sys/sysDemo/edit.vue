@@ -16,6 +16,17 @@
       :hide-required-asterisk="drawerProps.isView"
     >
       <el-form-item label="名称" prop="name" class="plus-form-item">
+        <template #label>
+          <span>
+            名称
+            <el-tooltip content="提示">
+              <el-icon>
+                <IconifyIconOffline :icon="EpQuestionFilled" />
+              </el-icon>
+            </el-tooltip>
+            :
+          </span>
+        </template>
         <el-input
           v-model="row.name"
           maxlength="50"
@@ -144,6 +155,7 @@ import "plus-pro-components/es/components/drawer-form/style/css";
 import { ref, reactive, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 
+import EpQuestionFilled from "@iconify-icons/ep/question-filled";
 import UploadImg from "@/components/Upload/Img.vue";
 import UploadImgMul from "@/components/Upload/Imgs.vue";
 import UploadFiles from "@/components/Upload/Files.vue";

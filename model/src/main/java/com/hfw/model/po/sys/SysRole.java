@@ -1,10 +1,14 @@
 package com.hfw.model.po.sys;
 
+import cn.xbatis.db.annotations.Ignore;
 import cn.xbatis.db.annotations.Table;
+import cn.xbatis.db.annotations.TableField;
 import cn.xbatis.db.annotations.TableId;
 import com.hfw.model.enums.sys.EnableState;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
 * 系统角色
@@ -29,22 +33,29 @@ public class SysRole {
     /** 状态 **/
     private EnableState state;
 
-    /** 创建账号 **/
-    private String creator;
-
-    /** 创建时间 **/
-    private java.time.LocalDateTime createTime;
-
-    /** 更新账号 **/
-    private String updator;
-
-    /** 更新时间 **/
-    private java.time.LocalDateTime updateTime;
+    /** 是否系统内置 **/
+    private Integer systemFlag;
 
     /** 备注 **/
     private String remark;
 
-    /** 是否系统内置 **/
-    private Integer systemFlag;
+    /** 创建账号 */
+    @TableField(defaultValue = "{CREATE_USER}")
+    private String createUser;
+
+    /** 创建时间 */
+    @TableField(defaultValue = "{CREATE_TIME}")
+    private java.time.LocalDateTime createTime;
+
+    /** 更新账号 */
+    @TableField(updateDefaultValue = "{UPDATE_USER}")
+    private String updateUser;
+
+    /** 更新时间 */
+    @TableField(updateDefaultValue = "{UPDATE_TIME}")
+    private java.time.LocalDateTime updateTime;
+
+    @Ignore
+    private List<SysAuth> authList;
 
 }

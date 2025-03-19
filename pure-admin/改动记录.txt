@@ -15,6 +15,12 @@ pure-admin/src/router/modules/error.ts 500/404等异常页面路由不做菜单�
 pure-admin/src/utils/http/index.ts
 pure-admin/.env.development
 pure-admin/src/App.vue 增加plus-pro-components中文显示
+pure-admin/src/components/ReIcon/data.ts 图标选择组件
+pure-admin/src/components/ReIcon/index.ts
+pure-admin/src/components/ReIcon/src/Select.vue
+pure-admin/src/layout/components/lay-content/index.vue 修改.main-content
+pure-admin/src/main.ts 引入geeker.scss
+pure-admin/src/style/geeker.scss
 
 package.json
 dependencies:

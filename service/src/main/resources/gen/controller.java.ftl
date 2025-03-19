@@ -40,7 +40,7 @@ public class ${className}Controller {
 
     @AdminLog("编辑${tableComment}")
     @PutMapping
-    public Result<Void> edit(@RequestBody ${className}  ${beanName}){
+    public Result<Void> edit(@RequestBody ${className} ${beanName}){
         return Result.result(${beanName}Service.edit(${beanName}));
     }
 

@@ -355,18 +355,18 @@ public class GenService{
         configuration.setDefaultEncoding("utf-8");
         configuration.setClassicCompatible(true);
         //模板
-        String outDir = "./pure-admin/src/views/"+genProperty.getProjectName();
+        String outDir = "./pure-admin/src/views/"+genProperty.getProjectName()+"/"+table.getBeanName();
         Files.createDirectories(Paths.get(outDir));
         Template template = configuration.getTemplate("api.js.ftl");
         try(Writer out = new FileWriter(outDir+"/"+table.getBeanName()+".js")){
             template.process(table, out);
         }
         template = configuration.getTemplate("index.vue.ftl");
-        try(Writer out = new FileWriter(outDir+"/"+table.getBeanName()+"/index.vue")){
+        try(Writer out = new FileWriter(outDir+"/index.vue")){
             template.process(table, out);
         }
         template = configuration.getTemplate("edit.vue.ftl");
-        try(Writer out = new FileWriter(outDir+"/"+table.getBeanName()+"/edit.vue")){
+        try(Writer out = new FileWriter(outDir+"/edit.vue")){
             template.process(table, out);
         }
         //保存生成记录
