@@ -3,6 +3,7 @@ package com.hfw.service.sys.sysRole;
 import cn.xbatis.core.sql.executor.chain.DeleteChain;
 import cn.xbatis.core.sql.executor.chain.QueryChain;
 import com.hfw.model.entity.Page;
+import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.mapper.CommonMapper;
 import com.hfw.model.po.sys.*;
@@ -68,7 +69,7 @@ public class SysRoleService {
             return Result.error("系统内置角色,不允许修改!");
         }
         sysRoleMapper.update(sysRole);
-        DeleteChain.of(commonMapper, SysRoleAuth.class).eq(SysRoleAuth::getRoleId, sysRole.getId());
+        DeleteChain.of(commonMapper, SysRoleAuth.class).eq(SysRoleAuth::getRoleId, sysRole.getId()).execute();
         if(!CollectionUtils.isEmpty(sysRole.getAuthList())){
             List<SysRoleAuth> ruleAuthList = sysRole.getAuthList().stream().map(auth -> {
                 SysRoleAuth sysRoleAuth = new SysRoleAuth();
@@ -88,8 +89,12 @@ public class SysRoleService {
             return Result.error("系统内置角色,不允许删除!");
         }
         sysRoleMapper.deleteById(id);
-        DeleteChain.of(commonMapper, SysRoleAuth.class).eq(SysRoleAuth::getRoleId, id);
+        DeleteChain.of(commonMapper, SysRoleAuth.class).eq(SysRoleAuth::getRoleId, id).execute();
         return Result.success();
+    }
+
+    public List<SysRole> list(EnableState state){
+        return QueryChain.of(sysRoleMapper).eq(state!=null, SysRole::getState, state).list();
     }
 
     public Page<SysUser> users(Page<SysUser> page){

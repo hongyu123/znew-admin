@@ -35,6 +35,16 @@
           class="plus-form-item-field"
         />
       </el-form-item>
+      <el-form-item label="状态" prop="state">
+        <el-radio-group v-model="row.state" class="plus-form-item-field">
+          <el-radio
+            v-for="item in stateEnums"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="排序" prop="sort" class="plus-form-item">
         <el-input-number
           v-model="row.sort"
@@ -43,17 +53,24 @@
           class="plus-form-item-field"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="state">
-        <el-radio-group v-model="row.state">
-          <el-radio :value="1">是</el-radio>
-          <el-radio :value="0">否</el-radio>
-        </el-radio-group>
+      <el-form-item label="权限">
+        <el-tree
+          ref="authTree"
+          node-key="id"
+          :props="{
+            label: 'name',
+            children: 'children',
+            class: customNodeClass
+          }"
+          :data="authTreeData"
+          show-checkbox
+          default-expand-all
+        />
       </el-form-item>
-      <el-form-item label="是否系统内置" prop="systemFlag">
-        <el-radio-group v-model="row.systemFlag">
-          <el-radio :value="1">是</el-radio>
-          <el-radio :value="0">否</el-radio>
-        </el-radio-group>
+      <el-form-item>
+        <el-checkbox v-model="checkedAll" @change="handleCheckedAllTree"
+          >全选</el-checkbox
+        >
       </el-form-item>
       <el-form-item label="备注" prop="remark" class="plus-form-item">
         <el-input
@@ -63,48 +80,6 @@
           placeholder="请填写备注"
           clearable
           class="plus-form-item-field"
-        />
-      </el-form-item>
-      <el-form-item label="创建账号" prop="createUser" class="plus-form-item">
-        <el-input
-          v-model="row.createUser"
-          maxlength="50"
-          show-word-limit
-          placeholder="请填写创建账号"
-          clearable
-          class="plus-form-item-field"
-        />
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTime" class="plus-form-item">
-        <el-date-picker
-          v-model="row.createTime"
-          type="datetime"
-          format="YYYY-MM-DD HH:mm:ss"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          placeholder="请选择创建时间"
-          class="plus-form-item-field"
-          :disabledDate="disabledDateTimeFun"
-        />
-      </el-form-item>
-      <el-form-item label="更新账号" prop="updateUser" class="plus-form-item">
-        <el-input
-          v-model="row.updateUser"
-          maxlength="50"
-          show-word-limit
-          placeholder="请填写更新账号"
-          clearable
-          class="plus-form-item-field"
-        />
-      </el-form-item>
-      <el-form-item label="更新时间" prop="updateTime" class="plus-form-item">
-        <el-date-picker
-          v-model="row.updateTime"
-          type="datetime"
-          format="YYYY-MM-DD HH:mm:ss"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          placeholder="请选择更新时间"
-          class="plus-form-item-field"
-          :disabledDate="disabledDateTimeFun"
         />
       </el-form-item>
     </el-form>
@@ -122,12 +97,22 @@
 
 <script setup name="EditDrawer">
 import "plus-pro-components/es/components/drawer-form/style/css";
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, nextTick } from "vue";
 import { ElMessage } from "element-plus";
 
 import { enums } from "@/api/sys/common";
 import { add, edit } from "./sysRole";
-onMounted(() => {});
+import { tree } from "../sysAuth/sysAuth";
+
+const stateEnums = ref([]);
+onMounted(() => {
+  enums("EnableState").then(res => {
+    stateEnums.value = res.data;
+  });
+  tree("Enable").then(res => {
+    authTreeData.value = res.data;
+  });
+});
 
 const rules = reactive({
   name: [{ required: true, message: "请填写角色名" }],
@@ -155,6 +140,13 @@ const acceptParams = (rowData, getTableList, isView) => {
     drawerProps.value.title = rowData.id ? "编辑系统角色" : "新增系统角色";
   }
   drawerProps.value.visible = true;
+  nextTick(() => {
+    if (rowData && rowData.authList) {
+      rowData.authList.forEach(ele => {
+        authTree.value.setChecked(ele.id, true, false);
+      });
+    }
+  });
 };
 
 // 提交数据（新增/编辑）
@@ -163,6 +155,7 @@ const handleSubmit = () => {
   ruleFormRef.value.validate(async valid => {
     if (!valid) return;
     try {
+      row.value.authList = authTree.value.getCheckedNodes(false, true);
       const api = row.value && row.value.id ? edit : add;
       await api(row.value);
       ElMessage.success({ message: `${drawerProps.value.title}成功！` });
@@ -173,10 +166,46 @@ const handleSubmit = () => {
     }
   });
 };
-const disabledDateTimeFun = time => {
-  return time.getTime() < Date.now() - 3600 * 1000 * 24;
+
+//权限树数据
+const authTree = ref();
+const authTreeData = ref([]);
+//自定义树class
+const customNodeClass = data => {
+  if (data.children && data.children.length > 0) {
+    let noChild = 0;
+    for (let i = 0; i < data.children.length; i++) {
+      if (data.children[i].children && data.children[i].children <= 0) {
+        noChild++;
+      }
+    }
+    if (noChild == data.children.length) {
+      return "is-penultimate";
+    }
+  }
+  return null;
 };
+const checkedAll = ref(false);
+//全选/取消
+const handleCheckedAllTree = () => {
+  authTree.value.setCheckedNodes(checkedAll.value ? authTreeData.value : []);
+};
+
 defineExpose({
   acceptParams
 });
 </script>
+
+<style scoped>
+:deep(.el-tree-node.is-expanded.is-penultimate > .el-tree-node__children) {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; /* 允许换行 */
+}
+/* .is-penultimate > .el-tree-node__content {
+  color: #626aef;
+}
+.is-penultimate > .el-tree-node__children > div {
+  width: 35%;
+} */
+</style>

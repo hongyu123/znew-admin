@@ -16,7 +16,7 @@
       :hide-required-asterisk="drawerProps.isView"
     >
       <el-form-item label="权限类型" prop="authType" class="plus-form-item">
-        <el-radio-group v-model="row.authType" @change="loadTreeData">
+        <el-radio-group v-model="row.authType">
           <el-radio-button
             v-for="item in sysAuthEnum"
             :key="item.value"
@@ -213,7 +213,6 @@
 import "plus-pro-components/es/components/drawer-form/style/css";
 import { ref, reactive, onMounted } from "vue";
 import { ElMessage } from "element-plus";
-import EpQuestionFilled from "@iconify-icons/ep/question-filled";
 import { IconSelect } from "@/components/ReIcon";
 
 import { enums } from "@/api/sys/common";
@@ -255,7 +254,7 @@ const props = {
 
 // 接收父组件传过来的参数
 const acceptParams = (rowData, getTableList, isView) => {
-  tree({}).then(res => {
+  tree("Enable").then(res => {
     tableData.value = res.data;
   });
   row.value = rowData;

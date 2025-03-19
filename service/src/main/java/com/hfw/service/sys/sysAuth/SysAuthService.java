@@ -49,7 +49,7 @@ public class SysAuthService {
     }
 
     public List<SysAuth> treeList(EnableState state){
-        List<SysAuth> list = QueryChain.of(sysAuthMapper).eq(SysAuth::getState, EnableState.Enable).orderBy(SysAuth::getSort).list();
+        List<SysAuth> list = QueryChain.of(sysAuthMapper).eq(state!=null, SysAuth::getState, state).orderBy(SysAuth::getSort).list();
         return TreeUtil.listToTree(list, SysAuth::getId, SysAuth::getParentId, SysAuth::setChildren,
                 (dto) -> dto.getParentId()==0 );
     }

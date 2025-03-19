@@ -3,6 +3,7 @@ package com.hfw.admin.controller.sys;
 import com.hfw.admin.log.AdminLog;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
+import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.po.sys.SysRole;
 import com.hfw.model.po.sys.SysUser;
@@ -10,6 +11,8 @@ import com.hfw.model.po.sys.SysUserRole;
 import com.hfw.service.sys.sysRole.SysRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 系统角色控制器
@@ -52,8 +55,8 @@ public class SysRoleController {
     }
 
     @GetMapping("/list")
-    public Result<SysRole> list(SysRole sysRole){
-        return null; //TODO:
+    public Result<List<SysRole>> list(@RequestParam EnableState state){
+        return Result.success( sysRoleService.list(state) );
     }
 
     //查询角色下的用户

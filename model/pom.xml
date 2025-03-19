@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.hfw</groupId>
-        <artifactId>znew</artifactId>
+        <artifactId>znew-admin</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 

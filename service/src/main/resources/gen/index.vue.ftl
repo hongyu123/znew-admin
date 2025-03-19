@@ -9,6 +9,7 @@
       label-width="80"
       label-position="right"
       :colProps="colProps"
+      :prevent="true"
       @change="handleSearchChange"
       @search="handleSearch"
       @reset="handleReset"

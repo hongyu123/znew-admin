@@ -9,6 +9,7 @@
       label-width="80"
       label-position="right"
       :colProps="colProps"
+      :prevent="true"
       @change="handleSearchChange"
       @search="handleSearch"
       @reset="handleReset"
@@ -16,7 +17,7 @@
     />
 
     <PureTableBar
-      title="系统角色"
+      title="系统用户"
       :columns="tableColumns"
       @refresh="handleSearch"
       @showSearch="onShowSearch"
@@ -46,7 +47,7 @@
           :icon="useRenderIcon(EpCirclePlus)"
           @click="openEdit()"
         >
-          新增系统角色
+          新增系统用户
         </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
@@ -133,45 +134,70 @@ import { useQueryTable } from "@/hooks/useQueryTable";
 
 import EditDrawer from "./edit.vue";
 import { enums } from "@/api/sys/common";
-import { page, detail, del, dels } from "./sysRole";
+import { page, detail, del, dels } from "./sysUser";
 
 onMounted(() => {
   getTableList();
+  enums("EnableState").then(res => {
+    searchColumns.find(item => item.prop == "state").options = res.data;
+  });
 });
 
 const searchColumns = reactive([
   {
-    label: "角色名",
-    prop: "params.name_like"
+    label: "账号",
+    prop: "params.account_like"
   },
   {
-    label: "角色编码",
-    prop: "params.code_like"
+    label: "昵称",
+    prop: "params.nickname_like"
+  },
+  {
+    label: "手机号码",
+    prop: "params.phone_like"
+  },
+  {
+    label: "状态",
+    prop: "state",
+    valueType: "select",
+    options: []
   }
 ]);
 
-const inputColumns = ["params.name_like", "params.code_like"];
+const inputColumns = [
+  "params.account_like",
+  "params.nickname_like",
+  "params.phone_like"
+];
 /** 搜索表单字段变化处理 */
 const handleSearchChange = (values, column) => {
-  // if (inputColumns.indexOf(column.prop) < 0) {
-  //   getTableList();
-  // }
+  if (inputColumns.indexOf(column.prop) < 0) {
+    getTableList();
+  }
 };
 
 const tableRef = ref();
 const tableColumns = [
   { label: "勾选列", type: "selection" },
   {
-    prop: "name",
-    label: "角色名"
+    prop: "account",
+    label: "账号"
   },
   {
-    prop: "code",
-    label: "角色编码"
+    prop: "nickname",
+    label: "昵称"
   },
   {
-    prop: "sort",
-    label: "排序"
+    prop: "phone",
+    label: "手机号码",
+    minWidth: 120
+  },
+  {
+    prop: "avatar",
+    label: "头像",
+    cellRenderer: ({ row, props }) => (
+      <el-avatar shape="square" fit="contain" src={row.avatar}></el-avatar>
+    )
   },
   {
     prop: "state",
@@ -184,17 +210,13 @@ const tableColumns = [
       )
   },
   {
-    prop: "remark",
-    label: "备注"
-  },
-  {
     prop: "createTime",
     label: "创建时间",
     minWidth: 180
   },
   {
     label: "操作",
-    //fixed: "right",
+    fixed: "right",
     slot: "operation",
     width: 210 //3个图标+按钮210
   }
@@ -216,17 +238,13 @@ const openEdit = async (row, isView) => {
     const res = await detail(row.id);
     editDrawerRef.value.acceptParams(res.data, getTableList, isView);
   } else {
-    editDrawerRef.value.acceptParams(
-      { state: "Enable", sort: 0 },
-      getTableList,
-      isView
-    );
+    editDrawerRef.value.acceptParams({ state: "Enable" }, getTableList, isView);
   }
 };
 
 /** 删除 */
 const handleDelete = async row => {
-  await useHandleData(del, row.id, `删除【${row.id}】`);
+  await useHandleData(del, row.id, `删除【${row.account}】`);
   getTableList();
 };
 

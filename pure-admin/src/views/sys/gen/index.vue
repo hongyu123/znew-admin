@@ -9,6 +9,7 @@
       label-width="80"
       label-position="right"
       :colProps="{ xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }"
+      :prevent="true"
       @change="handleSearchChange"
       @search="handleSearch"
       @reset="handleReset"
@@ -104,6 +105,7 @@ import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useQueryTable } from "@/hooks/useQueryTable";
+import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import JavaPreview from "./JavaPreview.vue";
 import {
   tablePage,
@@ -156,7 +158,16 @@ const getTableList = async () => {
 //表单生成
 const router = useRouter();
 const formGen = row => {
-  router.push(`/sys/gen/form?tableName=${row.tableName}`);
+  const parameter = { tableName: row.tableName };
+  useMultiTagsStoreHook().handleTags("push", {
+    path: `/sys/formGen`,
+    name: "formGen",
+    query: parameter,
+    meta: {
+      title: "表单生成"
+    }
+  });
+  router.push({ name: "formGen", query: parameter });
 };
 
 //预览

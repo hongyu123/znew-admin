@@ -1,7 +1,7 @@
 <template>
   <div class="table-box">
     <div v-show="isShowSearch" class="card table-search">
-      <el-form inline>
+      <el-form inline @submit.prevent>
         <el-form-item label="名称">
           <el-input
             v-model="queryParam.name"

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hfw.service.sys.sysUser.SysUserMapper">
+
+    <select id="page" resultType="com.hfw.model.po.sys.SysUser">
+        select
+        id,
+        account,
+        password,
+        phone,
+        nickname,
+        avatar,
+        email,
+        gender,
+        state,
+        system_flag,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        remark
+        from sys_user
+        <where>
+            <if test="po.id!=null">
+                and id=#{po.id}
+            </if>
+            <if test="po.account!=null and po.account!=''">
+                and account=#{po.account}
+            </if>
+            <if test="page.params.account_like!=null and page.params.account_like!=''">
+                and account like concat(#{page.params.account_like},'%')
+            </if>
+            <if test="po.phone!=null and po.phone!=''">
+                and phone=#{po.phone}
+            </if>
+            <if test="page.params.phone_like!=null and page.params.phone_like!=''">
+                and phone like concat(#{page.params.phone_like},'%')
+            </if>
+            <if test="po.nickname!=null and po.nickname!=''">
+                and nickname=#{po.nickname}
+            </if>
+            <if test="page.params.nickname_like!=null and page.params.nickname_like!=''">
+                and nickname like concat(#{page.params.nickname_like},'%')
+            </if>
+            <if test="po.gender!=null">
+                and gender=#{po.gender}
+            </if>
+            <if test="po.state!=null">
+                and state=#{po.state}
+            </if>
+            <if test="po.systemFlag!=null">
+                and system_flag=#{po.systemFlag}
+            </if>
+            <if test="page.params.createTime_lt!=null">
+                and create_time &lt;= #{page.params.createTime_lt}
+            </if>
+            <if test="page.params.createTime_gt!=null">
+                and create_time &gt;= #{page.params.createTime_gt}
+            </if>
+            <if test="page.params.updateTime_lt!=null">
+                and update_time &lt;= #{page.params.updateTime_lt}
+            </if>
+            <if test="page.params.updateTime_gt!=null">
+                and update_time &gt;= #{page.params.updateTime_gt}
+            </if>
+        </where>
+        <if test="page.sortByField!=null and page.sortByWay!=null">
+            order by ${page.sortByField} ${page.sortByWay}
+        </if>
+    </select>
+
+</mapper>

@@ -33,3 +33,10 @@ dependencies:
 
 devDependencies:
 +    "@types/codemirror": "^5.60.15"
+
+问题记录:
+el-form 表单enter自动提交导致改变路由参数从而使页面发生变化
+原因: W3C标准规定：当一个 form 表单只有一个输入框的时候，在输入框中按下回车就应该提交这个表单。
+解决方案:
+  <el-form @submit.prevent>
+  <PlusSearch :prevent="true">

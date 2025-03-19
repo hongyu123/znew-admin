@@ -226,9 +226,6 @@ public class GenService{
         configuration.setDirectoryForTemplateLoading(new File(getClass().getClassLoader().getResource("gen").getPath()));
         configuration.setDefaultEncoding("utf-8");
         configuration.setClassicCompatible(true);
-        //模板
-        String outDir = genProperty.getPath()+File.separator+table.getBeanName()+File.separator;
-        Files.createDirectories(Paths.get(outDir));
         //输出文件
         Template template = configuration.getTemplate(templateName+".ftl");
         try(StringWriter out = new StringWriter()){
@@ -379,9 +376,6 @@ public class GenService{
         configuration.setDirectoryForTemplateLoading(new File(getClass().getClassLoader().getResource("gen").getPath()));
         configuration.setDefaultEncoding("utf-8");
         configuration.setClassicCompatible(true);
-        //模板
-        String outDir = genProperty.getPath()+File.separator+table.getBeanName()+File.separator;
-        Files.createDirectories(Paths.get(outDir));
         Template template = configuration.getTemplate(templateName+".ftl");
         try(StringWriter out = new StringWriter()){
             template.process(table, out);
