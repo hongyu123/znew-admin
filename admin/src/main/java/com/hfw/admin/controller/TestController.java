@@ -1,5 +1,6 @@
 package com.hfw.admin.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.xbatis.core.mybatis.mapper.context.Pager;
 import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,7 +22,7 @@ import java.util.List;
 @RestController
 public class TestController {
 
-    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    //@PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public String login(String username, String password){
         String res = "{\n" +
                 "  \"success\": true,\n" +
@@ -53,6 +54,7 @@ public class TestController {
     @Autowired
     private GenMapper genMapper;
 
+    @SaCheckPermission("user:add")
     @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
     public String test() throws JsonProcessingException {
         Page<Table> page = genMapper.tableList(Page.of(1,1), "znew", null);

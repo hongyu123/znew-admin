@@ -8,7 +8,7 @@ package com.hfw.model.utils;
 public class ValidUtil {
     public static final String phoneReg = "^\\d{11}$";
     public static final String emailReg = "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
-    public static final String passwordReg = "^\\w{6,16}$";
+    public static final String passwordReg = "^\\w{8,18}$";
     /**
      * 手机号码校验 11位
      * @param phone 手机号

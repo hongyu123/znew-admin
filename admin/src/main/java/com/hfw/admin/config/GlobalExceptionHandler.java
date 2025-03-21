@@ -1,6 +1,9 @@
 package com.hfw.admin.config;
 
+import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.NotPermissionException;
 import com.hfw.model.entity.GeneralException;
+import com.hfw.model.enums.sys.ValidCode;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.utils.ChainMap;
 import jakarta.validation.ConstraintViolation;
@@ -77,6 +80,15 @@ public class GlobalExceptionHandler {
     public Result<Void> constraintViolationException(ConstraintViolationException e){
         String errorMessage = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining(";"));
         return Result.error(errorMessage);
+    }
+
+    @ExceptionHandler(NotLoginException.class)
+    public Result<Void> notLoginException(){
+        return Result.result(ValidCode.NO_LOGIN);
+    }
+    @ExceptionHandler(NotPermissionException.class)
+    public Result<Void> notPermissionException(){
+        return Result.result(ValidCode.PERMISSION_DENIED);
     }
 
 }

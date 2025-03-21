@@ -25,14 +25,14 @@ public class SysAuth {
     /** 父id **/
     private Long parentId;
 
-    /** 名称 **/
+    /** 标题 **/
+    private String title;
+
+    /** 路由/权限名称 **/
     private String name;
 
-    /** 权限编码 **/
+    /** 权限编码(保留) **/
     private String code;
-
-    /** 前端权限编码 **/
-    private String webCode;
 
     /** 权限类型(菜单,目录,按钮,权限) **/
     private SysAuthEnum authType;

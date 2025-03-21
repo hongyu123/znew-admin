@@ -1,11 +1,14 @@
 package com.hfw.admin.config;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hfw.model.jackson.ObjectMapperBuilder;
+import com.hfw.service.satoken.CorsIgnoreSaInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -37,6 +40,16 @@ public class MvcConfigurer implements WebMvcConfigurer {
                 //.allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") // 允许的请求方法
                 //.allowedHeaders("content-type", "x-requested-with", "authorization") // 允许的请求头类型
                 .maxAge(1800);    // 设置请求最大有效时长，在这个时长内，重复的请求就不会发送预检请求
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // Sa-Token 登录拦截
+        registry.addInterceptor(new CorsIgnoreSaInterceptor(handle -> StpUtil.checkLogin()))
+                .addPathPatterns("/**")
+                .excludePathPatterns("/login");
+        // Sa-Token 注解权限认证拦截
+        registry.addInterceptor(new CorsIgnoreSaInterceptor()).addPathPatterns("/**");
     }
 
 }

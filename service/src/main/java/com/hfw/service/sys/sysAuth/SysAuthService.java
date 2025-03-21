@@ -3,7 +3,6 @@ package com.hfw.service.sys.sysAuth;
 import cn.xbatis.core.sql.executor.chain.QueryChain;
 import com.hfw.model.entity.Page;
 import com.hfw.model.enums.sys.EnableState;
-import com.hfw.model.enums.sys.SortByWay;
 import com.hfw.model.enums.sys.SysAuthEnum;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.po.sys.SysAuth;
@@ -59,6 +58,27 @@ public class SysAuthService {
         List<MenuVO> menus = list.stream().map(MenuVO::of).toList();
         return TreeUtil.listToTree(menus, MenuVO::getId, MenuVO::getParentId, MenuVO::setChildren,
                 (dto) -> dto.getParentId()==0 );
+    }
+
+    /**
+     * 获取用户的权限编码列表
+     * 用于用户权限认证
+     * @param id 用户id
+     * @return 权限编码列表
+     */
+    public List<String> userAuths(Long id){
+        List<SysAuth> authList = sysAuthMapper.userAuths(id, 0, "");
+        return authList.stream().map(SysAuth::getCode).toList();
+    }
+
+    /**
+     * 获取用户的权限列表
+     * 用于用户闲情
+     * @param id 用户id
+     * @return权限列表
+     */
+    public List<SysAuth> userAuthList(Long id){
+        return sysAuthMapper.userAuths(id, 0, "");
     }
 
 }

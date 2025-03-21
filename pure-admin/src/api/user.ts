@@ -1,7 +1,7 @@
 import { http } from "@/utils/http";
 
 export type UserResult = {
-  success: boolean;
+  code: number;
   data: {
     /** 头像 */
     avatar: string;

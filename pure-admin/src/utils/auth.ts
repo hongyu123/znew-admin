@@ -54,8 +54,8 @@ export function setToken(data: DataInfo<Date>) {
 
   expires > 0
     ? Cookies.set(TokenKey, cookieString, {
-        expires: (expires - Date.now()) / 86400000
-      })
+      expires: (expires - Date.now()) / 86400000
+    })
     : Cookies.set(TokenKey, cookieString);
 
   Cookies.set(
@@ -63,8 +63,8 @@ export function setToken(data: DataInfo<Date>) {
     "true",
     isRemembered
       ? {
-          expires: loginDay
-        }
+        expires: loginDay
+      }
       : {}
   );
 
@@ -124,6 +124,7 @@ export function removeToken() {
 
 /** 格式化token（jwt格式） */
 export const formatToken = (token: string): string => {
+  return token;
   return "Bearer " + token;
 };
 

@@ -153,7 +153,7 @@ import UploadImg from "@/components/Upload/Img.vue";
 
 import { enums } from "@/api/sys/common";
 import { add, edit } from "./sysUser";
-import { list as reqRoleList } from "../sysRole/sysRole";
+import { currentUserRolesWithOwn } from "../sysRole/sysRole";
 
 const genderEnums = ref([]);
 const stateEnums = ref([]);
@@ -166,7 +166,7 @@ onMounted(() => {
   enums("EnableState").then(res => {
     stateEnums.value = res.data;
   });
-  reqRoleList("Enable").then(res => {
+  currentUserRolesWithOwn().then(res => {
     roleList.value = res.data;
   });
 });

@@ -14,6 +14,7 @@ import { stringify } from "qs";
 import NProgress from "../progress";
 import { getToken, formatToken } from "@/utils/auth";
 import { useUserStoreHook } from "@/store/modules/user";
+import router from "@/router";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
@@ -81,8 +82,9 @@ class PureHttp {
           : new Promise(resolve => {
               const data = getToken();
               if (data) {
-                const now = new Date().getTime();
-                const expired = parseInt(data.expires) - now <= 0;
+                //const now = new Date().getTime();
+                //const expired = parseInt(data.expires) - now <= 0;
+                const expired = false;
                 if (expired) {
                   if (!PureHttp.isRefreshing) {
                     PureHttp.isRefreshing = true;
@@ -127,6 +129,19 @@ class PureHttp {
         NProgress.done();
 
         const data = response.data;
+        if (data.code == 100) {
+          // ElMessageBox.alert(data.message, "系统提示", {
+          //   confirmButtonText: "确定",
+          //   type: "warning",
+          //   callback: () => {
+          //     router.replace("/login");
+          //   }
+          // });
+
+          ElMessage.error(data.message);
+          router.replace("/login");
+          return Promise.reject(data);
+        }
         if (data.code == 0 || data.code == 403) {
           ElMessage.error(data.message);
           return Promise.reject(data);

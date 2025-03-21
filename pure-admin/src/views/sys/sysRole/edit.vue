@@ -58,7 +58,7 @@
           ref="authTree"
           node-key="id"
           :props="{
-            label: 'name',
+            label: 'title',
             children: 'children',
             class: customNodeClass
           }"

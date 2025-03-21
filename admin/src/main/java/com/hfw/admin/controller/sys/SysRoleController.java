@@ -3,7 +3,6 @@ package com.hfw.admin.controller.sys;
 import com.hfw.admin.log.AdminLog;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
-import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.po.sys.SysRole;
 import com.hfw.model.po.sys.SysUser;
@@ -54,9 +53,9 @@ public class SysRoleController {
         return sysRoleService.del(id);
     }
 
-    @GetMapping("/list")
-    public Result<List<SysRole>> list(@RequestParam EnableState state){
-        return Result.success( sysRoleService.list(state) );
+    @GetMapping("/currentUserRolesWithOwn")
+    public Result<List<SysRole>> currentUserRolesWithOwn(){
+        return Result.success( sysRoleService.currentUserRolesWithOwn() );
     }
 
     //查询角色下的用户

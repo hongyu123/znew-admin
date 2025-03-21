@@ -6,6 +6,8 @@ import com.hfw.model.entity.Page;
 import com.hfw.model.po.sys.SysAuth;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * 系统权限Mapper
  * @author farkle
@@ -20,5 +22,14 @@ public interface SysAuthMapper extends MybatisMapper<SysAuth> {
      */
     @Paging
     Page<SysAuth> page(@Param("page") Page<SysAuth> page, @Param("po") SysAuth po);
+
+    /**
+     * 查询用户拥有的权限
+     * @param userId 用户id
+     * @param unionOwn 是否包含自建权限
+     * @param account 用户账号
+     * @return 权限列表
+     */
+    List<SysAuth> userAuths(@Param("userId") Long userId, @Param("unionOwn") Integer unionOwn, @Param("account") String account);
 
 }

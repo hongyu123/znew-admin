@@ -7,6 +7,8 @@ import com.hfw.model.po.sys.SysRole;
 import com.hfw.model.po.sys.SysUser;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * 系统角色Mapper
  * @author farkle
@@ -26,5 +28,14 @@ public interface SysRoleMapper extends MybatisMapper<SysRole> {
      * 查询角色下的用户
      */
     Page<SysUser> users(@Param("page") Page<SysUser> page);
+
+    /**
+     * 查询用户拥有的角色
+     * @param userId 用户id
+     * @param unionOwn 是否包含自建角色
+     * @param account 用户账号
+     * @return 角色列表
+     */
+    List<SysRole> userRoles(@Param("userId") Long userId,  @Param("unionOwn") Integer unionOwn, @Param("account") String account);
 
 }

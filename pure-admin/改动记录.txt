@@ -12,7 +12,6 @@ pure-admin/src/api/sys/common.js 文件上传 枚举API
 修改
 pure-admin/src/components/RePureTableBar/src/bar.tsx 修改表格右侧工具栏
 pure-admin/src/router/modules/error.ts 500/404等异常页面路由不做菜单显示
-pure-admin/src/utils/http/index.ts
 pure-admin/.env.development
 pure-admin/src/App.vue 增加plus-pro-components中文显示
 pure-admin/src/components/ReIcon/data.ts 图标选择组件
@@ -21,6 +20,13 @@ pure-admin/src/components/ReIcon/src/Select.vue
 pure-admin/src/layout/components/lay-content/index.vue 修改.main-content
 pure-admin/src/main.ts 引入geeker.scss
 pure-admin/src/style/geeker.scss
+# 登录认证修改
+pure-admin/src/utils/http/index.ts
+pure-admin/src/api/routes.ts
+pure-admin/src/api/user.ts
+pure-admin/src/router/index.ts
+pure-admin/src/store/modules/user.ts
+pure-admin/src/utils/auth.ts
 
 package.json
 dependencies:

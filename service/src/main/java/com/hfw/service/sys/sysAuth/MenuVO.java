@@ -1,6 +1,5 @@
 package com.hfw.service.sys.sysAuth;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hfw.model.po.sys.SysAuth;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,11 +21,11 @@ public class MenuVO {
         MenuVO menuVO = new MenuVO();
         menuVO.setId(sysAuth.getId());
         menuVO.setParentId(sysAuth.getParentId());
-        menuVO.setName(sysAuth.getWebCode());
+        menuVO.setName(sysAuth.getName());
         menuVO.setPath(sysAuth.getPath());
         menuVO.setComponent(sysAuth.getComponent());
         Meta meta = new Meta();
-        meta.setTitle(sysAuth.getName());
+        meta.setTitle(sysAuth.getTitle());
         meta.setIcon(sysAuth.getIcon());
         meta.setShowLink(sysAuth.getShowFlag() != null && sysAuth.getShowFlag() == 1);
         meta.setKeepAlive(sysAuth.getCacheFlag() != null && sysAuth.getCacheFlag() == 1);

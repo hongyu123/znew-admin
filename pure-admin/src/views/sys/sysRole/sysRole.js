@@ -23,6 +23,6 @@ export const dels = ids => {
   return http.delete("/sysRole/dels", ids);
 };
 
-export const list = state => {
-  return http.get("/sysRole/list", { state });
+export const currentUserRolesWithOwn = () => {
+  return http.get("/sysRole/currentUserRolesWithOwn", {});
 };
