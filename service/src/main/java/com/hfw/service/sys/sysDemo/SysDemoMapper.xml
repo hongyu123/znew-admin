@@ -26,10 +26,10 @@
             <if test="po.birth!=null">
                 and birth=#{po.birth}
             </if>
-            <if test="page.params.registTime_lt!=null">
+            <if test="page.params.registTime_lt!=null and page.params.registTime_lt!=''">
                 and regist_time &lt;= #{page.params.registTime_lt}
             </if>
-            <if test="page.params.registTime_gt!=null">
+            <if test="page.params.registTime_gt!=null and page.params.registTime_gt!=''">
                 and regist_time &gt;= #{page.params.registTime_gt}
             </if>
             <if test="page.params.phone_like!=null and page.params.phone_like!=''">

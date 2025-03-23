@@ -1,0 +1,23 @@
+package com.hfw.model.mvc;
+
+import com.hfw.model.utils.LocalDateUtil;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.util.StringUtils;
+
+import java.time.LocalDateTime;
+
+/**
+ * @author farkle
+ * @date 2022-12-05
+ */
+public class LocalDateTimeConverter implements Converter<String, LocalDateTime> {
+
+    @Override
+    public LocalDateTime convert(String source) {
+        if(!StringUtils.hasText(source)){
+            return null;
+        }
+        return LocalDateUtil.parseDateTime(source);
+    }
+
+}

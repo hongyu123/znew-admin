@@ -16,6 +16,7 @@ public class LoginUser {
     private static final String USER = "login_user";
 
     private Long id;
+    private Long orgId;
     private String avatar;
     private String account;
     private String username; //保留,给前端用
@@ -41,6 +42,11 @@ public class LoginUser {
         long timeout = System.currentTimeMillis() + StpUtil.getTokenTimeout()*1000; //获取当前会话剩余有效期（单位：s，返回-1代表永久有效）
         loginUser.setExpires(LocalDateUtil.toLocalDateTime(timeout));
         StpUtil.getSession().set(USER, loginUser);
+    }
+
+    public static void logout(){
+        LoginUser loginUser = LoginUser.getLoginUser();
+        StpUtil.logout(loginUser.getId());// 强制指定账号注销下线
     }
 
     public static LoginUser getLoginUser(){

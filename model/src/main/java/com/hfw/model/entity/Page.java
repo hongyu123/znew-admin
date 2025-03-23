@@ -56,6 +56,10 @@ public class Page<T> implements IPager<T> {
         this.sortByWay = sortByWay;
         return this;
     }
+    public void sort(SortByWay sortByWay, String sortByField){
+        this.sortByWay = sortByWay;
+        this.sortByField = sortByField;
+    }
 
     public enum ExecuteType{
         Page, NoneCount, NonePage;

@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 日期工具类
@@ -11,6 +13,16 @@ import java.util.Date;
  * @date 2022-04-06
  */
 public class DateUtil {
+	public static Map<Integer,String> formatMap = new HashMap<>();
+	static{
+		formatMap.put(4,"yyyy");
+		formatMap.put(7,"yyyy-MM");
+		formatMap.put(10,"yyyy-MM-dd");
+		formatMap.put(13,"yyyy-MM-dd HH");
+		formatMap.put(16,"yyyy-MM-dd HH:mm");
+		formatMap.put(19,"yyyy-MM-dd HH:mm:ss");
+	}
+
 	/**
 	 * 默认日期格式-24小时
 	 */
@@ -20,23 +32,23 @@ public class DateUtil {
 	 */
 	public static final String FORMAT_12 = "yyyy-MM-dd hh:mm:ss a";
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
-	
+
 	/**
 	 * 日期转字符串
 	 * @param date 日期
 	 * @return 字符串
 	 */
-	public static String format(Date date) {
-		return format(date,DEFAULT_FORMAT);
+	public static String toString(Date date) {
+		return toString(date,DEFAULT_FORMAT);
 	}
-	
+
 	/**
 	 * 日期转字符串
 	 * @param date 日期
 	 * @param format 格式
 	 * @return 字符串
 	 */
-	public static String format(Date date, String format) {
+	public static String toString(Date date, String format) {
 		if(date==null){
 			return "";
 		}
@@ -48,7 +60,7 @@ public class DateUtil {
 	 * @param dateStr 字符串
 	 * @return 日期
 	 */
-	public static Date parse(String dateStr) throws ParseException {
+	public static Date toDate(String dateStr) throws ParseException {
 		SimpleDateFormat fmt = new SimpleDateFormat(DEFAULT_FORMAT);
 		return fmt.parse(dateStr);
 	}
@@ -58,7 +70,7 @@ public class DateUtil {
 	 * @param format 格式
 	 * @return 日期
 	 */
-	public static Date parse(String dateStr, String format) throws ParseException {
+	public static Date toDate(String dateStr, String format) throws ParseException {
 		SimpleDateFormat fmt = new SimpleDateFormat(format);
 		return fmt.parse(dateStr);
 	}
@@ -68,7 +80,7 @@ public class DateUtil {
 	 * @param date 2018-06-08T10:34:56+08:00
 	 * @return
 	 */
-	public static Date parseStandard(String date) throws ParseException {
+	public static Date parse(String date) throws ParseException {
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
 		return fmt.parse(date);
 	}
@@ -95,7 +107,7 @@ public class DateUtil {
 	 * @return
 	 */
 	public static boolean isSameDay(Date day1, Date day2){
-		return format(day1,DATE_FORMAT).equals(format(day2,DATE_FORMAT));
+		return toString(day1,DATE_FORMAT).equals(toString(day2,DATE_FORMAT));
 	}
 
 	/**
@@ -120,3 +132,4 @@ public class DateUtil {
 	}
 
 }
+

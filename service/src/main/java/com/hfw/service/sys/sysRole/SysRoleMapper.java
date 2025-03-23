@@ -25,9 +25,10 @@ public interface SysRoleMapper extends MybatisMapper<SysRole> {
     Page<SysRole> page(@Param("page") Page<SysRole> page, @Param("po") SysRole po);
 
     /**
-     * 查询角色下的用户
+     * 查询角色下已分配的用户
      */
-    Page<SysUser> users(@Param("page") Page<SysUser> page);
+    @Paging
+    Page<SysUser> users(@Param("page") Page<SysUser> page, @Param("roleId") Long roleId);
 
     /**
      * 查询用户拥有的角色
@@ -37,5 +38,7 @@ public interface SysRoleMapper extends MybatisMapper<SysRole> {
      * @return 角色列表
      */
     List<SysRole> userRoles(@Param("userId") Long userId,  @Param("unionOwn") Integer unionOwn, @Param("account") String account);
-
+    //用户拥有的角色分页
+    @Paging
+    Page<SysRole> userRolePage(@Param("page") Page<SysRole> page, @Param("po") SysRole po);
 }

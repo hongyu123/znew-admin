@@ -3,10 +3,13 @@ package com.hfw.admin.config;
 import cn.dev33.satoken.stp.StpUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hfw.model.jackson.ObjectMapperBuilder;
+import com.hfw.model.mvc.LocalDateConverter;
+import com.hfw.model.mvc.LocalDateTimeConverter;
 import com.hfw.service.satoken.CorsIgnoreSaInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -24,6 +27,11 @@ public class MvcConfigurer implements WebMvcConfigurer {
         registry.addResourceHandler("/upload/**").addResourceLocations("file:"+storagePath);
     }
 
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new LocalDateConverter());
+        registry.addConverter(new LocalDateTimeConverter());
+    }
 
     //jackson返回配置
     @Bean
@@ -47,7 +55,7 @@ public class MvcConfigurer implements WebMvcConfigurer {
         // Sa-Token 登录拦截
         registry.addInterceptor(new CorsIgnoreSaInterceptor(handle -> StpUtil.checkLogin()))
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login");
+                .excludePathPatterns("/login","/test");
         // Sa-Token 注解权限认证拦截
         registry.addInterceptor(new CorsIgnoreSaInterceptor()).addPathPatterns("/**");
     }

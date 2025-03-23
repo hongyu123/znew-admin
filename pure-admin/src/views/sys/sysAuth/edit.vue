@@ -31,14 +31,13 @@
           :props="props"
           :data="tableData"
           :render-after-expand="false"
-          show-checkbox
           check-strictly
           node-key="id"
         />
       </el-form-item>
-      <el-form-item label="标题" prop="name" class="plus-form-item">
+      <el-form-item label="标题" prop="title" class="plus-form-item">
         <el-input
-          v-model="row.name"
+          v-model="row.title"
           maxlength="50"
           show-word-limit
           placeholder="请填写标题"
@@ -46,17 +45,9 @@
           class="plus-form-item-field"
         />
       </el-form-item>
-      <el-form-item
-        :label="
-          row.authType == 'Menu' || row.authType == 'Dir'
-            ? '路由名称'
-            : '前端权限编码'
-        "
-        prop="webCode"
-        class="plus-form-item"
-      >
+      <el-form-item label="名称" prop="name" class="plus-form-item">
         <el-input
-          v-model="row.webCode"
+          v-model="row.name"
           maxlength="50"
           show-word-limit
           placeholder="请填写名称"
@@ -64,12 +55,12 @@
           class="plus-form-item-field"
         />
       </el-form-item>
-      <el-form-item label="后端权限编码" prop="code" class="plus-form-item">
+      <el-form-item label="权限编码" prop="code" class="plus-form-item">
         <el-input
           v-model="row.code"
           maxlength="50"
           show-word-limit
-          placeholder="请填写后端权限"
+          placeholder="请填写权限"
           clearable
           class="plus-form-item-field"
         />
@@ -231,8 +222,9 @@ onMounted(() => {
 });
 
 const rules = reactive({
+  title: [{ required: true, message: "请填写标题" }],
   name: [{ required: true, message: "请填写名称" }],
-  webCode: [{ required: true, message: "请填写前端权限编码" }],
+  code: [{ required: false, message: "请填写权限编码" }],
   authType: [{ required: true, message: "请填写权限类型" }],
   state: [{ required: true, message: "请填写状态" }]
 });
@@ -248,7 +240,7 @@ const row = ref({});
 //父级节点数据
 const tableData = ref([]);
 const props = {
-  label: "name",
+  label: "title",
   children: "children"
 };
 

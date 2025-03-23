@@ -63,10 +63,30 @@
         join sys_user_role ur on r.id = ur.role_id
         where r.state = 1
         and ur.user_id = #{userId}
+        order by r.sort
         <if test="unionOwn==1">
         union
         select * from sys_role where state = 1 and create_user = #{account}
         </if>
+    </select>
+    <select id="userRolePage" resultType="com.hfw.model.po.sys.SysRole">
+        select r.*
+        from sys_role r
+        join sys_user_role ur on r.id = ur.role_id
+        <if test="po.name!=null and po.name!=''">
+            and name=#{po.name}
+        </if>
+        <if test="page.params.name_like!=null and page.params.name_like!=''">
+            and name like concat(#{page.params.name_like},'%')
+        </if>
+        <if test="po.code!=null and po.code!=''">
+            and code=#{po.code}
+        </if>
+        where r.state = 1
+        and ur.user_id=#{po.id}
+        order by r.sort
+        union
+        select * from sys_role where state=1 and create_user=#{po.createUser}
     </select>
 
 </mapper>

@@ -67,12 +67,12 @@
         border
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       >
-        <el-table-column prop="name" label="标题">
+        <el-table-column prop="title" label="标题">
           <template #default="scope">
             <span v-if="scope.row.highLight" style="color: #f56c6c">{{
-              scope.row.name
+              scope.row.title
             }}</span>
-            <span v-else>{{ scope.row.name }}</span>
+            <span v-else>{{ scope.row.title }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="icon" label="菜单图标">
@@ -86,10 +86,11 @@
             </el-icon>
           </template>
         </el-table-column>
-        <el-table-column prop="webCode" label="名称" />
-        <el-table-column prop="authTypeDesc" label="类型" />
-        <el-table-column prop="sort" label="排序" />
+        <el-table-column prop="name" label="名称" />
         <el-table-column prop="path" label="路由" />
+        <el-table-column prop="code" label="权限编码" />
+        <!-- <el-table-column prop="authTypeDesc" label="类型" /> -->
+        <el-table-column prop="sort" label="排序" />
         <el-table-column prop="showFlag" label="是否显示">
           <template #default="scope">
             <el-tag v-if="scope.row.showFlag == 1">显示</el-tag>
@@ -98,7 +99,9 @@
         </el-table-column>
         <el-table-column prop="state" label="状态">
           <template #default="scope">
-            <el-tag v-if="scope.row.state == 'Enable'">启用</el-tag>
+            <el-tag v-if="scope.row.state == 'Enable'" type="success">
+              启用
+            </el-tag>
             <el-tag v-else type="info">禁用</el-tag>
           </template>
         </el-table-column>

@@ -47,6 +47,9 @@ public class SysLoginLog {
 
     /** 登出类型 **/
     private LogoutType logoutType;
+    public String getLogoutTypeDesc(){
+        return logoutType==null ?"":logoutType.getDesc();
+    }
 
     /** 登出时间 **/
     private java.time.LocalDateTime logoutTime;

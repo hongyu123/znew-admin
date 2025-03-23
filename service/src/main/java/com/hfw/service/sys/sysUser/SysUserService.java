@@ -13,11 +13,15 @@ import com.hfw.model.utils.ValidUtil;
 import com.hfw.service.dto.LoginParam;
 import com.hfw.service.dto.LoginUser;
 import com.hfw.service.sys.sysAuth.SysAuthService;
+import com.hfw.service.sys.sysLoginLog.SysLoginLogService;
 import com.hfw.service.sys.sysRole.SysRoleService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +36,8 @@ public class SysUserService {
     private SysRoleService sysRoleService;
     @Autowired
     private SysAuthService sysAuthService;
+    @Autowired
+    private SysLoginLogService sysLoginLogService;
 
     public Page<SysUser> page(Page<SysUser> page, SysUser po) {
         return sysUserMapper.page(page, po);
@@ -149,19 +155,25 @@ public class SysUserService {
      * @return 登录信息
      */
     public Result<LoginUser> login(LoginParam loginParam){
+        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = sra.getRequest();
         SysUser sysUser = QueryChain.of(sysUserMapper).eq(SysUser::getAccount, loginParam.getUsername()).get();
         if(sysUser==null){
+            sysLoginLogService.login(null,loginParam.getUsername(),"用户名不存在", request);
             return Result.error("用户名/密码错误!");
         }
         if(EnableState.Enable != sysUser.getState()){
+            sysLoginLogService.login(null,loginParam.getUsername(),"被禁用的账号", request);
             return Result.error("被禁用的账号!");
         }
         if(!BCrypt.checkpw(loginParam.getPassword(), sysUser.getPassword())){
+            sysLoginLogService.login(null,loginParam.getUsername(),"密码错误", request);
             return Result.error("用户名/密码错误!");
         }
         LoginUser loginUser = LoginUser.of(sysUser);
         loginUser.setPermissions(sysAuthService.userAuths(loginUser.getId()));
         LoginUser.store(loginUser);
+        sysLoginLogService.login(loginUser.getAccessToken(),loginUser.getUsername(),"登录成功", request);
         return Result.success(loginUser);
     }
 

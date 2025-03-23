@@ -60,21 +60,21 @@ public class SysRoleController {
 
     //查询角色下的用户
     @GetMapping("/users")
-    public PageResult<SysUser> users(Page<SysUser> page){
-        return PageResult.of( sysRoleService.users(page) );
+    public PageResult<SysUser> users(Page<SysUser> page, @RequestParam Long roleId){
+        return PageResult.of( sysRoleService.users(page, roleId) );
     }
 
     @AdminLog("角色授权用户")
     @PostMapping("/users")
-    public Result<Void> addUsers(@RequestBody SysUserRole sysUserRole){
-        sysRoleService.addUsers(sysUserRole);
+    public Result<Void> allocateUsers(@RequestBody SysUserRole sysUserRole){
+        sysRoleService.allocateUsers(sysUserRole);
         return Result.success();
     }
 
     @AdminLog("角色取消授权用户")
     @DeleteMapping("/users")
-    public Result<Void> delUsers(@RequestBody SysUserRole sysUserRole){
-        sysRoleService.delUsers(sysUserRole);
+    public Result<Void> cancelUsers(@RequestBody SysUserRole sysUserRole){
+        sysRoleService.cancelUsers(sysUserRole);
         return Result.success();
     }
 

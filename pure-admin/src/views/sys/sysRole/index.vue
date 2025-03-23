@@ -78,15 +78,8 @@
           @page-current-change="handleCurrentChange"
         >
           <template #operation="{ row }">
-            <el-button
-              class="reset-margin !outline-none"
-              link
-              type="primary"
-              :size="size"
-              :icon="useRenderIcon(EpView)"
-              @click="openEdit(row, true)"
-            >
-              详情
+            <el-button type="primary" link @click="toUserRole(row)">
+              授权用户
             </el-button>
             <el-button
               class="reset-margin"
@@ -125,11 +118,13 @@ import EpEditPen from "@iconify-icons/ep/edit-pen";
 import EpView from "@iconify-icons/ep/view";
 
 import { ref, reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { PlusSearch } from "plus-pro-components";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useQueryTable } from "@/hooks/useQueryTable";
+import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 
 import EditDrawer from "./edit.vue";
 import { enums } from "@/api/sys/common";
@@ -171,7 +166,8 @@ const tableColumns = [
   },
   {
     prop: "sort",
-    label: "排序"
+    label: "排序",
+    sortable: "sort"
   },
   {
     prop: "state",
@@ -237,6 +233,22 @@ const handleDeleteBatch = async () => {
   selectedData.value = [];
   tableRef.value.getTableRef().clearSelection();
   getTableList();
+};
+
+//跳转授权用户
+const router = useRouter();
+const toUserRole = row => {
+  const parameter = { roleId: row.id };
+  useMultiTagsStoreHook().handleTags("push", {
+    path: "/sysRole/users",
+    name: "sysUserRole",
+    param: parameter,
+    meta: {
+      title: `[${row.name}]角色授权用户`
+    }
+  });
+  router.push({ name: "sysUserRole", params: parameter });
+  //router.push(`${params.id}`);
 };
 
 const {

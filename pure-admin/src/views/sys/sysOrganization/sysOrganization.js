@@ -16,9 +16,13 @@ export const del = id => {
   return http.delete(
     "/sysOrganization",
     { id },
-    { headers: { "Content-Type": "multipart/form-data" } }
+    { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
   );
 };
 export const dels = ids => {
   return http.delete("/sysOrganization/dels", ids);
+};
+
+export const tree = state => {
+  return http.get("/sysOrganization/tree", { state });
 };

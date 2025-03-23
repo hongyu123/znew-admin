@@ -1,7 +1,7 @@
 package com.hfw.service.sys.sysDemo;
 
 import com.alibaba.fastjson2.JSON;
-import com.hfw.model.UploadFile;
+import com.hfw.model.entity.UploadFile;
 import com.hfw.model.po.sys.SysDemo;
 import com.hfw.model.utils.BeanCopierUtil;
 import lombok.Getter;

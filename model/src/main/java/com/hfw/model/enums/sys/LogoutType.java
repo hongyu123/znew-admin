@@ -6,9 +6,10 @@ package com.hfw.model.enums.sys;
  * @date 2022-12-17
  */
 public enum LogoutType implements BaseEnum {
-    expire(1,"会话过期")
-    ,logout(2, "用户登出")
-    ,pushed_off(3, "被挤下线")
+    Expire(1,"会话过期")
+    ,Logout(2, "用户登出")
+    ,PushedOff(3, "被挤下线")
+    ,Kickout(4, "被踢下线")
     ;
 
     private final int code;

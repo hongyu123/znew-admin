@@ -39,6 +39,9 @@ public class SysUser {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    /** 组织机构 **/
+    private Long orgId;
+
     /** 手机号码 **/
     @Pattern(regexp = ValidUtil.phoneReg, message = "手机号码格式错误!")
     private String phone;

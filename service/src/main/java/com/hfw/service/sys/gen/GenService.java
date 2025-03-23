@@ -5,7 +5,7 @@ import com.hfw.model.jackson.Result;
 import com.hfw.model.po.sys.SysGenColumn;
 import com.hfw.model.po.sys.SysGenTable;
 import com.hfw.model.utils.StrUtil;
-import com.hfw.service.support.EnumScan;
+import com.hfw.service.component.EnumScan;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.springframework.beans.factory.annotation.Autowired;

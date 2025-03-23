@@ -16,7 +16,7 @@ export const del = id => {
   return http.delete(
     "/sysDemo",
     { id },
-    { headers: { "Content-Type": "multipart/form-data" } }
+    { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
   );
 };
 export const dels = ids => {

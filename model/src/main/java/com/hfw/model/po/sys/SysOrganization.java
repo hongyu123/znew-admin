@@ -1,11 +1,14 @@
 package com.hfw.model.po.sys;
 
+import cn.xbatis.db.annotations.Ignore;
 import cn.xbatis.db.annotations.Table;
 import cn.xbatis.db.annotations.TableField;
 import cn.xbatis.db.annotations.TableId;
 import com.hfw.model.enums.sys.EnableState;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
 * 组织机构
@@ -21,6 +24,9 @@ public class SysOrganization {
 
     /** 父部门id */
     private Long pid;
+
+    /** 祖先路径 */
+    private String ancestors;
 
     /** 类型(1组织机构,2部门) */
     private Integer type;
@@ -59,4 +65,6 @@ public class SysOrganization {
     @TableField(updateDefaultValue = "{UPDATE_TIME}")
     private java.time.LocalDateTime updateTime;
 
+    @Ignore
+    private List<SysOrganization> children;
 }

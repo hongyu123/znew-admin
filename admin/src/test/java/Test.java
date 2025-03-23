@@ -2,18 +2,26 @@ import cn.dev33.satoken.secure.BCrypt;
 import com.hfw.model.enums.sys.Gender;
 import com.hfw.model.po.sys.SysUser;
 import com.hfw.model.utils.BeanUtil;
+import com.hfw.model.utils.RsaUtil;
+import com.hfw.model.utils.SignUtil;
 import com.hfw.service.dto.LoginUser;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class Test {
     public static void main(String[] args) throws Exception {
         //BeanUtil.genBeanCopy(LoginUser.class, SysUser.class);
-// 使用方法
-        String origin = BCrypt.hashpw("123456", BCrypt.gensalt(12));
-        System.out.println(BCrypt.hashpw("123456", BCrypt.gensalt(12)));
-        System.out.println(origin);
-        // 使用checkpw方法检查被加密的字符串是否与原始字符串匹配：
-        boolean res = BCrypt.checkpw("123456",origin);
-        System.out.println(res);
+        RsaUtil rsa = new RsaUtil();
+        String data = "1";
+        rsa.generateKey();
+        System.out.println(rsa.getPublicKey());
+        System.out.println(rsa.getPrivateKey());
+        String ciphertext = rsa.encryptByPrivateKey(data);
+        System.out.println(ciphertext);
+        System.out.println(rsa.decryptByPublicKey(ciphertext));
     }
 
 }

@@ -16,7 +16,7 @@ export const del = id => {
   return http.delete(
     "/sysRole",
     { id },
-    { headers: { "Content-Type": "multipart/form-data" } }
+    { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
   );
 };
 export const dels = ids => {
@@ -25,4 +25,14 @@ export const dels = ids => {
 
 export const currentUserRolesWithOwn = () => {
   return http.get("/sysRole/currentUserRolesWithOwn", {});
+};
+
+export const users = params => {
+  return http.get("/sysRole/users", params);
+};
+export const allocateUsers = data => {
+  return http.post("/sysRole/users", data);
+};
+export const cancelUsers = data => {
+  return http.delete("/sysRole/users", data);
 };

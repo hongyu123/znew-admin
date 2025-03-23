@@ -31,7 +31,7 @@ public class SysAuth {
     /** 路由/权限名称 **/
     private String name;
 
-    /** 权限编码(保留) **/
+    /** 权限编码 **/
     private String code;
 
     /** 权限类型(菜单,目录,按钮,权限) **/

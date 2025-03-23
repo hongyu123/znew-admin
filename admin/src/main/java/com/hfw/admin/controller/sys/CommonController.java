@@ -4,7 +4,7 @@ import com.hfw.admin.utils.ResultUtil;
 import com.hfw.model.enums.sys.BaseEnum;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.utils.ChainMap;
-import com.hfw.service.support.EnumScan;
+import com.hfw.service.component.EnumScan;
 import com.hfw.service.sys.sysUpload.SysUploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

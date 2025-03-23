@@ -5,8 +5,10 @@ import com.hfw.model.entity.Page;
 import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.enums.sys.SysAuthEnum;
 import com.hfw.model.jackson.Result;
+import com.hfw.model.mapper.CommonMapper;
 import com.hfw.model.po.sys.SysAuth;
 import com.hfw.model.utils.TreeUtil;
+import com.hfw.service.dto.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,8 @@ import java.util.List;
 public class SysAuthService {
     @Autowired
     private SysAuthMapper sysAuthMapper;
+    @Autowired
+    private CommonMapper commonMapper;
 
     public Page<SysAuth> page(Page<SysAuth> page, SysAuth po) {
         return sysAuthMapper.page(page, po);
@@ -47,38 +51,58 @@ public class SysAuthService {
         return Result.result( sysAuthMapper.deleteById(id) );
     }
 
-    public List<SysAuth> treeList(EnableState state){
-        List<SysAuth> list = QueryChain.of(sysAuthMapper).eq(state!=null, SysAuth::getState, state).orderBy(SysAuth::getSort).list();
-        return TreeUtil.listToTree(list, SysAuth::getId, SysAuth::getParentId, SysAuth::setChildren,
-                (dto) -> dto.getParentId()==0 );
-    }
-
-    public List<MenuVO> menus(){
-        List<SysAuth> list = QueryChain.of(sysAuthMapper).eq(SysAuth::getState, EnableState.Enable).in(SysAuth::getAuthType, SysAuthEnum.Dir, SysAuthEnum.Menu).orderBy(SysAuth::getSort).list();
-        List<MenuVO> menus = list.stream().map(MenuVO::of).toList();
-        return TreeUtil.listToTree(menus, MenuVO::getId, MenuVO::getParentId, MenuVO::setChildren,
-                (dto) -> dto.getParentId()==0 );
-    }
-
     /**
      * 获取用户的权限编码列表
      * 用于用户权限认证
-     * @param id 用户id
+     * @param userId 用户id
      * @return 权限编码列表
      */
-    public List<String> userAuths(Long id){
-        List<SysAuth> authList = sysAuthMapper.userAuths(id, 0, "");
+    public List<String> userAuths(Long userId){
+        List<SysAuth> authList = sysAuthMapper.userAuths(userId, 0, "",0);
         return authList.stream().map(SysAuth::getCode).toList();
     }
 
     /**
-     * 获取用户的权限列表
-     * 用于用户闲情
-     * @param id 用户id
-     * @return权限列表
+     * 获取角色的权限列表
+     * 用于角色详情
+     * @param roleId 角色id
+     * @return 权限列表
      */
-    public List<SysAuth> userAuthList(Long id){
-        return sysAuthMapper.userAuths(id, 0, "");
+    public List<SysAuth> roleAuths(Long roleId){
+        return sysAuthMapper.roleAuths(roleId);
+    }
+
+    /**
+     * 获取当前用户的权限列表(包含自建的)
+     * 用于给其他角色分配权限
+     * @return 权限列表
+     */
+    public List<SysAuth> currentUserAuthsWithOwn(EnableState state){
+        List<SysAuth> list = null;
+        LoginUser loginUser = LoginUser.getLoginUser();
+        if(loginUser.getId() == 1){
+            list= QueryChain.of(sysAuthMapper).eq(state!=null, SysAuth::getState, EnableState.Enable).orderBy(SysAuth::getSort).list();
+        }else{
+            list = sysAuthMapper.userAuths(loginUser.getId(),1, loginUser.getAccount(), 0);
+        }
+        return TreeUtil.listToTree(list, SysAuth::getId, SysAuth::getParentId, SysAuth::setChildren,
+                (dto) -> dto.getParentId()==0 );
+    }
+
+    /**
+     * 菜单列表
+     */
+    public List<MenuVO> menus(){
+        List<SysAuth> list = null;
+        LoginUser loginUser = LoginUser.getLoginUser();
+        if(loginUser.getId() == 1){
+            list = QueryChain.of(sysAuthMapper).eq(SysAuth::getState, EnableState.Enable).in(SysAuth::getAuthType, SysAuthEnum.Dir, SysAuthEnum.Menu).orderBy(SysAuth::getSort).list();
+        }else{
+            list = sysAuthMapper.userAuths(loginUser.getId(),0, "", 1);
+        }
+        List<MenuVO> menus = list.stream().map(MenuVO::of).toList();
+        return TreeUtil.listToTree(menus, MenuVO::getId, MenuVO::getParentId, MenuVO::setChildren,
+                (dto) -> dto.getParentId()==0 );
     }
 
 }

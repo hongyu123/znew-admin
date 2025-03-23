@@ -7,6 +7,6 @@ package com.hfw.model.enums.sys;
  * @date 2022-04-06
  */
 public interface BaseEnum {
-    public int getCode();
-    public String getDesc();
+    int getCode();
+    String getDesc();
 }

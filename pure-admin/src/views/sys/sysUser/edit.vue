@@ -44,6 +44,16 @@
           class="plus-form-item-field"
         />
       </el-form-item>
+      <el-form-item label="组织机构" prop="orgId" class="plus-form-item">
+        <el-tree-select
+          v-model="row.orgId"
+          :props="{ label: 'name', children: 'children' }"
+          :data="treeSelectData"
+          :render-after-expand="false"
+          check-strictly
+          node-key="id"
+        />
+      </el-form-item>
       <el-form-item label="手机号码" prop="phone" class="plus-form-item">
         <el-input
           v-model="row.phone"
@@ -153,8 +163,10 @@ import UploadImg from "@/components/Upload/Img.vue";
 
 import { enums } from "@/api/sys/common";
 import { add, edit } from "./sysUser";
+import { tree } from "../sysOrganization/sysOrganization";
 import { currentUserRolesWithOwn } from "../sysRole/sysRole";
 
+const treeSelectData = ref([]);
 const genderEnums = ref([]);
 const stateEnums = ref([]);
 //角色列表
@@ -165,6 +177,9 @@ onMounted(() => {
   });
   enums("EnableState").then(res => {
     stateEnums.value = res.data;
+  });
+  tree("Enable").then(res => {
+    treeSelectData.value = res.data;
   });
   currentUserRolesWithOwn().then(res => {
     roleList.value = res.data;

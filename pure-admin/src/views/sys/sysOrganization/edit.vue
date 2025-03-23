@@ -15,18 +15,20 @@
       :model="row"
       :hide-required-asterisk="drawerProps.isView"
     >
-      <el-form-item label="父部门id" prop="pid" class="plus-form-item">
-        <el-input-number
+      <el-form-item label="父部门" prop="pid" class="plus-form-item">
+        <el-tree-select
           v-model="row.pid"
-          :min="0"
-          clearable
-          class="plus-form-item-field"
+          :props="{ label: 'name', children: 'children' }"
+          :data="treeSelectData"
+          :render-after-expand="false"
+          check-strictly
+          node-key="id"
         />
       </el-form-item>
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="row.type">
-          <el-radio :value="1">是</el-radio>
-          <el-radio :value="0">否</el-radio>
+          <el-radio :value="1">组织机构</el-radio>
+          <el-radio :value="2">部门</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="部门名称" prop="name" class="plus-form-item">
@@ -111,7 +113,9 @@ import { ref, reactive, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 
 import { enums } from "@/api/sys/common";
-import { add, edit } from "./SysOrganization";
+import { add, edit, tree } from "./SysOrganization";
+
+const treeSelectData = ref([]);
 const stateEnums = ref([]);
 onMounted(() => {
   enums("EnableState").then(res => {
@@ -135,6 +139,9 @@ const row = ref({});
 
 // 接收父组件传过来的参数
 const acceptParams = (rowData, getTableList, isView) => {
+  tree("Enable").then(res => {
+    treeSelectData.value = res.data;
+  });
   row.value = rowData;
   drawerProps.value.getTableList = getTableList;
   drawerProps.value.isView = isView;

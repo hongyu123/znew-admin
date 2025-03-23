@@ -1,118 +1,129 @@
 <template>
-  <div class="main">
-    <PlusSearch
-      v-show="showSearch"
-      v-model="queryParams"
-      class="bg-bg_color px-8 py-[12px]"
-      :columns="searchColumns"
-      :show-number="5"
-      label-width="80"
-      label-position="right"
-      :colProps="colProps"
-      :prevent="true"
-      @change="handleSearchChange"
-      @search="handleSearch"
-      @reset="handleReset"
-      @keydown.enter="handleSearch"
+  <div :class="['flex', 'justify-between', deviceDetection() && 'flex-wrap']">
+    <tree
+      ref="treeRef"
+      :class="['mr-2', deviceDetection() ? 'w-full' : 'min-w-[200px]']"
+      :treeData="treeData"
+      :treeLoading="treeLoading"
+      @tree-select="onTreeSelect"
     />
-
-    <PureTableBar
-      title="系统用户"
-      :columns="tableColumns"
-      @refresh="handleSearch"
-      @showSearch="onShowSearch"
+    <div
+      :class="[deviceDetection() ? ['w-full', 'mt-2'] : 'w-[calc(100%-200px)]']"
     >
-      <template #buttons>
-        <div v-show="selectedData.length > 0" class="flex-auto">
-          <span
-            style="font-size: var(--el-font-size-base)"
-            class="text-[rgba(42,46,54,0.5)] dark:text-[rgba(220,220,242,0.5)]"
+      <PlusSearch
+        v-show="showSearch"
+        v-model="queryParams"
+        class="bg-bg_color px-8 py-[12px]"
+        :columns="searchColumns"
+        :show-number="5"
+        label-width="80"
+        label-position="right"
+        :colProps="colProps"
+        :prevent="true"
+        @change="handleSearchChange"
+        @search="handleSearch"
+        @reset="handleReset"
+        @keydown.enter="handleSearch"
+      />
+
+      <PureTableBar
+        title="系统用户"
+        :columns="tableColumns"
+        @refresh="handleSearch"
+        @showSearch="onShowSearch"
+      >
+        <template #buttons>
+          <div v-show="selectedData.length > 0" class="flex-auto">
+            <span
+              style="font-size: var(--el-font-size-base)"
+              class="text-[rgba(42,46,54,0.5)] dark:text-[rgba(220,220,242,0.5)]"
+            >
+              已选 {{ selectedData.length }} 项
+            </span>
+            <el-button type="primary" text @click="onSelectionCancel"
+              >取消选择</el-button
+            >
+          </div>
+          <el-button
+            v-show="selectedData.length > 0"
+            type="danger"
+            plain
+            @click="handleDeleteBatch"
           >
-            已选 {{ selectedData.length }} 项
-          </span>
-          <el-button type="primary" text @click="onSelectionCancel"
-            >取消选择</el-button
+            批量删除
+          </el-button>
+          <el-button
+            type="primary"
+            :icon="useRenderIcon(EpCirclePlus)"
+            @click="openEdit()"
           >
-        </div>
-        <el-button
-          v-show="selectedData.length > 0"
-          type="danger"
-          plain
-          @click="handleDeleteBatch"
-        >
-          批量删除
-        </el-button>
-        <el-button
-          type="primary"
-          :icon="useRenderIcon(EpCirclePlus)"
-          @click="openEdit()"
-        >
-          新增系统用户
-        </el-button>
-      </template>
-      <template v-slot="{ size, dynamicColumns }">
-        <pure-table
-          ref="tableRef"
-          row-key="id"
-          align-whole="center"
-          table-layout="auto"
-          :loading="loading"
-          :size="size"
-          adaptive
-          :adaptiveConfig="adaptiveConfig"
-          :data="dataList"
-          :columns="dynamicColumns"
-          :pagination="{
-            background: true,
-            total,
-            currentPage: queryParams.pageNumber,
-            pageSize: queryParams.pageSize,
-            size
-          }"
-          :header-cell-style="{
-            background: 'var(--el-fill-color-light)',
-            color: 'var(--el-text-color-primary)'
-          }"
-          @sort-change="handleSortChange"
-          @selection-change="handleSelectionChange"
-          @page-size-change="handleSizeChange"
-          @page-current-change="handleCurrentChange"
-        >
-          <template #operation="{ row }">
-            <el-button
-              class="reset-margin !outline-none"
-              link
-              type="primary"
-              :size="size"
-              :icon="useRenderIcon(EpView)"
-              @click="openEdit(row, true)"
-            >
-              详情
-            </el-button>
-            <el-button
-              class="reset-margin"
-              link
-              type="primary"
-              :size="size"
-              :icon="useRenderIcon(EpEditPen)"
-              @click="openEdit(row)"
-            >
-              编辑
-            </el-button>
-            <el-button
-              class="reset-margin"
-              link
-              type="danger"
-              :size="size"
-              :icon="useRenderIcon(EpDelete)"
-              @click="handleDelete(row)"
-            >
-              删除
-            </el-button>
-          </template>
-        </pure-table>
-      </template>
-    </PureTableBar>
+            新增系统用户
+          </el-button>
+        </template>
+        <template v-slot="{ size, dynamicColumns }">
+          <pure-table
+            ref="tableRef"
+            row-key="id"
+            align-whole="center"
+            table-layout="auto"
+            :loading="loading"
+            :size="size"
+            adaptive
+            :adaptiveConfig="adaptiveConfig"
+            :data="dataList"
+            :columns="dynamicColumns"
+            :pagination="{
+              background: true,
+              total,
+              currentPage: queryParams.pageNumber,
+              pageSize: queryParams.pageSize,
+              size
+            }"
+            :header-cell-style="{
+              background: 'var(--el-fill-color-light)',
+              color: 'var(--el-text-color-primary)'
+            }"
+            @sort-change="handleSortChange"
+            @selection-change="handleSelectionChange"
+            @page-size-change="handleSizeChange"
+            @page-current-change="handleCurrentChange"
+          >
+            <template #operation="{ row }">
+              <el-button
+                class="reset-margin !outline-none"
+                link
+                type="primary"
+                :size="size"
+                :icon="useRenderIcon(EpView)"
+                @click="openEdit(row, true)"
+              >
+                详情
+              </el-button>
+              <el-button
+                class="reset-margin"
+                link
+                type="primary"
+                :size="size"
+                :icon="useRenderIcon(EpEditPen)"
+                @click="openEdit(row)"
+              >
+                编辑
+              </el-button>
+              <el-button
+                class="reset-margin"
+                link
+                type="danger"
+                :size="size"
+                :icon="useRenderIcon(EpDelete)"
+                @click="handleDelete(row)"
+              >
+                删除
+              </el-button>
+            </template>
+          </pure-table>
+        </template>
+      </PureTableBar>
+    </div>
     <EditDrawer ref="editDrawerRef" />
   </div>
 </template>
@@ -131,15 +142,30 @@ import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useQueryTable } from "@/hooks/useQueryTable";
+import { deviceDetection } from "@pureadmin/utils";
 
+import tree from "./tree.vue";
 import EditDrawer from "./edit.vue";
 import { enums } from "@/api/sys/common";
 import { page, detail, del, dels } from "./sysUser";
+import { tree as orgTree } from "../sysOrganization/sysOrganization";
+
+//组织机构树
+const treeData = ref([]);
+const treeLoading = ref(true);
+function onTreeSelect({ id, selected }) {
+  queryParams.value.orgId = id;
+  getTableList();
+}
 
 onMounted(() => {
   getTableList();
   enums("EnableState").then(res => {
     searchColumns.find(item => item.prop == "state").options = res.data;
+  });
+  orgTree("Enable").then(res => {
+    treeData.value = res.data;
+    treeLoading.value = false;
   });
 });
 

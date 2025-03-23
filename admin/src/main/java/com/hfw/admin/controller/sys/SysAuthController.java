@@ -54,7 +54,7 @@ public class SysAuthController {
     //查询树形结构数据
     @GetMapping("/tree")
     public Result<List<SysAuth>> tree(EnableState state){
-        return Result.success( sysAuthService.treeList(state) );
+        return Result.success( sysAuthService.currentUserAuthsWithOwn(state) );
     }
 
 }

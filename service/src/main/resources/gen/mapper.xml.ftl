@@ -33,10 +33,10 @@
             <if test="po.${c.fieldName}!=null">
                 and ${c.columnName}=${r'#{'}po.${c.fieldName}}
             </if>
-            <if test="page.params.${c.fieldName}_lt!=null">
+            <if test="page.params.${c.fieldName}_lt!=null and page.params.${c.fieldName}_lt!=''">
                 and ${c.columnName} &lt;= ${r'#{'}page.params.${c.fieldName}_lt}
             </if>
-            <if test="page.params.${c.fieldName}_gt!=null">
+            <if test="page.params.${c.fieldName}_gt!=null and page.params.${c.fieldName}_gt!=''">
                 and ${c.columnName} &gt;= ${r'#{'}page.params.${c.fieldName}_gt}
             </if>
             <#else>

@@ -8,6 +8,7 @@
         id,
         account,
         password,
+        org_id,
         phone,
         nickname,
         avatar,
@@ -24,6 +25,9 @@
         <where>
             <if test="po.id!=null">
                 and id=#{po.id}
+            </if>
+            <if test="po.orgId!=null">
+                and org_id=#{po.orgId}
             </if>
             <if test="po.account!=null and po.account!=''">
                 and account=#{po.account}
@@ -52,17 +56,14 @@
             <if test="po.systemFlag!=null">
                 and system_flag=#{po.systemFlag}
             </if>
-            <if test="page.params.createTime_lt!=null">
+            <if test="page.params.createTime_lt!=null and page.params.createTime_lt!=''">
                 and create_time &lt;= #{page.params.createTime_lt}
             </if>
-            <if test="page.params.createTime_gt!=null">
+            <if test="page.params.createTime_gt!=null and page.params.createTime_gt!=''">
                 and create_time &gt;= #{page.params.createTime_gt}
             </if>
-            <if test="page.params.updateTime_lt!=null">
-                and update_time &lt;= #{page.params.updateTime_lt}
-            </if>
-            <if test="page.params.updateTime_gt!=null">
-                and update_time &gt;= #{page.params.updateTime_gt}
+            <if test="page.params.hasNoRoleId!=null and page.params.hasNoRoleId!=''">
+                and id not in(select user_id from sys_user_role where role_id=#{page.params.hasNoRoleId})
             </if>
         </where>
         <if test="page.sortByField!=null and page.sortByWay!=null">
