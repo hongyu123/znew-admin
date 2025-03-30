@@ -30,7 +30,7 @@ public class SysDemoController {
     @GetMapping("/page")
     @SaCheckPermission("sysDemo:page")
     public PageResult<SysDemo> page(Page<SysDemo> page, SysDemo po) {
-        page.sort(SortByWay.desc,"id");
+        page.sortDefault(SortByWay.desc,"id");
         return PageResult.of(sysDemoService.page(page, po));
     }
 

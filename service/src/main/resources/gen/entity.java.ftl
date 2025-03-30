@@ -39,7 +39,7 @@ public class ${className} {
     </#if>
     private ${c.javaType} ${c.fieldName};
     <#if c.enumClass??>
-    public String get${c.javaType}Desc(){
+    public String get${c.fieldName?cap_first}Desc(){
         return ${c.fieldName}==null ?"":${c.fieldName}.getDesc();
     }
     </#if>

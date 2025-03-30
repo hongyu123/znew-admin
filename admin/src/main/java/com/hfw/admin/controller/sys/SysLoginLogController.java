@@ -26,7 +26,7 @@ public class SysLoginLogController {
 
     @GetMapping("/page")
     public PageResult<SysLoginLog> page(Page<SysLoginLog> page, SysLoginLog po) {
-        page.sort(SortByWay.desc,"id");
+        page.sortDefault(SortByWay.desc,"id");
         return PageResult.of(sysLoginLogService.page(page, po));
     }
 

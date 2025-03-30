@@ -18,15 +18,13 @@
       align-whole="center"
       table-layout="auto"
       :loading="loading"
-      :size="size"
       :data="dataList"
       :columns="tableColumns"
       :pagination="{
         background: true,
         total,
         currentPage: queryParams.pageNumber,
-        pageSize: queryParams.pageSize,
-        size
+        pageSize: queryParams.pageSize
       }"
       :header-cell-style="{
         background: 'var(--el-fill-color-light)',

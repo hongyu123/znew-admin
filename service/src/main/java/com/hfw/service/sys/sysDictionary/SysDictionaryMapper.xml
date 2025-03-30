@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hfw.service.sys.sysDictionary.SysDictionaryMapper">
+
+    <select id="page" resultType="com.hfw.model.po.sys.SysDictionary">
+        select
+            id,
+            pid,
+            leaf_flag,
+            children_num,
+            state,
+            dict_key,
+            dict_value,
+            sort,
+            remark,
+            create_user,
+            create_time,
+            update_user,
+            update_time
+        from sys_dictionary
+        <where>
+            <if test="po.id!=null">
+                and id=#{po.id}
+            </if>
+            <if test="po.pid!=null">
+                and pid=#{po.pid}
+            </if>
+            <if test="po.leafFlag!=null">
+                and leaf_flag=#{po.leafFlag}
+            </if>
+            <if test="po.state!=null">
+                and state=#{po.state}
+            </if>
+            <if test="po.dictKey!=null and po.dictKey!=''">
+                and dict_key=#{po.dictKey}
+            </if>
+            <if test="page.params.dictKey_like!=null and page.params.dictKey_like!=''">
+                and dict_key like concat(#{page.params.dictKey_like},'%')
+            </if>
+            <if test="page.params.dictValue_like!=null and page.params.dictValue_like!=''">
+                and dict_value like concat(#{page.params.dictValue_like},'%')
+            </if>
+            <if test="page.params.createTime_lt!=null and page.params.createTime_lt!=''">
+                and create_time &lt;= #{page.params.createTime_lt}
+            </if>
+            <if test="page.params.createTime_gt!=null and page.params.createTime_gt!=''">
+                and create_time &gt;= #{page.params.createTime_gt}
+            </if>
+        </where>
+        <if test="page.sortByField!=null and page.sortByWay!=null">
+            order by ${page.sortByField} ${page.sortByWay}
+        </if>
+    </select>
+
+    <update id="updateParentChildrenNum">
+        update sys_dictionary set children_num =
+        ( select cnt from (select count(id) cnt from sys_dictionary where state=1 and pid=${pid}) tmp)
+        where id = ${pid}
+    </update>
+
+</mapper>

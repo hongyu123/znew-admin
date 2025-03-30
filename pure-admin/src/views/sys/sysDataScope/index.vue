@@ -17,7 +17,7 @@
     />
 
     <PureTableBar
-      title="${tableRemark}"
+      title="数据权限表"
       :columns="tableColumns"
       @refresh="handleSearch"
       @showSearch="onShowSearch"
@@ -47,7 +47,7 @@
           :icon="useRenderIcon(EpCirclePlus)"
           @click="openEdit()"
         >
-          新增${tableRemark}
+          新增数据权限配置
         </el-button>
       </template>
       <template v-slot="{ size, dynamicColumns }">
@@ -79,16 +79,6 @@
           @page-current-change="handleCurrentChange"
         >
           <template #operation="{ row }">
-            <el-button
-              class="reset-margin !outline-none"
-              link
-              type="primary"
-              :size="size"
-              :icon="useRenderIcon(EpView)"
-              @click="openEdit(row, true)"
-            >
-              详情
-            </el-button>
             <el-button
               class="reset-margin"
               link
@@ -134,48 +124,33 @@ import { useQueryTable } from "@/hooks/useQueryTable";
 
 import EditDrawer from "./edit.vue";
 import { enums } from "@/api/sys/common";
-import { page, detail, del, dels } from "./${beanName}";
+import { page, detail, del, dels } from "./sysDataScope";
 
 onMounted(() => {
   getTableList();
-<#list columnList as c>
-  <#if c.formType=='enum' && c.searchFlag==1>
-  enums("${c.columnRemark}").then(res => {
-    searchColumns.find(item => item.prop == "${c.property}").options = res.data;
-  });
-  </#if>
-</#list>
 });
 
 const searchColumns = reactive([
-<#list columnList as c>
-<#if c.searchFlag==1>
   {
-    label: "${c.label}",
-  <#if c.formType=='input' || c.formType=='phone'>
-    prop: "params.${c.property}_like",
-  <#else>
-    prop: "${c.property}",
-  </#if>
-  <#if c.formType=='date' || c.formType=='datetime'>
-    valueType: "date-picker",
-    fieldProps: { format: "YYYY-MM-DD", valueFormat: "YYYY-MM-DD" }
-  <#elseif c.formType=='select' || c.formType=='radio'>
-    valueType: "select",
+    label: "配置类型",
+    prop: "configType",
+    valueType: "radio",
     options: [
-      { label: "启用", value: "1" },
-      { label: "禁用", value: "0" }
+      { label: "用户", value: "1" },
+      { label: "组织机构", value: "2" }
     ]
-  <#elseif c.formType=='enum'>
-    valueType: "select",
-    options: []
-  </#if>
   },
-</#if>
-</#list>
+  {
+    label: "配置名称",
+    prop: "params.configName_like"
+  },
+  {
+    label: "数据key",
+    prop: "params.dataKey_like"
+  }
 ]);
 
-const inputColumns = [<#list columnList as c><#if c.searchFlag==1 && (c.formType=='input' || c.formType=='phone')>"params.${c.property}_like", </#if></#list>];
+const inputColumns = ["params.configName_like", "params.dataKey_like"];
 /** 搜索表单字段变化处理 */
 const handleSearchChange = (values, column) => {
   if (inputColumns.indexOf(column.prop) < 0) {
@@ -186,39 +161,31 @@ const handleSearchChange = (values, column) => {
 const tableRef = ref();
 const tableColumns = [
   { label: "勾选列", type: "selection" },
-<#list columnList as c>
-<#if c.listFlag==1>
   {
-  <#if c.formType=='enum'>
-    prop: "${c.property}Desc",
-  <#else>
-    prop: "${c.property}",
-  </#if>
-    label: "${c.label}",
-  <#if c.formType=='phone'>
-    minWidth: 120
-  <#elseif c.formType=='date'>
-    minWidth: 110,
-  <#elseif c.formType=='datetime'>
-    minWidth: 180
-  <#elseif c.formType=='select' || c.formType=='radio'>
+    prop: "configType",
+    label: "配置类型",
     cellRenderer: ({ row, props }) =>
-      row.${c.property} ? (
-        <el-tag type="success">启用</el-tag>
+      row.configType == 1 ? (
+        <el-tag type="primary">用户</el-tag>
       ) : (
-        <el-tag type="danger">禁用</el-tag>
+        <el-tag type="success">组织机构</el-tag>
       )
-  <#elseif c.formType=='picture'>
-    cellRenderer: ({ row, props }) => (
-      <el-avatar shape="square" fit="contain" src={row.${c.property}}></el-avatar>
-    )
-  </#if>
   },
-</#if>
-</#list>
+  {
+    prop: "configName",
+    label: "配置名称"
+  },
+  {
+    prop: "dataKey",
+    label: "数据key"
+  },
+  {
+    prop: "dataScopeDesc",
+    label: "数据权限"
+  },
   {
     label: "操作",
-    fixed: "right",
+    //fixed: "right",
     slot: "operation",
     width: 210 //3个图标+按钮210
   }
@@ -239,20 +206,24 @@ const openEdit = (row, isView) => {
   if (row && row.id) {
     editDrawerRef.value.acceptParams({ ...row }, getTableList, isView);
   } else {
-    editDrawerRef.value.acceptParams({}, getTableList, isView);
+    editDrawerRef.value.acceptParams(
+      { configType: 2, dataScope: "OrganizationAndChildren" },
+      getTableList,
+      isView
+    );
   }
 };
 
 /** 删除 */
 const handleDelete = async row => {
-  await useHandleData(del, row.id, `${r'删除【${row.id}】'}`);
+  await useHandleData(del, row.id, `删除【${row.id}】`);
   getTableList();
 };
 
 /** 批量删除 */
 const handleDeleteBatch = async () => {
   const ids = selectedData.value.map(item => item.id);
-  await useHandleData(dels, ids, `${r'删除${ids.length}条选中数据'}`);
+  await useHandleData(dels, ids, `删除${ids.length}条选中数据`);
   selectedData.value = [];
   tableRef.value.getTableRef().clearSelection();
   getTableList();

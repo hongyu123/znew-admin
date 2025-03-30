@@ -55,7 +55,7 @@ public class AdminLogAspect {
             // System.out.println("前置通知");
             //1.获取参数
             Object[] args = point.getArgs();
-            List<Object> argList = new ArrayList();
+            List<Object> argList = new ArrayList<>();
             for(Object arg : args){
                 if (arg instanceof ServletRequest || arg instanceof ServletResponse || arg instanceof MultipartFile){
                     continue;

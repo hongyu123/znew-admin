@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hfw.service.sys.sysDataScope.SysDataScopeMapper">
+
+    <select id="page" resultType="com.hfw.model.po.sys.SysDataScope">
+        select
+            id,
+            config_type,
+            config_id,
+            config_name,
+            data_key,
+            data_scope,
+            custom_ids
+        from sys_data_scope
+        <where>
+            <if test="po.id!=null">
+                and id=#{po.id}
+            </if>
+            <if test="po.configType!=null">
+                and config_type=#{po.configType}
+            </if>
+            <if test="po.configId!=null">
+                and config_id=#{po.configId}
+            </if>
+            <if test="po.configName!=null and po.configName!=''">
+                and config_name=#{po.configName}
+            </if>
+            <if test="page.params.configName_like!=null and page.params.configName_like!=''">
+                and config_name like concat(#{page.params.configName_like},'%')
+            </if>
+            <if test="po.dataKey!=null and po.dataKey!=''">
+                and data_key=#{po.dataKey}
+            </if>
+            <if test="page.params.dataKey_like!=null and page.params.dataKey_like!=''">
+                and data_key like concat(#{page.params.dataKey_like},'%')
+            </if>
+            <if test="po.dataScope!=null">
+                and data_scope=#{po.dataScope}
+            </if>
+        </where>
+        <if test="page.sortByField!=null and page.sortByWay!=null">
+            order by ${page.sortByField} ${page.sortByWay}
+        </if>
+    </select>
+
+</mapper>
