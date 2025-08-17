@@ -6,6 +6,7 @@ import com.hfw.model.entity.Page;
 import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.po.sys.SysOrganization;
 import lombok.extern.java.Log;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  * @author farkle
  * @date 2025-03-16
  */
+@Mapper
 public interface SysOrganizationMapper extends MybatisMapper<SysOrganization> {
     /**
      * 分页条件查询

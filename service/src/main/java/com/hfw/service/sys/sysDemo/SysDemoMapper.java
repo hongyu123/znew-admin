@@ -4,6 +4,7 @@ import cn.xbatis.core.mybatis.mapper.MybatisMapper;
 import cn.xbatis.db.annotations.Paging;
 import com.hfw.model.entity.Page;
 import com.hfw.model.po.sys.SysDemo;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -11,6 +12,7 @@ import org.apache.ibatis.annotations.Param;
  * @author farkle
  * @date 2023-01-04
  */
+@Mapper
 public interface SysDemoMapper extends MybatisMapper<SysDemo> {
 
     /**

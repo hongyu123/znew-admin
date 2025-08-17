@@ -4,6 +4,7 @@ import cn.xbatis.core.mybatis.mapper.MybatisMapper;
 import cn.xbatis.db.annotations.Paging;
 import com.hfw.model.entity.Page;
 import com.hfw.model.po.sys.SysUser;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -11,6 +12,7 @@ import org.apache.ibatis.annotations.Param;
  * @author farkle
  * @date 2025-03-17
  */
+@Mapper
 public interface SysUserMapper extends MybatisMapper<SysUser> {
     /**
      * 分页条件查询

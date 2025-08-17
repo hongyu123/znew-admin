@@ -5,6 +5,7 @@ import cn.xbatis.db.annotations.Paging;
 import com.hfw.model.entity.Page;
 import com.hfw.model.po.sys.SysRole;
 import com.hfw.model.po.sys.SysUser;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  * @author farkle
  * @date 2025-03-17
  */
+@Mapper
 public interface SysRoleMapper extends MybatisMapper<SysRole> {
     /**
      * 分页条件查询

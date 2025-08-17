@@ -1,11 +1,8 @@
 package com.hfw.admin.controller.znew;
 
-import cn.dev33.satoken.stp.StpUtil;
-import com.alibaba.fastjson2.JSON;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.hfw.admin.service.TestService;
-import com.hfw.service.dto.LoginUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.hfw.model.jackson.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,13 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TestController {
+    private static final Logger log = LoggerFactory.getLogger(TestController.class);
 
-    @Autowired
-    private TestService testService;
     @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String test() throws JsonProcessingException {
-        testService.test();
-        return "ok";
+    public Result<Void> test() throws Exception {
+        return Result.success();
     }
 
 }

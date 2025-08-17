@@ -11,6 +11,10 @@
 // * @author farkle
 // * @date 2025-03-16
 // */
+
+import org.apache.ibatis.annotations.Mapper;
+
+//@Mapper
 //public interface SysDemoMapper extends MybatisMapper<SysDemo> {
 //    /**
 //     * 分页条件查询

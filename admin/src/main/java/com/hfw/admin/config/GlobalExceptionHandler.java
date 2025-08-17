@@ -43,11 +43,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ModelAndView noResourceFoundException(NoResourceFoundException e) {
-        ChainMap model = ChainMap.create()
-                .put("status", HttpStatus.NOT_FOUND.value())
-                .put("error", HttpStatus.NOT_FOUND.getReasonPhrase())
-                .put("timestamp", LocalDateTime.now())
-                .put("message", e.getMessage());
+        ChainMap<Object> model = ChainMap.create()
+                .putVal("status", HttpStatus.NOT_FOUND.value())
+                .putVal("error", HttpStatus.NOT_FOUND.getReasonPhrase())
+                .putVal("timestamp", LocalDateTime.now())
+                .putVal("message", e.getMessage());
         return new ModelAndView("error", model, HttpStatus.NOT_FOUND);
     }
 

@@ -4,6 +4,7 @@ import cn.xbatis.core.mybatis.mapper.MybatisMapper;
 import cn.xbatis.db.annotations.Paging;
 import com.hfw.model.entity.Page;
 import com.hfw.model.po.sys.SysGenTable;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * @author farkle
  * @date 2022-04-15
  */
+@Mapper
 public interface GenMapper extends MybatisMapper<SysGenTable> {
     /**
      * 表信息列表

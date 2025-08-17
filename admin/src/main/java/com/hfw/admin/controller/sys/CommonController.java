@@ -32,8 +32,8 @@ public class CommonController {
     private SysUploadService sysUploadService;
 
     //获取枚举
-    private List<ChainMap> getEnums(Class<?> clazz, String filter){
-        List<ChainMap> list = new ArrayList<>();
+    private List<ChainMap<String>> getEnums(Class<?> clazz, String filter){
+        List<ChainMap<String>> list = new ArrayList<>();
         try {
             Method method = clazz.getMethod("values");
             Object arr = method.invoke(null);
@@ -44,10 +44,10 @@ public class CommonController {
                         continue;
                     }
                     if(obj instanceof BaseEnum e){
-                        ChainMap map = ChainMap.create().put("value", e.toString()).put("label", e.getDesc());
+                        ChainMap<String> map = ChainMap.<String>create().putVal("value", e.toString()).putVal("label", e.getDesc());
                         list.add(map);
                     }else{
-                        ChainMap map = ChainMap.create().put("value", obj.toString()).put("label", obj.toString());
+                        ChainMap<String> map = ChainMap.<String>create().putVal("value", obj.toString()).putVal("label", obj.toString());
                         list.add(map);
                     }
                 }
@@ -60,7 +60,7 @@ public class CommonController {
     }
 
     @GetMapping("/enums")
-    public Result<List<ChainMap>> enums(@RequestParam String code, @RequestParam(defaultValue = "") String filter, String type){
+    public Result<List<ChainMap<String>>> enums(@RequestParam String code, @RequestParam(defaultValue = "") String filter, String type){
         Class<?> clazz = null;
         if(type!=null){
             String className  = "com.hfw.model.enums."+type+"."+code;

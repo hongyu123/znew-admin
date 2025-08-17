@@ -7,16 +7,15 @@ import java.util.HashMap;
  * @author farkle
  * @date 2022-04-06
  */
-public class ChainMap extends HashMap<String, Object> {
+public class ChainMap<T> extends HashMap<String, T> {
     private ChainMap() {}
 
-    public static ChainMap create() {
-        return new ChainMap();
+    public static <T> ChainMap<T> create() {
+        return new ChainMap<>();
     }
 
-    @Override
-    public ChainMap put(String name, Object value) {
-        super.put(name, value);
+    public ChainMap<T> putVal(String key, T value) {
+        super.put(key, value);
         return this;
     }
 

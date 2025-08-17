@@ -5,6 +5,7 @@ import cn.xbatis.db.annotations.Paging;
 import com.hfw.model.entity.Page;
 import com.hfw.model.enums.sys.LogoutType;
 import com.hfw.model.po.sys.SysLoginLog;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author farkle
  * @date 2025-03-22
  */
+@Mapper
 public interface SysLoginLogMapper extends MybatisMapper<SysLoginLog> {
     /**
      * 分页条件查询
