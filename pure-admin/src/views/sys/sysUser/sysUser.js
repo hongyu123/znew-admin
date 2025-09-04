@@ -22,3 +22,16 @@ export const del = id => {
 export const dels = ids => {
   return http.delete("/sysUser/dels", ids);
 };
+
+export const changePassword = data => {
+  return http.post("/sysUser/changePassword", data);
+};
+export const resetPassword = data => {
+  return http.post("/sysUser/resetPassword", data);
+};
+export const userInfo = () => {
+  return http.get("/sysUser/userInfo");
+};
+export const editInfo = data => {
+  return http.post("/sysUser/editInfo", data);
+};

@@ -6,7 +6,9 @@ import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.GeoResults;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.connection.RedisGeoCommands;
-import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.domain.geo.GeoReference;
 import org.springframework.data.redis.domain.geo.GeoShape;
@@ -23,19 +25,23 @@ import java.util.concurrent.TimeUnit;
  * @author farkle
  * @create 2020-04-25
  */
-@Component
+//@Component
 public class RedisUtil {
-    @Resource
+    //@Resource
     private RedisTemplate<String, Object> redisTemplate;
-    @Resource
+    //@Resource
     private StringRedisTemplate stringRedisTemplate;
+    public RedisUtil(RedisTemplate<String, Object> redisTemplate, StringRedisTemplate stringRedisTemplate){
+        this.redisTemplate = redisTemplate;
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
 
     /*************************string操作*****************************/
     public void setStr(String key, String value){
         stringRedisTemplate.opsForValue().set(key,value);
     }
-    public void setStrEx(String key, String value, long expire){
-        stringRedisTemplate.opsForValue().set(key, value, expire, TimeUnit.SECONDS);
+    public void setStrEx(String key, String value, long timeout, TimeUnit unit){
+        stringRedisTemplate.opsForValue().set(key, value, timeout, unit);
     }
     public String getStr(String key){
         return stringRedisTemplate.opsForValue().get(key);
@@ -48,12 +54,12 @@ public class RedisUtil {
     /**
      * 获取并设置过期时间
      * @param key
-     * @param expire
+     * @param timeout
      * @param <T>
      * @return
      */
-    public <T> T getEx(String key, long expire){
-        return (T)redisTemplate.opsForValue().getAndExpire(key, expire, TimeUnit.SECONDS);
+    public <T> T getEx(String key, long timeout, TimeUnit unit){
+        return (T)redisTemplate.opsForValue().getAndExpire(key, timeout, unit);
     }
 
     public void set(String key, Object value) {
@@ -64,10 +70,10 @@ public class RedisUtil {
      * 设置值和超时事件
      * @param key
      * @param value
-     * @param expire
+     * @param timeout
      */
-    public void setEx(String key, Object value, long expire) {
-        redisTemplate.opsForValue().set(key, value, expire, TimeUnit.SECONDS);
+    public void setEx(String key, Object value, long timeout, TimeUnit unit) {
+        redisTemplate.opsForValue().set(key, value, timeout, unit);
     }
 
     /**
@@ -89,20 +95,20 @@ public class RedisUtil {
     public Boolean setXx(String key, Object value){
         return redisTemplate.opsForValue().setIfPresent(key,value);
     }
-    public Boolean setNxEx(String key, Object value, long timeout){
-        return redisTemplate.opsForValue().setIfAbsent(key,value, timeout, TimeUnit.SECONDS);
+    public Boolean setNxEx(String key, Object value, long timeout, TimeUnit unit){
+        return redisTemplate.opsForValue().setIfAbsent(key,value, timeout, unit);
     }
     /*public Boolean setNxEx(String key, Object value, long expire) {
         return redisTemplate.execute((RedisConnection redisConnection) ->
-                redisConnection.set(key.getBytes(), value.getBytes(), Expiration.from(expire, TimeUnit.SECONDS), RedisStringCommands.SetOption.SET_IF_ABSENT)
+                redisConnection.set(key.getBytes(StandardCharsets.UTF_8), value.getBytes(StandardCharsets.UTF_8), Expiration.from(expire, TimeUnit.SECONDS), RedisStringCommands.SetOption.SET_IF_ABSENT)
         );
     }*/
     public <T> T getSet(String key, Object value){
         return (T)redisTemplate.opsForValue().getAndSet(key, value);
     }
 
-    public Boolean expire(String key, long expire) {
-        return redisTemplate.expire(key, expire, TimeUnit.SECONDS);
+    public Boolean expire(String key, long timeout, TimeUnit unit) {
+        return redisTemplate.expire(key, timeout, unit);
     }
     public Boolean exists(String key){
         return redisTemplate.hasKey(key);
@@ -154,11 +160,11 @@ public class RedisUtil {
      * @param <T>
      * @return
      */
-    public <T> T bLPop(String key, long timeout){
-        return (T) redisTemplate.opsForList().leftPop(key, timeout, TimeUnit.SECONDS);
+    public <T> T bLPop(String key, long timeout, TimeUnit unit){
+        return (T) redisTemplate.opsForList().leftPop(key, timeout, unit);
     }
-    public <T> T bRPop(String key, long timeout){
-        return (T) redisTemplate.opsForList().rightPop(key, timeout, TimeUnit.SECONDS);
+    public <T> T bRPop(String key, long timeout, TimeUnit unit){
+        return (T) redisTemplate.opsForList().rightPop(key, timeout, unit);
     }
     public Long lLen(String key){
         return redisTemplate.opsForList().size(key);
@@ -184,13 +190,13 @@ public class RedisUtil {
      * @param value 要删除的元素
      * @return
      */
-    public Long lRem(String key, Object value){
+    public Long lRem(String key, long count, Object value){
         /**
          * count > 0 : 从表头开始向表尾搜索，移除与 VALUE 相等的元素，数量为 COUNT
          * count < 0 : 从表尾开始向表头搜索，移除与 VALUE 相等的元素，数量为 COUNT 的绝对值
          * count = 0 : 移除表中所有与 VALUE 相等的值
          */
-        return redisTemplate.opsForList().remove(key,0, value);
+        return redisTemplate.opsForList().remove(key, count, value);
     }
 
     /**
@@ -216,8 +222,8 @@ public class RedisUtil {
         return (T) redisTemplate.opsForList().rightPopAndLeftPush(sourceKey, destinationKey);
     }
     //会阻塞
-    public <T> T bRPopLPush(String sourceKey, String destinationKey, long timeout){
-        return (T) redisTemplate.opsForList().rightPopAndLeftPush(sourceKey, destinationKey, timeout,TimeUnit.SECONDS);
+    public <T> T bRPopLPush(String sourceKey, String destinationKey, long timeout, TimeUnit unit){
+        return (T) redisTemplate.opsForList().rightPopAndLeftPush(sourceKey, destinationKey, timeout,unit);
     }
 
     /**

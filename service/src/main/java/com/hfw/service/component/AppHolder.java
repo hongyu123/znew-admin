@@ -1,7 +1,7 @@
-package com.hfw.admin.config;
+package com.hfw.service.component;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.xbatis.core.XbatisConfig;
+import cn.xbatis.core.XbatisGlobalConfig;
 import com.hfw.service.dto.LoginUser;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -22,16 +22,16 @@ public class AppHolder implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         AppHolder.applicationContext = applicationContext;
-        XbatisConfig.setDefaultValue("{CREATE_USER}", (entityClass, fieldClass) -> {
+        XbatisGlobalConfig.setDynamicValue("{CREATE_USER}", (entityClass, fieldClass) -> {
             return StpUtil.isLogin() ?LoginUser.getLoginUser().getAccount() :"";
         });
-        XbatisConfig.setDefaultValue("{CREATE_TIME}", (entityClass, fieldClass) -> {
+        XbatisGlobalConfig.setDynamicValue("{CREATE_TIME}", (entityClass, fieldClass) -> {
             return LocalDateTime.now();
         });
-        XbatisConfig.setDefaultValue("{UPDATE_USER}", (entityClass, fieldClass) -> {
+        XbatisGlobalConfig.setDynamicValue("{UPDATE_USER}", (entityClass, fieldClass) -> {
             return StpUtil.isLogin() ?LoginUser.getLoginUser().getAccount() :"";
         });
-        XbatisConfig.setDefaultValue("{UPDATE_TIME}", (entityClass, fieldClass) -> {
+        XbatisGlobalConfig.setDynamicValue("{UPDATE_TIME}", (entityClass, fieldClass) -> {
             return LocalDateTime.now();
         });
     }

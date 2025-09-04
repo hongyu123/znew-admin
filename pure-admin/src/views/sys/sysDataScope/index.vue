@@ -36,6 +36,7 @@
         </div>
         <el-button
           v-show="selectedData.length > 0"
+          v-perms="['sysDataScope:del']"
           type="danger"
           plain
           @click="handleDeleteBatch"
@@ -43,6 +44,7 @@
           批量删除
         </el-button>
         <el-button
+          v-perms="['sysDataScope:add']"
           type="primary"
           :icon="useRenderIcon(EpCirclePlus)"
           @click="openEdit()"
@@ -80,6 +82,7 @@
         >
           <template #operation="{ row }">
             <el-button
+              v-perms="['sysDataScope:edit']"
               class="reset-margin"
               link
               type="primary"
@@ -90,6 +93,7 @@
               编辑
             </el-button>
             <el-button
+              v-perms="['sysDataScope:del']"
               class="reset-margin"
               link
               type="danger"
@@ -216,7 +220,7 @@ const openEdit = (row, isView) => {
 
 /** 删除 */
 const handleDelete = async row => {
-  await useHandleData(del, row.id, `删除【${row.id}】`);
+  await useHandleData(del, row.id, `删除【${row.configName}】`);
   getTableList();
 };
 

@@ -151,14 +151,15 @@ public class Compress {
      * @throws IOException
      */
     public static byte[] zip(byte[] bytes, String entry) throws IOException {
-        try(ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ZipOutputStream zos = new ZipOutputStream(bos) ){
-            try{
-                ZipEntry zipEntry = new ZipEntry(entry);
-                zos.putNextEntry(zipEntry);
-                zos.write(bytes);
-            }finally {
-                zos.closeEntry();
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            try (ZipOutputStream zos = new ZipOutputStream(bos)) {
+                try{
+                    ZipEntry zipEntry = new ZipEntry(entry);
+                    zos.putNextEntry(zipEntry);
+                    zos.write(bytes);
+                }finally {
+                    zos.closeEntry();
+                }
             }
             return bos.toByteArray();
         }

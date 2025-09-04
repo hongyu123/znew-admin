@@ -1,4 +1,4 @@
-package com.hfw.model.mapper;
+package com.hfw.service.component;
 
 import cn.xbatis.core.mybatis.mapper.BasicMapper;
 import org.apache.ibatis.annotations.Mapper;

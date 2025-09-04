@@ -53,6 +53,7 @@
           <template #operation="{ row }">
             <el-button
               v-if="row.onlineFlag == 1"
+              v-perms="['sysLoginLog:kickout']"
               link
               type="danger"
               :size="size"
@@ -183,9 +184,9 @@ const tableColumns = [
     label: "登录状态",
     cellRenderer: ({ row, props }) =>
       row.state ? (
-        <el-tag type="success">启用</el-tag>
+        <el-tag type="success">成功</el-tag>
       ) : (
-        <el-tag type="danger">禁用</el-tag>
+        <el-tag type="danger">失败</el-tag>
       )
   },
   {

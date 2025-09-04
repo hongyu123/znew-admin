@@ -55,9 +55,9 @@ public class MvcConfigurer implements WebMvcConfigurer {
         // Sa-Token 登录拦截
         registry.addInterceptor(new CorsIgnoreSaInterceptor(handle -> StpUtil.checkLogin()))
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login","/test");
+                .excludePathPatterns("/login","/test","/upload/**");
         // Sa-Token 注解权限认证拦截
-        registry.addInterceptor(new CorsIgnoreSaInterceptor()).addPathPatterns("/**");
+        //registry.addInterceptor(new CorsIgnoreSaInterceptor()).addPathPatterns("/**");
     }
 
 }

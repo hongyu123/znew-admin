@@ -32,4 +32,8 @@ public class SysDemoService {
         return sysDemoMapper.deleteByIds(ids);
     }
 
+    public int saveBatch(List<SysDemo> list){
+        return sysDemoMapper.saveBatch(list);
+    }
+
 }

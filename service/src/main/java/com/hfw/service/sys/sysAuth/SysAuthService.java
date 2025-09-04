@@ -1,18 +1,21 @@
 package com.hfw.service.sys.sysAuth;
 
 import cn.xbatis.core.sql.executor.chain.QueryChain;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.hfw.model.entity.Page;
 import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.enums.sys.SysAuthEnum;
 import com.hfw.model.jackson.Result;
-import com.hfw.model.mapper.CommonMapper;
 import com.hfw.model.po.sys.SysAuth;
 import com.hfw.model.utils.TreeUtil;
+import com.hfw.service.component.CommonMapper;
 import com.hfw.service.dto.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 系统权限服务
@@ -21,6 +24,7 @@ import java.util.List;
  */
 @Service
 public class SysAuthService {
+    private final Cache<Long, List<String>> cache = Caffeine.newBuilder().maximumSize(10240).expireAfterWrite(24, TimeUnit.HOURS).build();
     @Autowired
     private SysAuthMapper sysAuthMapper;
     @Autowired
@@ -41,6 +45,7 @@ public class SysAuthService {
         if(sysAuth.getId().equals(sysAuth.getParentId())){
             return Result.error("不能设置父节点为自己");
         }
+        this.clearCache();
         return Result.result( sysAuthMapper.update(sysAuth) );
     }
     public Result<Void> del(Long id){
@@ -48,6 +53,7 @@ public class SysAuthService {
         if(cnt>0){
             return Result.error("节点下有子节点,无法删除!");
         }
+        this.clearCache();
         return Result.result( sysAuthMapper.deleteById(id) );
     }
 
@@ -58,8 +64,16 @@ public class SysAuthService {
      * @return 权限编码列表
      */
     public List<String> userAuths(Long userId){
-        List<SysAuth> authList = sysAuthMapper.userAuths(userId, 0, "",0);
-        return authList.stream().map(SysAuth::getCode).toList();
+        if(userId==1L){
+            return List.of("*");
+        }
+        return cache.get(userId, key -> {
+            List<SysAuth> authList = sysAuthMapper.userAuths(userId, 0, "", 0);
+            return authList.stream().map(SysAuth::getCode).toList();
+        });
+    }
+    public void clearCache(){
+        cache.invalidateAll();
     }
 
     /**

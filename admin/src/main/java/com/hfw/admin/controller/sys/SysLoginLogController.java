@@ -1,12 +1,14 @@
 package com.hfw.admin.controller.sys;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.stp.StpUtil;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
 import com.hfw.model.enums.sys.SortByWay;
 import com.hfw.model.jackson.Result;
-import com.hfw.model.mapper.CommonMapper;
 import com.hfw.model.po.sys.SysLoginLog;
+import com.hfw.service.component.CommonMapper;
+import com.hfw.service.dto.LoginUser;
 import com.hfw.service.sys.sysLoginLog.SysLoginLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +26,22 @@ public class SysLoginLogController {
     @Autowired
     private CommonMapper commonMapper;
 
+    @SaCheckPermission("sysLoginLog:page")
     @GetMapping("/page")
     public PageResult<SysLoginLog> page(Page<SysLoginLog> page, SysLoginLog po) {
         page.sortDefault(SortByWay.desc,"id");
         return PageResult.of(sysLoginLogService.page(page, po));
     }
 
+    @GetMapping("/userLoginLog")
+    public PageResult<SysLoginLog> page(Page<SysLoginLog> page) {
+        SysLoginLog po = new SysLoginLog();
+        po.setAccount(LoginUser.getLoginUser().getAccount());
+        page.sortDefault(SortByWay.desc,"id");
+        return PageResult.of(sysLoginLogService.page(page, po));
+    }
+
+    @SaCheckPermission("sysLoginLog:kickout")
     @PostMapping("/kickout")
     public Result<Void> kickout(@RequestParam Long id){
         SysLoginLog log = commonMapper.getById(SysLoginLog.class, id);

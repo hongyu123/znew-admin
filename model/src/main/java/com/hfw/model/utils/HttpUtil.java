@@ -11,11 +11,9 @@ import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -169,6 +167,32 @@ public class HttpUtil {
         return this.post(url, HttpRequest.BodyPublishers.ofString(body), HttpResponse.BodyHandlers.ofString());
     }
 
+    public <T> HttpResponse<T> formData(String url, FormData formData, HttpResponse.BodyHandler<T> responseBodyHandler) throws Exception {
+        Map<String, Object> params = formData.params;
+        byte[] fileBytes = formData.fileBytes;
+        String boundary = "----WebKitFormBoundary" + System.currentTimeMillis();
+        String bodyParams = "";
+        if(params!=null && !params.isEmpty()){
+            bodyParams =  params.entrySet().stream().map(entry->
+                            String.format("--%s\r\nContent-Disposition: form-data; name=\"%s\"\r\n\r\n%s", boundary, entry.getKey(),entry.getValue()))
+                    .collect(Collectors.joining("\r\n"));
+        }
+        String bodyStart = String.format("--%s\r\nContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\nContent-Type: %s\r\n\r\n", boundary, formData.name, formData.filename, formData.contentType);
+        String bodyEnd = bodyParams.isBlank() ?String.format("\r\n--%s--\r\n", boundary) :String.format("\r\n%s\r\n--%s--\r\n", bodyParams, boundary);
+
+        byte[] bodyStartBytes = bodyStart.getBytes(StandardCharsets.UTF_8);
+        byte[] bodyEndBytes = bodyEnd.getBytes(StandardCharsets.UTF_8);
+        byte[] requestBody = new byte[bodyStartBytes.length + fileBytes.length + bodyEndBytes.length];
+        System.arraycopy(bodyStartBytes, 0, requestBody, 0, bodyStartBytes.length);
+        System.arraycopy(fileBytes, 0, requestBody, bodyStartBytes.length, fileBytes.length);
+        System.arraycopy(bodyEndBytes, 0, requestBody, bodyStartBytes.length + fileBytes.length, bodyEndBytes.length);
+        this.setHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
+        return this.post(url, HttpRequest.BodyPublishers.ofByteArray(requestBody), responseBodyHandler);
+    }
+    public HttpResponse<String> formData_str(String url, FormData formData) throws Exception{
+        return this.formData(url, formData, HttpResponse.BodyHandlers.ofString());
+    }
+
     public static String get(String url) throws Exception {
         return HttpUtil.init().get(url, HttpResponse.BodyHandlers.ofString()).body();
     }
@@ -196,6 +220,48 @@ public class HttpUtil {
     }
     public static String postForm(String url, Map<String,String> form, String enc) throws Exception {
         return HttpUtil.postForm(url, HttpUtil.formToBody(form, enc) );
+    }
+
+    public static String formData(String url, FormData formData) throws Exception {
+        return HttpUtil.init().formData_str(url, formData).body();
+    }
+
+    public static class FormData{
+        //参数名
+        private String name;
+        //文件名
+        private String filename;
+        private String contentType = "application/octet-stream";
+        private Map<String,Object> params = new HashMap<>();
+        private byte[] fileBytes;
+        public FormData (String name, String filename, Map<String,Object> params, byte[] fileBytes){
+            this.name = name;
+            this.filename = filename;
+            this.params = params;
+            this.fileBytes = fileBytes;
+        }
+        public FormData (String name, String filename, byte[] fileBytes){
+            this.name = name;
+            this.filename = filename;
+            this.fileBytes = fileBytes;
+        }
+        public FormData (String filename, byte[] fileBytes){
+            this.name = "file";
+            this.filename = filename;
+            this.fileBytes = fileBytes;
+        }
+        public FormData (byte[] fileBytes){
+            this.name = "file";
+            this.filename = UUID.randomUUID().toString();
+            this.fileBytes = fileBytes;
+        }
+        public FormData addParam(String key, String value){
+            this.params.put(key, value);
+            return this;
+        }
+        public void setContentType(String contentType){
+            this.contentType = contentType;
+        }
     }
 
 }

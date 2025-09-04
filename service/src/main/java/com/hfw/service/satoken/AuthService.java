@@ -17,19 +17,13 @@ public class AuthService implements StpInterface {
 
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
-        Long id = (Long) loginId;
-        if(id==1){
-            return List.of("*");
-        }
+        Long id = Long.valueOf((String) loginId);
         return sysAuthService.userAuths(id);
     }
 
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        Long id = (Long) loginId;
-        if(id==1){
-            return List.of("*");
-        }
+        Long id = Long.valueOf((String) loginId);
         return sysRoleService.userRoles(id);
     }
 

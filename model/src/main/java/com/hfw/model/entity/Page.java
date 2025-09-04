@@ -63,26 +63,24 @@ public class Page<T> implements IPager<T> {
         }
     }
 
-    public enum ExecuteType{
-        Page, NoneCount, NonePage;
-    }
-    private ExecuteType executeType = ExecuteType.Page;
+    private boolean executeCount = true;
     public static <T> Page<T> of(int pageNumber, int pageSize){
         Page<T> page = new Page<>();
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
         return page;
     }
-    public static <T> Page<T> of(int pageNumber, int pageSize, ExecuteType executeType){
+    public static <T> Page<T> of(int pageNumber, int pageSize, boolean executeCount){
         Page<T> page = new Page<>();
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
-        page.executeType = executeType;
+        page.executeCount = executeCount;
         return page;
     }
     public static <T> Page<T> nonePage(){
         Page<T> page = new Page<>();
-        page.executeType = ExecuteType.NonePage;
+        page.executeCount = false;
+        page.pageSize = -1;
         return page;
     }
 
@@ -112,13 +110,13 @@ public class Page<T> implements IPager<T> {
     @Override
     public <V> V get(PagerField<V> field) {
         if (PagerField.IS_EXECUTE_COUNT == field) {
-            return (V) (Boolean)(ExecuteType.Page == this.executeType);
+            return (V) (Boolean)(executeCount);
         }
         if (PagerField.NUMBER == field) {
             return (V) (Integer)(this.pageNumber);
         }
         if (PagerField.SIZE == field) {
-            return (V) (Integer)(ExecuteType.NonePage == this.executeType  ? 10000 : this.pageSize);
+            return (V) (Integer)(this.pageSize);
         }
         throw new RuntimeException("not support field: " + field);
     }

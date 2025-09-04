@@ -11,7 +11,6 @@ import java.util.List;
 @Setter
 public class SysUserDTO extends SysUser {
     private List<Long> roleList;
-    private String oldPassword;
 
     public SysUser toPo(){
         SysUser po = new SysUser();

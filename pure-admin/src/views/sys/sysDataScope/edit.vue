@@ -213,7 +213,7 @@ const handleSelectData = async () => {
     return false;
   }
   row.value.configId = selectData[0].id;
-  row.value.configName = selectData[0].nickname;
+  row.value.configName = selectData[0].nickname || selectData[0].account;
   selectDataVisible.value = false;
 };
 

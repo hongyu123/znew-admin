@@ -46,6 +46,7 @@
           </div>
           <el-button
             v-show="selectedData.length > 0"
+            v-perms="['sysUser:del']"
             type="danger"
             plain
             @click="handleDeleteBatch"
@@ -53,6 +54,7 @@
             批量删除
           </el-button>
           <el-button
+            v-perms="['sysUser:add']"
             type="primary"
             :icon="useRenderIcon(EpCirclePlus)"
             @click="openEdit()"
@@ -90,6 +92,7 @@
           >
             <template #operation="{ row }">
               <el-button
+                v-perms="['sysUser:view']"
                 class="reset-margin !outline-none"
                 link
                 type="primary"
@@ -100,6 +103,7 @@
                 详情
               </el-button>
               <el-button
+                v-perms="['sysUser:edit']"
                 class="reset-margin"
                 link
                 type="primary"
@@ -110,6 +114,7 @@
                 编辑
               </el-button>
               <el-button
+                v-perms="['sysUser:del']"
                 class="reset-margin"
                 link
                 type="danger"
@@ -118,6 +123,16 @@
                 @click="handleDelete(row)"
               >
                 删除
+              </el-button>
+              <el-button
+                v-perms="['sysUser:pwd']"
+                class="reset-margin"
+                link
+                type="primary"
+                :size="size"
+                @click="onResetPassword(row)"
+              >
+                重置密码
               </el-button>
             </template>
           </pure-table>
@@ -147,7 +162,7 @@ import { deviceDetection } from "@pureadmin/utils";
 import tree from "./tree.vue";
 import EditDrawer from "./edit.vue";
 import { enums } from "@/api/sys/common";
-import { page, detail, del, dels } from "./sysUser";
+import { page, detail, del, dels, resetPassword } from "./sysUser";
 import { tree as orgTree } from "../sysOrganization/sysOrganization";
 
 //组织机构树
@@ -281,6 +296,14 @@ const handleDeleteBatch = async () => {
   selectedData.value = [];
   tableRef.value.getTableRef().clearSelection();
   getTableList();
+};
+
+const onResetPassword = async row => {
+  await useHandleData(
+    resetPassword,
+    { id: row.id },
+    `重置[${row.account}]用户密码`
+  );
 };
 
 const {

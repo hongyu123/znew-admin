@@ -5,7 +5,7 @@ import cn.xbatis.core.sql.executor.chain.QueryChain;
 import com.hfw.model.entity.Page;
 import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.jackson.Result;
-import com.hfw.model.mapper.CommonMapper;
+import com.hfw.service.component.CommonMapper;
 import com.hfw.model.po.sys.SysRole;
 import com.hfw.model.po.sys.SysRoleAuth;
 import com.hfw.model.po.sys.SysUser;
@@ -92,6 +92,7 @@ public class SysRoleService {
             }).collect(Collectors.toList());
             commonMapper.saveBatch(ruleAuthList);
         }
+        sysAuthService.clearCache();
         return Result.success();
     }
 
@@ -103,6 +104,7 @@ public class SysRoleService {
         }
         sysRoleMapper.deleteById(id);
         DeleteChain.of(commonMapper, SysRoleAuth.class).eq(SysRoleAuth::getRoleId, id).execute();
+        sysAuthService.clearCache();
         return Result.success();
     }
 
@@ -124,6 +126,7 @@ public class SysRoleService {
                     userRole.setRoleId(sysUserRole.getRoleId());
                     return userRole;
         }).toList();
+        sysAuthService.clearCache();
         return commonMapper.saveBatch(sysUserRoleList);
     }
 
@@ -132,6 +135,7 @@ public class SysRoleService {
         if(CollectionUtils.isEmpty(sysUserRole.getUserIds())){
             return 0;
         }
+        sysAuthService.clearCache();
         return sysUserRole.getUserIds().stream().mapToInt(userId ->
                 DeleteChain.of(commonMapper, SysUserRole.class).eq(SysUserRole::getUserId, userId).eq(SysUserRole::getRoleId, sysUserRole.getRoleId()).execute()
         ).sum();
@@ -144,6 +148,9 @@ public class SysRoleService {
      * @return 角色编码列表
      */
     public List<String> userRoles(Long id){
+        if(id==1L){
+            return List.of("*");
+        }
         List<SysRole> roleList = sysRoleMapper.userRoles(id,0, "");
         return roleList.stream().map(SysRole::getCode).toList();
     }

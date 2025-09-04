@@ -1,19 +1,38 @@
 package com.hfw.admin.controller.sys;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.idev.excel.EasyExcel;
+import cn.idev.excel.ExcelReader;
+import cn.idev.excel.ExcelWriter;
+import cn.idev.excel.enums.CellExtraTypeEnum;
+import cn.idev.excel.read.metadata.ReadSheet;
+import cn.idev.excel.write.metadata.WriteSheet;
+import cn.idev.excel.write.metadata.fill.FillConfig;
+import cn.idev.excel.write.metadata.fill.FillWrapper;
 import com.hfw.admin.log.AdminLog;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
 import com.hfw.model.enums.sys.SortByWay;
+import com.hfw.model.excel.PageReadExceptListener;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.po.sys.SysDemo;
 import com.hfw.model.validation.ValidGroup;
+import com.hfw.service.dto.LoginUser;
 import com.hfw.service.sys.sysDemo.SysDemoDTO;
 import com.hfw.service.sys.sysDemo.SysDemoService;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -30,6 +49,7 @@ public class SysDemoController {
     @GetMapping("/page")
     @SaCheckPermission("sysDemo:page")
     public PageResult<SysDemo> page(Page<SysDemo> page, SysDemo po) {
+        LoginUser.enableDataScope("sys_demo");//开启数据权限
         page.sortDefault(SortByWay.desc,"id");
         return PageResult.of(sysDemoService.page(page, po));
     }
@@ -66,6 +86,61 @@ public class SysDemoController {
     @DeleteMapping("/dels")
     public Result<Void> dels(@RequestBody List<Long> ids){
         return Result.result(sysDemoService.dels(ids));
+    }
+
+    //实体类注解导出
+    @GetMapping("/export")
+    public void export(SysDemo po, HttpServletResponse response) throws IOException {
+        Page<SysDemo> page = Page.nonePage();
+        page.sortDefault(SortByWay.desc,"id");
+        page = sysDemoService.page(page, po);
+
+        String fileName = URLEncoder.encode("系统示例.xlsx", StandardCharsets.UTF_8);
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+        response.setHeader("Content-Disposition", "attachment;filename="+fileName);
+        try (OutputStream os = response.getOutputStream()){
+            EasyExcel.write(os,SysDemo.class).autoCloseStream(false).excludeColumnFieldNames(List.of("id"))
+                    .sheet().doWrite(page.getList());
+        }
+    }
+    //模板文件导出
+    @GetMapping("/exp_tmp")
+    public void exportTemplate(SysDemo po, HttpServletResponse response) throws IOException {
+        Page<SysDemo> page = Page.nonePage();
+        page.sortDefault(SortByWay.desc,"id");
+        page = sysDemoService.page(page, po);
+
+        String fileName = URLEncoder.encode("exp_tmp.xlsx", StandardCharsets.UTF_8);
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+        response.setHeader("Content-Disposition", "attachment;filename="+fileName);
+
+        try (OutputStream os = response.getOutputStream();
+             InputStream is = this.getClass().getClassLoader().getResourceAsStream("template/demo.xlsx")){
+            ExcelWriter excelWriter = EasyExcel.write(os).withTemplate(is).build();
+            WriteSheet writeSheet = EasyExcel.writerSheet().build();
+            FillConfig fillConfig = FillConfig.builder().build();
+            excelWriter.fill(new FillWrapper("list", page.getList()), fillConfig, writeSheet);
+            //excelWriter.fill(page.getList(), writeSheet);
+            excelWriter.close();
+        }
+    }
+    //导入
+    @PostMapping("/import")
+    public Result<Void> imp(@RequestPart MultipartFile file) throws IOException {
+        try (InputStream is = file.getInputStream()){
+            ExcelReader excelReader = EasyExcel.read(is).extraRead(CellExtraTypeEnum.MERGE).build();
+            PageReadExceptListener<SysDemo> listener = new PageReadExceptListener<>(list->sysDemoService.saveBatch(list));
+            ReadSheet sheet =  EasyExcel.readSheet(0).headRowNumber(1).head(SysDemo.class).registerReadListener(listener).build();
+            excelReader.read(sheet);
+            excelReader.close();
+            List<String> errorList = listener.getErrorList();
+            if(!CollectionUtils.isEmpty(errorList)){
+                return Result.error(StringUtils.join(errorList, "\r\n"));
+            }
+        }
+        return Result.success();
     }
 
 }

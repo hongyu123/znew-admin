@@ -272,7 +272,10 @@ public class StrUtil {
     }
 
     public static boolean hasText(String str) {
-        return str != null && str.trim().length()>0;
+        return str != null && !str.isBlank();
+    }
+    public static boolean isBlank(String str) {
+        return str == null || str.isBlank();
     }
 
     public static String join(Collection<?> collection, CharSequence delimiter, CharSequence prefix, CharSequence suffix){
@@ -339,6 +342,23 @@ public class StrUtil {
             matcher.appendReplacement(sb, matcher.group().replaceAll("&amp;","&"));
         }
         return sb.length()>0 ?sb.toString():html;
+    }
+
+    public static byte[] hex2Bytes(String hexString) {
+        int len = hexString.length();
+        byte[] bytes = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            String hex = hexString.substring(i, i + 2);
+            bytes[i / 2] = (byte) Integer.parseInt(hex, 16);
+        }
+        return bytes;
+    }
+    public static String bytes2Hex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte aByte : bytes) {
+            sb.append(String.format("%02X", aByte));
+        }
+        return sb.toString();
     }
 
 }

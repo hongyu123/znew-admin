@@ -2,6 +2,7 @@ package com.hfw.model.utils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -36,7 +37,7 @@ public class SignUtil {
      * @throws Exception
      */
     public static String md5(String s) throws NoSuchAlgorithmException {
-        return md5(s.getBytes());
+        return md5(s.getBytes(StandardCharsets.UTF_8));
     }
 
     public static String md5(byte[] bytes) throws NoSuchAlgorithmException {
@@ -53,7 +54,7 @@ public class SignUtil {
      */
     public static String sha256(String s) throws Exception{
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] bytes = md.digest(s.getBytes());
+        byte[] bytes = md.digest(s.getBytes(StandardCharsets.UTF_8));
         return byte2hex(bytes);
     }
 
@@ -65,13 +66,13 @@ public class SignUtil {
      */
     public static String sha1(String s) throws Exception{
         MessageDigest md = MessageDigest.getInstance("SHA1");
-        byte[] bytes = md.digest(s.getBytes());
+        byte[] bytes = md.digest(s.getBytes(StandardCharsets.UTF_8));
         return byte2hex(bytes);
     }
 
     private String hmacSHA256(String s, String secret) throws Exception{
-        byte[] keyByte = secret.getBytes();
-        byte[] messageBytes = s.getBytes();
+        byte[] keyByte = secret.getBytes(StandardCharsets.UTF_8);
+        byte[] messageBytes = s.getBytes(StandardCharsets.UTF_8);
         Mac hmacSha256 = Mac.getInstance("HmacSHA256");
         hmacSha256.init(new SecretKeySpec(keyByte, 0, keyByte.length, "HmacSHA256"));
         byte[] hmacSha256Bytes = hmacSha256.doFinal(messageBytes);

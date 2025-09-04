@@ -1,6 +1,7 @@
 package com.hfw.model.utils;
 
 import javax.crypto.Cipher;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -41,7 +42,7 @@ public class RsaUtil {
     public static String encrypt(String algorithm, Key key, String plaintext) throws Exception {
         Cipher cipher = Cipher.getInstance(algorithm);
         cipher.init(Cipher.ENCRYPT_MODE, key);
-        byte[] encryptedData = cipher.doFinal(plaintext.getBytes());
+        byte[] encryptedData = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
         return Base64.getEncoder().encodeToString(encryptedData);
     }
 

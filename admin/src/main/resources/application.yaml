@@ -4,11 +4,32 @@ server:
     context-path: /
 
 spring:
+  application:
+    name: znew
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    serialization:
+      fail-on-empty-beans: false
   datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/znew?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
-    username: root
-    password: 123456
+    hikari:
+      minimum-idle: 10 # 连接池中允许的最小连接数。缺省值：10
+      maximum-pool-size: 20 # 连接池中允许的最大连接数。缺省值：10
+      auto-commit: true # 自动提交 默认值为 true
+      idle-timeout: 600000 # 连接允许在池中闲置的最长时间，一个连接idle状态的最大时长（毫秒），超时则被释放（retired），缺省:10分钟
+      max-lifetime: 1800000 # 一 个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟，建议设置比数据库超时时长少30秒
+      connection-timeout: 30000  # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒
+      connection-test-query: select 1 #连接测试查询语句，用于验证连接是否有效
+      validation-timeout: 30000 #验证连接有效性的超时时间，单位为毫秒,默认值 5000 毫秒（5 秒）
+      pool-name: mysql-pool # 连接池名字，用于日志和监控
+  data:
+    redis:
+      lettuce:
+        pool:
+          max-active: 8 #连接池允许的最大连接数，默认为 8。
+          max-wait: 30000 #连接池等待连接的最大时间，单位为毫秒，如果为 -1 则表示无限等待。
+          max-idle: 8 #连接池允许的最大空闲连接数，默认为 8。
+          min-idle: 0 #连接池允许的最小空闲连接数，默认为 0。
   profiles:
     active: dev
 
@@ -16,7 +37,7 @@ mybatis:
   mapper-locations: classpath*:com/hfw/service/**/*Mapper.xml
   configuration:
     map-underscore-to-camel-case=true: true #字段下划线映射驼峰命名
-    default-enum-type-handler:  com.hfw.model.mapper.EnumCodeTypeHandler #枚举处理
+    default-enum-type-handler:  com.hfw.model.component.EnumCodeTypeHandler #枚举处理
     databaseId: MYSQL #xbatis数据库识别
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
@@ -29,7 +50,7 @@ gen:
   path: D:\\tmp\\admin
   table-prefix: t_
   db: znew
-  project-name: sys
+  project-name: znew
   logic-delete-field: deleted
 
 ############## Sa-Token 配置 (文档: https://sa-token.cc) ##############

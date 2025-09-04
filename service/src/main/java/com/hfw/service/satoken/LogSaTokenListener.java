@@ -1,7 +1,7 @@
 package com.hfw.service.satoken;
 
 import cn.dev33.satoken.listener.SaTokenListener;
-import cn.dev33.satoken.stp.SaLoginModel;
+import cn.dev33.satoken.stp.parameter.SaLoginParameter;
 import com.hfw.model.enums.sys.LogoutType;
 import com.hfw.service.sys.sysLoginLog.SysLoginLogMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ public class LogSaTokenListener implements SaTokenListener {
 
     /** 每次登录时触发 */
     @Override
-    public void doLogin(String loginType, Object loginId, String tokenValue, SaLoginModel loginModel) {
+    public void doLogin(String loginType, Object loginId, String tokenValue, SaLoginParameter loginParameter) {
     }
 
     /** 每次注销时触发 */
@@ -67,7 +67,7 @@ public class LogSaTokenListener implements SaTokenListener {
 
     /** 每次Token续期时触发 */
     @Override
-    public void doRenewTimeout(String tokenValue, Object loginId, long timeout) {
+    public void doRenewTimeout(String loginType, Object loginId, String tokenValue, long timeout) {
     }
 
 }

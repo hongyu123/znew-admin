@@ -18,6 +18,7 @@
       <el-form-item label="账号" prop="account" class="plus-form-item">
         <el-input
           v-model="row.account"
+          :disabled="row.id"
           maxlength="50"
           show-word-limit
           placeholder="请填写账号"
@@ -39,6 +40,7 @@
         <el-input
           v-model="row.password"
           type="password"
+          show-password
           placeholder="请填写密码"
           clearable
           class="plus-form-item-field"

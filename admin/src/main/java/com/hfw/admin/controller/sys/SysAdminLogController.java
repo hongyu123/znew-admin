@@ -1,5 +1,6 @@
 package com.hfw.admin.controller.sys;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
 import com.hfw.model.po.sys.SysAdminLog;
@@ -20,6 +21,7 @@ public class SysAdminLogController {
     @Autowired
     private SysAdminLogService sysAdminLogService;
 
+    @SaCheckPermission("sysAdminLog:page")
     @GetMapping("/page")
     public PageResult<SysAdminLog> page(Page<SysAdminLog> page, SysAdminLog po) {
         return PageResult.of(sysAdminLogService.page(page, po));

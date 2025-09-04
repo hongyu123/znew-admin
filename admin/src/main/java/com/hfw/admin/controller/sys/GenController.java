@@ -1,5 +1,6 @@
 package com.hfw.admin.controller.sys;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.alibaba.fastjson2.JSONObject;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
@@ -27,17 +28,20 @@ public class GenController {
     private GenService genService;
 
     //表分页列表
+    @SaCheckPermission("gen:page")
     @GetMapping("/tablePage")
     public PageResult<Table> tableList(Page<Table> page, String tableName){
         return PageResult.of(genService.tablePage(page, tableName));
     }
 
     //代码生成到配置路径
+    @SaCheckPermission("gen:gen")
     @PostMapping("/genToPath")
     public Result<Void> genToPath(@RequestBody JSONObject params) throws Exception {
         return genService.genToPath(params.getString("tableName"));
     }
     //代码批量生成到配置路径
+    @SaCheckPermission("gen:gen")
     @PostMapping("/batchGenToPath")
     public Result<Void> batchGenToPath(@RequestBody List<String> tables) throws Exception{
         StringJoiner errors = new StringJoiner("<br/>");
@@ -53,11 +57,13 @@ public class GenController {
     }
 
     //代码生成到项目路径
+    @SaCheckPermission("gen:genToProject")
     @PostMapping("/genToProject")
     public Result<Void> genToProject(@RequestBody JSONObject params) throws Exception {
         return genService.genToProject(params.getString("tableName"));
     }
     //代码批量生成到项目路径
+    @SaCheckPermission("gen:genToProject")
     @PostMapping("/batchGenToProject")
     public Result<Void> batchGenToProject(@RequestBody List<String> tables) throws Exception{
         StringJoiner errors = new StringJoiner("<br/>");
@@ -73,17 +79,20 @@ public class GenController {
     }
 
     //根据表名获取表单配置信息
+    @SaCheckPermission("gen:gen")
     @GetMapping("/formInfo")
     public Result<SysGenTable> formGenTableInfo(@RequestParam String tableName){
         return Result.success( genService.formGenTableInfo(tableName) );
     }
     //表单生成到配置路径
+    @SaCheckPermission("gen:gen")
     @PostMapping("/genFormToPath")
     public Result<Void> genFormToPath(@RequestBody SysGenTable table) throws Exception {
         genService.genFormToPath(table);
         return Result.success();
     }
     //表单生成到项目路径
+    @SaCheckPermission("gen:genToProject")
     @PostMapping("/genFormToProject")
     public Result<Void> genFormToProject(@RequestBody SysGenTable table) throws Exception {
         genService.genFormToProject(table);
@@ -91,12 +100,14 @@ public class GenController {
     }
 
     //java代码生成预览
+    @SaCheckPermission("gen:genView")
     @GetMapping("/javaCode")
     public Result<String> javaCode(@RequestParam String tableName, @RequestParam String templateName) throws Exception {
         return genService.javaCode(tableName,templateName);
     }
 
     //表单生成代码预览
+    @SaCheckPermission("gen:genView")
     @PostMapping("/formCode/{templateName}")
     public Result<String> formCode(@RequestBody SysGenTable table, @PathVariable("templateName") String templateName) throws Exception {
         return Result.string( genService.formCode(table,templateName) );
@@ -104,6 +115,7 @@ public class GenController {
     @Autowired
     private SysGenTableService sysGenTableService;
     //表单生成代码预览
+    @SaCheckPermission("gen:genView")
     @GetMapping("/formCode")
     public Result<String> formCode(@RequestParam Long id, @RequestParam String templateName) throws Exception {
         SysGenTable table = sysGenTableService.detail(id);

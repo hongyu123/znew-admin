@@ -108,9 +108,9 @@ public class AesUtil {
      */
     public String encrypt(String plaintext) throws Exception {
         if(keys==null){
-            keys = key.getBytes();
+            keys = key.getBytes(StandardCharsets.UTF_8);
         }
-        byte[] encrypt = doFinal(Cipher.ENCRYPT_MODE, keys, plaintext.getBytes(), iv);
+        byte[] encrypt = doFinal(Cipher.ENCRYPT_MODE, keys, plaintext.getBytes(StandardCharsets.UTF_8), iv);
         return Base64.getEncoder().encodeToString(encrypt);
     }
 
@@ -122,7 +122,7 @@ public class AesUtil {
      */
     public String decrypt(String ciphertext) throws Exception {
         if(keys==null){
-            keys = key.getBytes();
+            keys = key.getBytes(StandardCharsets.UTF_8);
         }
         byte[] decrypt = doFinal(Cipher.DECRYPT_MODE, keys, Base64.getDecoder().decode(ciphertext), iv);
         return new String(decrypt, StandardCharsets.UTF_8);

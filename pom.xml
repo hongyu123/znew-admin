@@ -45,7 +45,7 @@
             <dependency>
                 <groupId>cn.xbatis</groupId>
                 <artifactId>xbatis-spring-boot-parent</artifactId>
-                <version>1.8.2-spring-boot3</version>
+                <version>1.9.0-spring-boot3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -53,7 +53,7 @@
             <dependency>
                 <groupId>cn.dev33</groupId>
                 <artifactId>sa-token-spring-boot3-starter</artifactId>
-                <version>1.40.0</version>
+                <version>1.44.0</version>
             </dependency>
 
             <dependency>
@@ -79,12 +79,24 @@
                 <artifactId>guava</artifactId>
                 <version>33.4.0-jre</version>
             </dependency>
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>3.2.2</version>
+            </dependency>
 
             <!-- aes加密提供 -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk18on</artifactId>
                 <version>1.80</version>
+            </dependency>
+
+            <!--SQL解析 https://jsqlparser.github.io/JSqlParser/index.html-->
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>5.3</version>
             </dependency>
 
         </dependencies>

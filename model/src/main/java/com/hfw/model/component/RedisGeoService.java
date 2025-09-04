@@ -10,6 +10,7 @@ import org.springframework.data.redis.domain.geo.Metrics;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author farkle
@@ -67,7 +68,7 @@ public class RedisGeoService {
                 cnt = redisUtil.geoSearchStore(near_geo_key, near_zset_key, new Point(lng, lat), new Distance(distance, Metrics.METERS), searchCount);
             }
             //System.out.println(distance+":end");
-            redisUtil.expire(near_zset_key, 60*60);
+            redisUtil.expire(near_zset_key, 1, TimeUnit.HOURS);
         }
         return redisUtil.zRangeWithScores(near_zset_key, page.start(),page.end());
     }

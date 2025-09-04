@@ -1,6 +1,7 @@
 package com.hfw.service.dto;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.po.sys.SysUser;
 import com.hfw.model.utils.LocalDateUtil;
@@ -22,6 +23,7 @@ public class LoginUser {
     private String username; //保留,给前端用
     private String nickname;
     private List<String> permissions;
+    private List<String> roles; //保留,给前端用
     private String accessToken;
     private String refreshToken;
     private LocalDateTime expires;
@@ -29,6 +31,7 @@ public class LoginUser {
     public static LoginUser of(SysUser sysUser){
         LoginUser loginUser = new LoginUser();
         loginUser.setId(sysUser.getId());
+        loginUser.setOrgId(sysUser.getOrgId());
         loginUser.setAvatar(sysUser.getAvatar());
         loginUser.setAccount(sysUser.getAccount());
         loginUser.setUsername(sysUser.getAccount());
@@ -64,4 +67,14 @@ public class LoginUser {
             StpUtil.disable(userId, -1);
         }
     }
+
+    @JsonIgnore
+    //数据权限key
+    private String dataScopeKey;
+    public static void enableDataScope(String key){
+        StpUtil.checkLogin();
+        LoginUser loginUser = (LoginUser) StpUtil.getSession().get(USER);
+        loginUser.dataScopeKey = key;
+    }
+
 }

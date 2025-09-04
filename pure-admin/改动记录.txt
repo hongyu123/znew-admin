@@ -3,11 +3,15 @@ pure-admin/src/components/Editor/WangEditor.vue
 pure-admin/src/components/Upload/Files.vue
 pure-admin/src/components/Upload/Img.vue
 pure-admin/src/components/Upload/Imgs.vue
+pure-admin/src/components/ImportExcel/ 文件上传
 
 pure-admin/src/hooks/useHandleData.ts 封装确认操作
 pure-admin/src/hooks/useQueryTable.js
 pure-admin/src/api/sys/common.js 文件上传 枚举API
 
+pure-admin/src/views/account-settings/ 账户设置
+pure-admin/src/components/ReCropperPreview/ 图片裁剪
+pure-admin/src/components/ReCropper/
 
 修改
 pure-admin/src/components/RePureTableBar/src/bar.tsx 修改表格右侧工具栏
@@ -36,6 +40,7 @@ dependencies:
 +    "vuedraggable": "^4.1.0",
 +    "codemirror": "^5.65.18",
 +    "codemirror-editor-vue3": "^2.8.0"
++    "cropperjs": "^1.6.2"
 
 devDependencies:
 +    "@types/codemirror": "^5.60.15"

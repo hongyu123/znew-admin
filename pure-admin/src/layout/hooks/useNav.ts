@@ -83,6 +83,9 @@ export function useNav() {
   function logout() {
     useUserStoreHook().logOut();
   }
+  function toAccountSettings() {
+    router.push({ name: "AccountSettings" });
+  }
 
   function backTopMenu() {
     router.push(getTopMenu()?.path);
@@ -132,6 +135,7 @@ export function useNav() {
     device,
     layout,
     logout,
+    toAccountSettings,
     routers,
     $storage,
     isFullscreen,

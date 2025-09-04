@@ -1,11 +1,11 @@
 package com.hfw.service.sys.sysUpload;
 
 import cn.xbatis.core.sql.executor.chain.QueryChain;
-import com.hfw.model.mapper.CommonMapper;
 import com.hfw.model.po.sys.SysUpload;
 import com.hfw.model.utils.LocalDateUtil;
 import com.hfw.model.utils.SignUtil;
 import com.hfw.model.utils.StrUtil;
+import com.hfw.service.component.CommonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

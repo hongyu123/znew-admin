@@ -90,4 +90,20 @@
         </root>
     </springProfile>
 
+    <appender name="monitor_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/monitor.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/monitor.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>60</maxHistory>
+            <maxFileSize>200MB</maxFileSize>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+    <logger name="monitor_log" level="info" additivity="false">
+        <appender-ref ref="monitor_file" />
+    </logger>
+
 </configuration>

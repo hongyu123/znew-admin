@@ -67,7 +67,7 @@
 
     <select id="orgTreeList" resultType="com.hfw.model.po.sys.SysOrganization">
         select * from sys_organization
-        where ancestors like concat(#{orgId},',%')
+        where ancestors like concat(#{ancestors},',%')
         <if test="state!=null">
             and state=#{state}
         </if>

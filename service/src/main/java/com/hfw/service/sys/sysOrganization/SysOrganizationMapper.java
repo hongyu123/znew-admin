@@ -29,10 +29,10 @@ public interface SysOrganizationMapper extends MybatisMapper<SysOrganization> {
 
     /**
      * 根据机构ID获取机构树列表
-     * @param orgId 机构id
+     * @param ancestors 机构路径
      * @param state 状态
      * @return 机构树列表
      */
-    List<SysOrganization> orgTreeList(@Param("orgId")Long orgId, @Param("state")EnableState state);
+    List<SysOrganization> orgTreeList(@Param("ancestors")String ancestors, @Param("state")EnableState state);
 
 }

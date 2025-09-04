@@ -77,7 +77,8 @@
     "plus-pro-components": "^0.1.18",
     "vuedraggable": "^4.1.0",
     "codemirror": "^5.65.18",
-    "codemirror-editor-vue3": "^2.8.0"
+    "codemirror-editor-vue3": "^2.8.0",
+    "cropperjs": "^1.6.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.6.0",

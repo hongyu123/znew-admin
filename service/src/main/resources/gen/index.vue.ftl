@@ -36,6 +36,7 @@
         </div>
         <el-button
           v-show="selectedData.length > 0"
+          v-perms="['${beanName}:del']"
           type="danger"
           plain
           @click="handleDeleteBatch"
@@ -43,6 +44,7 @@
           批量删除
         </el-button>
         <el-button
+          v-perms="['${beanName}:add']"
           type="primary"
           :icon="useRenderIcon(EpCirclePlus)"
           @click="openEdit()"
@@ -80,6 +82,7 @@
         >
           <template #operation="{ row }">
             <el-button
+              v-perms="['${beanName}:view']"
               class="reset-margin !outline-none"
               link
               type="primary"
@@ -90,6 +93,7 @@
               详情
             </el-button>
             <el-button
+              v-perms="['${beanName}:edit']"
               class="reset-margin"
               link
               type="primary"
@@ -100,6 +104,7 @@
               编辑
             </el-button>
             <el-button
+              v-perms="['${beanName}:del']"
               class="reset-margin"
               link
               type="danger"

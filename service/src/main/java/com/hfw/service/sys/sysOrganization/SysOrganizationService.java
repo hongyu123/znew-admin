@@ -7,6 +7,7 @@ import com.hfw.model.jackson.Result;
 import com.hfw.model.po.sys.SysOrganization;
 import com.hfw.model.utils.TreeUtil;
 import com.hfw.service.dto.LoginUser;
+import com.hfw.service.sys.sysDataScope.SysDataScopeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,8 @@ import java.util.List;
 public class SysOrganizationService {
     @Autowired
     private SysOrganizationMapper sysOrganizationMapper;
+    @Autowired
+    private SysDataScopeService sysDataScopeService;
 
     public Page<SysOrganization> page(Page<SysOrganization> page, SysOrganization po) {
         return sysOrganizationMapper.page(page, po);
@@ -32,36 +35,36 @@ public class SysOrganizationService {
 
     @Transactional
     public Result<Void> add(SysOrganization sysOrganization){
-        String ancestors = "";
+        SysOrganization parent = null;
         if(sysOrganization.getPid()!=null && sysOrganization.getPid()>0){
-            SysOrganization parent = sysOrganizationMapper.getById(sysOrganization.getPid());
+            parent = sysOrganizationMapper.getById(sysOrganization.getPid());
             if(parent==null){
                 return Result.error("父节点不存在!");
             }
-            ancestors = parent.getAncestors();
         }
         sysOrganization.setAncestors("");
         sysOrganizationMapper.save(sysOrganization);
-        ancestors += sysOrganization.getId() + ",";
+        String ancestors = parent==null ?String.valueOf(sysOrganization.getId()) :parent.getAncestors()+","+sysOrganization.getId();
         sysOrganization.setAncestors(ancestors);
         sysOrganizationMapper.update(sysOrganization);
+        sysDataScopeService.clearCache();
         return Result.success();
     }
 
     public Result<Void> edit(SysOrganization sysOrganization){
-        String ancestors = "";
+        SysOrganization parent = null;
         if(sysOrganization.getPid()!=null && sysOrganization.getPid()>0){
             if(sysOrganization.getId().equals(sysOrganization.getPid())){
                 return Result.error("不能设置父节点为自己");
             }
-            SysOrganization parent = sysOrganizationMapper.getById(sysOrganization.getPid());
+            parent = sysOrganizationMapper.getById(sysOrganization.getPid());
             if(parent==null){
                 return Result.error("父节点不存在!");
             }
-            ancestors = parent.getAncestors();
         }
-        ancestors += sysOrganization.getId() + ",";
+        String ancestors = parent==null ?String.valueOf(sysOrganization.getId()) :parent.getAncestors()+","+sysOrganization.getId();
         sysOrganization.setAncestors(ancestors);
+        sysDataScopeService.clearCache();
         return Result.result( sysOrganizationMapper.update(sysOrganization) );
     }
 
@@ -70,6 +73,7 @@ public class SysOrganizationService {
         if(cnt>0){
             return Result.error("节点下有子节点,无法删除!");
         }
+        sysDataScopeService.clearCache();
         return Result.result( sysOrganizationMapper.deleteById(id) );
     }
 
@@ -80,16 +84,22 @@ public class SysOrganizationService {
      */
     public List<SysOrganization> selfOrgTree(EnableState state){
         LoginUser loginUser = LoginUser.getLoginUser();
-        List<SysOrganization> list = null;
         if(loginUser.getId()==1){
-            list = QueryChain.of(sysOrganizationMapper).eq(state!=null, SysOrganization::getState, state).orderBy(SysOrganization::getSort).list();
+            List<SysOrganization> list = QueryChain.of(sysOrganizationMapper).eq(state!=null, SysOrganization::getState, state).orderBy(SysOrganization::getSort).list();
+            return TreeUtil.listToTree(list, SysOrganization::getId, SysOrganization::getPid, SysOrganization::setChildren,
+                    (dto) -> dto.getPid()==0 );
         }else if(loginUser.getOrgId()==null){
             return null;
         }else{
-            list = sysOrganizationMapper.orgTreeList(loginUser.getOrgId(), state);
+            SysOrganization org = sysOrganizationMapper.getById(loginUser.getOrgId());
+            if(org==null){
+                return null;
+            }
+            List<SysOrganization> list = sysOrganizationMapper.orgTreeList(org.getAncestors(), state);
+            list.add(org);
+            return TreeUtil.listToTree(list, SysOrganization::getId, SysOrganization::getPid, SysOrganization::setChildren,
+                    (dto) -> dto.getId().equals(org.getId()) );
         }
-        return TreeUtil.listToTree(list, SysOrganization::getId, SysOrganization::getPid, SysOrganization::setChildren,
-                (dto) -> dto.getPid()==0 );
     }
 
 }

@@ -1,5 +1,6 @@
 package com.hfw.admin.controller.sys;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.hfw.admin.log.AdminLog;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
@@ -24,17 +25,20 @@ public class SysRoleController {
     @Autowired
     private SysRoleService sysRoleService;
 
+    @SaCheckPermission("sysRole:page")
     @GetMapping("/page")
     public PageResult<SysRole> page(Page<SysRole> page, SysRole po) {
         return PageResult.of(sysRoleService.page(page, po));
     }
 
+    @SaCheckPermission("sysRole:view")
     @GetMapping
     public Result<SysRole> detail(@RequestParam Long id){
         return Result.success( sysRoleService.detail( id) );
     }
 
     @AdminLog("新增系统角色")
+    @SaCheckPermission("sysRole:add")
     @PostMapping
     public Result<Void> add(@RequestBody SysRole sysRole){
         sysRoleService.add(sysRole);
@@ -42,12 +46,14 @@ public class SysRoleController {
     }
 
     @AdminLog("编辑系统角色")
+    @SaCheckPermission("sysRole:edit")
     @PutMapping
     public Result<Void> edit(@RequestBody SysRole sysRole){
         return sysRoleService.edit(sysRole);
     }
 
     @AdminLog("删除系统角色")
+    @SaCheckPermission("sysRole:del")
     @DeleteMapping
     public Result<Void> del(@RequestParam Long id){
         return sysRoleService.del(id);
@@ -65,6 +71,7 @@ public class SysRoleController {
     }
 
     @AdminLog("角色授权用户")
+    @SaCheckPermission("sysRole:role")
     @PostMapping("/users")
     public Result<Void> allocateUsers(@RequestBody SysUserRole sysUserRole){
         sysRoleService.allocateUsers(sysUserRole);
@@ -72,6 +79,7 @@ public class SysRoleController {
     }
 
     @AdminLog("角色取消授权用户")
+    @SaCheckPermission("sysRole:role")
     @DeleteMapping("/users")
     public Result<Void> cancelUsers(@RequestBody SysUserRole sysUserRole){
         sysRoleService.cancelUsers(sysUserRole);

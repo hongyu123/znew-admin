@@ -3,7 +3,7 @@ package com.hfw.service.sys.gen;
 import cn.xbatis.core.sql.executor.chain.DeleteChain;
 import cn.xbatis.core.sql.executor.chain.QueryChain;
 import com.hfw.model.entity.Page;
-import com.hfw.model.mapper.CommonMapper;
+import com.hfw.service.component.CommonMapper;
 import com.hfw.model.po.sys.SysGenColumn;
 import com.hfw.model.po.sys.SysGenTable;
 import org.springframework.beans.factory.annotation.Autowired;

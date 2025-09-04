@@ -6,10 +6,10 @@ import cn.xbatis.core.sql.executor.chain.QueryChain;
 import com.hfw.model.entity.Page;
 import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.jackson.Result;
-import com.hfw.model.mapper.CommonMapper;
 import com.hfw.model.po.sys.SysUser;
 import com.hfw.model.po.sys.SysUserRole;
 import com.hfw.model.utils.ValidUtil;
+import com.hfw.service.component.CommonMapper;
 import com.hfw.service.dto.LoginParam;
 import com.hfw.service.dto.LoginUser;
 import com.hfw.service.sys.sysAuth.SysAuthService;
@@ -107,6 +107,7 @@ public class SysUserService {
         if(sysUser.getState()!=null){
            LoginUser.enableUser(sysUser.getId(), sysUser.getState());
         }
+        sysAuthService.clearCache();
         return Result.success();
     }
 
@@ -118,31 +119,36 @@ public class SysUserService {
         }
         sysUserMapper.deleteById(id);
         DeleteChain.of(commonMapper, SysUserRole.class).eq(SysUserRole::getUserId, id).execute();
+        sysAuthService.clearCache();
         return Result.success();
     }
 
-    public Result<Void> changePassword(SysUserDTO dto){
-        if(!ValidUtil.validPassword(dto.getPassword()) ){
+    public Result<Void> changePassword(String oldPassword, String password){
+        if(!ValidUtil.validPassword(password) ){
             return Result.error("密码格式错误!");
         }
-        dto.setId(LoginUser.getLoginUser().getId());
-        SysUser origin = sysUserMapper.getById(dto.getId());
+        if(oldPassword.equals(password)){
+            return Result.error("新密码不能与原密码一致");
+        }
+        Long userId = LoginUser.getLoginUser().getId();
+        SysUser origin = sysUserMapper.getById(userId);
         //原密码校验
-        if(!BCrypt.checkpw(dto.getOldPassword(), origin.getPassword())){
+        if(!BCrypt.checkpw(oldPassword, origin.getPassword())){
             return Result.error("原密码错误!");
         }
         SysUser up = new SysUser();
-        up.setId(dto.getId());
+        up.setId(userId);
         //密码加密
-        String encodePassword = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt(12));
+        String encodePassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
         up.setPassword(encodePassword);
         sysUserMapper.update(up);
+        LoginUser.logout();
         return Result.success();
     }
 
-    public int resetPassword(SysUser sysUser){
+    public int resetPassword(Long userId){
         SysUser up = new SysUser();
-        up.setId(sysUser.getId());
+        up.setId(userId);
         //密码加密
         String encodePassword = BCrypt.hashpw("123456", BCrypt.gensalt(12));
         up.setPassword(encodePassword);
@@ -171,10 +177,28 @@ public class SysUserService {
             return Result.error("用户名/密码错误!");
         }
         LoginUser loginUser = LoginUser.of(sysUser);
+        loginUser.setRoles(sysRoleService.userRoles(loginUser.getId()));
         loginUser.setPermissions(sysAuthService.userAuths(loginUser.getId()));
         LoginUser.store(loginUser);
         sysLoginLogService.login(loginUser.getAccessToken(),loginUser.getUsername(),"登录成功", request);
         return Result.success(loginUser);
+    }
+
+    public SysUser userInfo(){
+        LoginUser loginUser = LoginUser.getLoginUser();
+        return sysUserMapper.getById(loginUser.getId());
+    }
+    public int editInfo(SysUser sysUser){
+        LoginUser loginUser = LoginUser.getLoginUser();
+        SysUser up = new SysUser();
+        up.setId(loginUser.getId());
+        up.setAvatar(sysUser.getAvatar());
+        up.setNickname(sysUser.getNickname());
+        up.setPhone(sysUser.getPhone());
+        up.setEmail(sysUser.getEmail());
+        up.setGender(sysUser.getGender());
+        up.setRemark(sysUser.getRemark());
+        return sysUserMapper.update(up);
     }
 
 }
