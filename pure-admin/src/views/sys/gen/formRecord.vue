@@ -51,10 +51,21 @@
           @page-current-change="handleCurrentChange"
         >
           <template #operation="{ row }">
-            <el-button type="primary" icon="View" link @click="preview(row)">
+            <el-button
+              v-perms="['gen:genView']"
+              type="primary"
+              icon="View"
+              link
+              @click="preview(row)"
+            >
               预览
             </el-button>
-            <el-button type="primary" link @click="formGen(row)">
+            <el-button
+              v-perms="['gen:gen']"
+              type="primary"
+              link
+              @click="formGen(row)"
+            >
               表单生成
             </el-button>
           </template>
@@ -74,6 +85,7 @@ import { useRouter } from "vue-router";
 import { PlusSearch } from "plus-pro-components";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useQueryTable } from "@/hooks/useQueryTable";
+import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 
 import FormPreview from "./FormPreview.vue";
 import { page } from "./gen";
@@ -136,7 +148,16 @@ const preview = row => {
 //表单生成
 const router = useRouter();
 const formGen = row => {
-  router.push(`/sys/gen/form?id=${row.id}`);
+  const parameter = { id: row.id };
+  useMultiTagsStoreHook().handleTags("push", {
+    path: `/sys/formGen`,
+    name: "formGen",
+    query: parameter,
+    meta: {
+      title: "表单生成"
+    }
+  });
+  router.push({ name: "formGen", query: parameter });
 };
 
 const {

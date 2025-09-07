@@ -99,7 +99,8 @@ public class SysDemoController {
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
         response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
         response.setHeader("Content-Disposition", "attachment;filename="+fileName);
-        try (OutputStream os = response.getOutputStream()){
+        OutputStream os = response.getOutputStream();
+        try(os){
             EasyExcel.write(os,SysDemo.class).autoCloseStream(false).excludeColumnFieldNames(List.of("id"))
                     .sheet().doWrite(page.getList());
         }
@@ -116,25 +117,25 @@ public class SysDemoController {
         response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
         response.setHeader("Content-Disposition", "attachment;filename="+fileName);
 
-        try (OutputStream os = response.getOutputStream();
-             InputStream is = this.getClass().getClassLoader().getResourceAsStream("template/demo.xlsx")){
-            ExcelWriter excelWriter = EasyExcel.write(os).withTemplate(is).build();
+        OutputStream os = response.getOutputStream();
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("template/demo.xlsx");
+        ExcelWriter excelWriter = EasyExcel.write(os).withTemplate(is).build();
+        try(os; is; excelWriter){
             WriteSheet writeSheet = EasyExcel.writerSheet().build();
             FillConfig fillConfig = FillConfig.builder().build();
             excelWriter.fill(new FillWrapper("list", page.getList()), fillConfig, writeSheet);
             //excelWriter.fill(page.getList(), writeSheet);
-            excelWriter.close();
         }
     }
     //导入
     @PostMapping("/import")
     public Result<Void> imp(@RequestPart MultipartFile file) throws IOException {
-        try (InputStream is = file.getInputStream()){
-            ExcelReader excelReader = EasyExcel.read(is).extraRead(CellExtraTypeEnum.MERGE).build();
+        InputStream is = file.getInputStream();
+        ExcelReader excelReader = EasyExcel.read(is).extraRead(CellExtraTypeEnum.MERGE).build();
+        try(is; excelReader){
             PageReadExceptListener<SysDemo> listener = new PageReadExceptListener<>(list->sysDemoService.saveBatch(list));
             ReadSheet sheet =  EasyExcel.readSheet(0).headRowNumber(1).head(SysDemo.class).registerReadListener(listener).build();
             excelReader.read(sheet);
-            excelReader.close();
             List<String> errorList = listener.getErrorList();
             if(!CollectionUtils.isEmpty(errorList)){
                 return Result.error(StringUtils.join(errorList, "\r\n"));

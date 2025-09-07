@@ -4,25 +4,37 @@ import cn.idev.excel.annotation.ExcelProperty;
 import cn.idev.excel.context.AnalysisContext;
 import cn.idev.excel.exception.ExcelDataConvertException;
 import cn.idev.excel.metadata.data.CellData;
-import cn.idev.excel.read.listener.PageReadListener;
+import cn.idev.excel.read.listener.ReadListener;
 import org.apache.poi.ss.util.CellReference;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
-public class PageReadExceptListener<T> extends PageReadListener<T> {
-    private int dataHandleIndex; //从1开始
+public class ReadAllListener<T> implements ReadListener<T> {
+    private int dataHandleIndex = 0; //从1开始
+    private List<T> list = new ArrayList<>();
     private List<String> errorList = new ArrayList<>();
-    public List<String> getErrorList(){
-        return this.errorList;
-    }
-    public PageReadExceptListener(Consumer<List<T>> consumer) {
-        super(consumer, 1000);
+
+    public ReadAllListener(){}
+    public ReadAllListener(int dataHandleIndex){
+        this.dataHandleIndex = dataHandleIndex;
     }
 
-    public PageReadExceptListener(Consumer<List<T>> consumer, int batchCount) {
-        super(consumer, batchCount);
+    public List<T> getList() {
+        return this.list;
+    }
+    public List<String> getErrorList() {
+        return errorList;
+    }
+
+    @Override
+    public void invoke(T t, AnalysisContext analysisContext) {
+        //rowIndex从0开始
+        Integer rowIndex = analysisContext.readRowHolder().getRowIndex();
+        if(rowIndex<dataHandleIndex){
+            return;
+        }
+        this.list.add(t);
     }
 
     @Override
@@ -47,6 +59,10 @@ public class PageReadExceptListener<T> extends PageReadListener<T> {
             return;
         }
         throw exception;
+    }
+
+    @Override
+    public void doAfterAllAnalysed(AnalysisContext analysisContext) {
     }
 
 }

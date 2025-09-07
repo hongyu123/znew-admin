@@ -92,14 +92,4 @@ public class RsaUtil {
         return RsaUtil.decryptByPublicKey(algorithm, publicKey, ciphertext);
     }
 
-    public static void main(String[] args) throws Exception {
-        RsaUtil rsa = new RsaUtil();
-        String data = "KYUCCNABCDEFGHIJ";
-        rsa.setPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCftkekOWqsntfcAvJxIhlK3rGzg3IbkAL4Vw0Jh2SSWBbqKt9mlWIgQ2sR1Zsjo1KXJ7Y9fU5TU0VIQM7mHDzwztbWHV0XwXR2VGjk45utoBWXKxTiGpvmCjPB5JPp+GxlnHLb6dvVKOKbZ6MDLZbSwFDqJ4nHlVP42LIWwFKt9QIDAQAB");
-        rsa.setPrivateKey("MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJ+2R6Q5aqye19wC8nEiGUresbODchuQAvhXDQmHZJJYFuoq32aVYiBDaxHVmyOjUpcntj19TlNTRUhAzuYcPPDO1tYdXRfBdHZUaOTjm62gFZcrFOIam+YKM8Hkk+n4bGWcctvp29Uo4ptnowMtltLAUOoniceVU/jYshbAUq31AgMBAAECgYBKvVWHX6sw/uCLQAHOuaNWayKDnFaw2VLafnpGZErHRVvr14ZWDkAuUv5vCSQhqFOFEvtwiQw3aDd62YE5JCvL0I4D2LVNpEHSChuKg5qePl1mnZiCDfip0gMZyaMR1u74u/YlYXXRK41u1sdtSwksalWRvG6lFSfH0QHqUNZafQJBAPQ0HfXJNPufBcXG7B6Ga87xnPJ3KTNVE/6CQsixVOys8UAjXxdBX/EJ3RxBACWsRd/VMiIxJtxp4npcceoDup8CQQCnbVGri6cPhvk+NgVMOzaKQDUxr9jRr0/3PCuJ/nuezUnh3dZ1RZHt7V/T2U8tsRN84FobS8+CjwLr2uVQGuLrAkEA1Tdv9TsBdLTK8H0Xiitpk91nYFhkc7pT48LOFramZKM3XP3FN+PPpgAru1CRlVMOCzn1NN9fg9E7egSfPWiWFwJAB48xA8zPYy0V7dAklxeJU96oSDEHWhhPRPtrf9SEolvkfRU2DJ9ygkqYbAlAwPBgz9+VUewvV1a7rAh7GA3OtwJAKE8P3EmY64C5ggIhG3C/ceVtR2yEt2YwNMEBG0z2v1oM7n3KY+CXEnlIScDamXvEd8uV/9xI+8v/4HDIRqzzdA==");
-        String ciphertext = rsa.encryptByPublicKey(data);
-        System.out.println(ciphertext);
-        System.out.println(rsa.decryptByPrivateKey(ciphertext));
-    }
-
 }

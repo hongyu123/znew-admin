@@ -70,8 +70,8 @@ public class SignUtil {
         return byte2hex(bytes);
     }
 
-    private String hmacSHA256(String s, String secret) throws Exception{
-        byte[] keyByte = secret.getBytes(StandardCharsets.UTF_8);
+    public static String hmacSHA256(String s, String secretKey) throws Exception{
+        byte[] keyByte = secretKey.getBytes(StandardCharsets.UTF_8);
         byte[] messageBytes = s.getBytes(StandardCharsets.UTF_8);
         Mac hmacSha256 = Mac.getInstance("HmacSHA256");
         hmacSha256.init(new SecretKeySpec(keyByte, 0, keyByte.length, "HmacSHA256"));

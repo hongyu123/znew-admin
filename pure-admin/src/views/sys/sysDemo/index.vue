@@ -35,6 +35,7 @@
         </div>
         <el-button
           v-show="selectedData.length > 0"
+          v-perms="['sysDemo:del']"
           type="danger"
           plain
           @click="handleDeleteBatch"
@@ -42,12 +43,29 @@
           批量删除
         </el-button>
         <el-button
+          v-perms="['sysDemo:add']"
           type="primary"
           :icon="useRenderIcon(EpCirclePlus)"
           @click="openEdit()"
         >
           新增系统测试
         </el-button>
+        <el-button
+          v-perms="['sysDemo:import']"
+          type="primary"
+          :icon="Upload"
+          plain
+          @click="importFile"
+          >导入</el-button
+        >
+        <el-button
+          v-perms="['sysDemo:export']"
+          type="warning"
+          :icon="Download"
+          plain
+          @click="exportFile"
+          >导出</el-button
+        >
       </template>
       <template v-slot="{ size, dynamicColumns }">
         <pure-table
@@ -79,6 +97,7 @@
         >
           <template #operation="{ row }">
             <el-button
+              v-perms="['sysDemo:view']"
               class="reset-margin !outline-none"
               link
               type="primary"
@@ -89,6 +108,7 @@
               详情
             </el-button>
             <el-button
+              v-perms="['sysDemo:edit']"
               class="reset-margin"
               link
               type="primary"
@@ -99,6 +119,7 @@
               编辑
             </el-button>
             <el-button
+              v-perms="['sysDemo:del']"
               class="reset-margin"
               link
               type="danger"
@@ -113,6 +134,7 @@
       </template>
     </PureTableBar>
     <EditDrawer ref="editDrawerRef" />
+    <ImportExcel ref="importRef" />
   </div>
 </template>
 
@@ -123,18 +145,21 @@ import EpCirclePlus from "@iconify-icons/ep/circle-plus";
 import EpDelete from "@iconify-icons/ep/delete";
 import EpEditPen from "@iconify-icons/ep/edit-pen";
 import EpView from "@iconify-icons/ep/view";
+import { Upload, Download } from "@element-plus/icons-vue";
 
 import { ref, reactive, onMounted } from "vue";
 import { PlusSearch } from "plus-pro-components";
 import { PureTableBar } from "@/components/RePureTableBar";
 
 import EditDrawer from "./edit.vue";
+import ImportExcel from "@/components/ImportExcel/index.vue";
 import { enums } from "@/api/sys/common";
-import { page, detail, del, dels } from "./sysDemo";
+import { page, detail, del, dels, imp, exp } from "./sysDemo";
 
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useQueryTable } from "@/hooks/useQueryTable";
+import { downloadByData } from "@pureadmin/utils";
 
 onMounted(() => {
   getTableList();
@@ -280,6 +305,35 @@ const handleDeleteBatch = async () => {
   selectedData.value = [];
   tableRef.value.getTableRef().clearSelection();
   getTableList();
+};
+
+// 导出
+const exportFile = () => {
+  exp(queryParams.value).then(response => {
+    if (response.headers && response.headers["content-disposition"]) {
+      const fileName = decodeURI(
+        response.headers["content-disposition"].replace(
+          "attachment;filename=",
+          ""
+        )
+      );
+      downloadByData(response.data, fileName);
+    } else {
+      downloadByData(response, "系统示例.xlsx");
+    }
+  });
+};
+// 导入
+const importRef = ref();
+const importFile = () => {
+  let params = {
+    title: "导入示例",
+    template: "SysDemo",
+    tempApi: exp,
+    importApi: imp,
+    getTableList: getTableList
+  };
+  importRef.value.acceptParams(params);
 };
 
 const {

@@ -62,7 +62,7 @@ public class DataScopeInterceptor implements Interceptor {
             //return null;
             return "org_id=0";
         }
-        return String.format("org_id in (%s)", sysDataScope.getCustomIds());
+        return "org_id in (%s)".formatted(sysDataScope.getCustomIds());
     }
 
     private boolean containsTable(String sql){

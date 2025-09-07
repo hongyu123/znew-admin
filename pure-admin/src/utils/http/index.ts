@@ -21,11 +21,11 @@ const defaultConfig: AxiosRequestConfig = {
   baseURL: import.meta.env.VITE_API_URL as string,
   // 请求超时时间
   timeout: 10000,
-  headers: {
-    Accept: "application/json, text/plain, */*",
-    "Content-Type": "application/json",
-    "X-Requested-With": "XMLHttpRequest"
-  },
+  // headers: {
+  //   Accept: "application/json, text/plain, */*",
+  //   "Content-Type": "application/json",
+  //   "X-Requested-With": "XMLHttpRequest"
+  // },
   // 数组格式参数序列化（https://github.com/axios/axios/issues/5142）
   paramsSerializer: {
     serialize: stringify as unknown as CustomParamsSerializer
@@ -127,7 +127,6 @@ class PureHttp {
         const $config = response.config;
         // 关闭进度条动画
         NProgress.done();
-
         const data = response.data;
         if (data.code == 100) {
           // ElMessageBox.alert(data.message, "系统提示", {
@@ -146,8 +145,11 @@ class PureHttp {
           ElMessage.error(data.message);
           return Promise.reject(data);
         }
-        // 优先判断post/get等方法是否传入回调，否则执行初始化设置等回调
+        if (response?.headers["content-disposition"]) {
+          return response;
+        }
         if (typeof $config.beforeResponseCallback === "function") {
+          // 优先判断post/get等方法是否传入回调，否则执行初始化设置等回调
           $config.beforeResponseCallback(response);
           return response.data;
         }

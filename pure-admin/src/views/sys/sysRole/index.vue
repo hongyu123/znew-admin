@@ -35,6 +35,7 @@
         </div>
         <el-button
           v-show="selectedData.length > 0"
+          v-perms="['sysRole:del']"
           type="danger"
           plain
           @click="handleDeleteBatch"
@@ -42,6 +43,7 @@
           批量删除
         </el-button>
         <el-button
+          v-perms="['sysRole:add']"
           type="primary"
           :icon="useRenderIcon(EpCirclePlus)"
           @click="openEdit()"
@@ -78,10 +80,16 @@
           @page-current-change="handleCurrentChange"
         >
           <template #operation="{ row }">
-            <el-button type="primary" link @click="toUserRole(row)">
+            <el-button
+              v-perms="['sysRole:role']"
+              type="primary"
+              link
+              @click="toUserRole(row)"
+            >
               授权用户
             </el-button>
             <el-button
+              v-perms="['sysRole:edit']"
               class="reset-margin"
               link
               type="primary"
@@ -92,6 +100,7 @@
               编辑
             </el-button>
             <el-button
+              v-perms="['sysRole:del']"
               class="reset-margin"
               link
               type="danger"

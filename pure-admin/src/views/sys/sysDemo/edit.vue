@@ -3,7 +3,7 @@
     v-model="drawerProps.visible"
     class="plus-drawer-form"
     :destroy-on-close="true"
-    size="50%"
+    size="40%"
     :title="drawerProps.title"
   >
     <el-form

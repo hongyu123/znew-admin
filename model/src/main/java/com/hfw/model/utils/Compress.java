@@ -22,17 +22,13 @@ public class Compress {
      */
     public static void zip(String srcDir, String outFile, boolean KeepDirStructure) throws IOException{
         long start = System.currentTimeMillis();
-        ZipOutputStream zos = null ;
-        try {
-            zos = new ZipOutputStream(new FileOutputStream(outFile));
+        FileOutputStream fos = new FileOutputStream(outFile);
+        ZipOutputStream zos = new ZipOutputStream(fos) ;
+        try(fos; zos){
             File sourceFile = new File(srcDir);
             zip(sourceFile,zos,sourceFile.getName(),KeepDirStructure);
             long end = System.currentTimeMillis();
             //System.out.println("压缩完成，耗时：" + (end - start) +" ms");
-        }finally{
-            if(zos != null){
-                zos.close();
-            }
         }
     }
 
@@ -44,32 +40,23 @@ public class Compress {
      */
     public static void zip(List<File> srcFiles , String outFile) throws IOException{
         long start = System.currentTimeMillis();
-        ZipOutputStream zos = null ;
-        try {
-            zos = new ZipOutputStream(new FileOutputStream(outFile));
+        FileOutputStream fis = new FileOutputStream(outFile);
+        ZipOutputStream zos = new ZipOutputStream(fis);
+        try(fis; zos){
             for (File srcFile : srcFiles) {
                 byte[] buf = new byte[BUFFER_SIZE];
                 zos.putNextEntry(new ZipEntry(srcFile.getName()));
                 int len;
-                FileInputStream in = null;
-                try{
-                    in = new FileInputStream(srcFile);
-                    while ((len = in.read(buf)) != -1){
+                FileInputStream is = new FileInputStream(srcFile);
+                try(is){
+                    while ((len = is.read(buf)) != -1){
                         zos.write(buf, 0, len);
                     }
-                }finally {
-                    if(in!=null){
-                        in.close();
-                    }
-                    zos.closeEntry();
                 }
+                zos.closeEntry();
             }
             long end = System.currentTimeMillis();
             //System.out.println("压缩完成，耗时：" + (end - start) +" ms");
-        } finally{
-            if(zos != null){
-                zos.close();
-            }
         }
     }
 
@@ -89,19 +76,14 @@ public class Compress {
             zos.putNextEntry(new ZipEntry(name));
             // copy文件到zip输出流中
             int len;
-            FileInputStream in = null;
-            try{
-                in = new FileInputStream(sourceFile);
+            FileInputStream in = new FileInputStream(sourceFile);
+            try(in){
                 while ((len = in.read(buf)) != -1){
                     zos.write(buf, 0, len);
                 }
-            }finally {
-                if(in!=null){
-                    in.close();
-                }
-                // Complete the entry
-                zos.closeEntry();
             }
+            // Complete the entry
+            zos.closeEntry();
         } else {
             File[] listFiles = sourceFile.listFiles();
             if(listFiles == null || listFiles.length == 0){
@@ -133,14 +115,12 @@ public class Compress {
      * @param out
      */
     public static void zip(String src, String out) throws IOException{
-        try (FileInputStream fis = new FileInputStream(src);
-             ZipOutputStream zos =  new ZipOutputStream(new FileOutputStream(out)) ){
-            try{
-                zos.putNextEntry(new ZipEntry(StrUtil.filename(src)));
-                IOUtil.copy(fis,zos);
-            }finally {
-                zos.closeEntry();
-            }
+        FileInputStream fis = new FileInputStream(src);
+        ZipOutputStream zos =  new ZipOutputStream(new FileOutputStream(out));
+        try(fis; zos){
+            zos.putNextEntry(new ZipEntry(StrUtil.filename(src)));
+            IOUtil.copy(fis,zos);
+            zos.closeEntry();
         }
     }
     /**
@@ -151,18 +131,15 @@ public class Compress {
      * @throws IOException
      */
     public static byte[] zip(byte[] bytes, String entry) throws IOException {
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-            try (ZipOutputStream zos = new ZipOutputStream(bos)) {
-                try{
-                    ZipEntry zipEntry = new ZipEntry(entry);
-                    zos.putNextEntry(zipEntry);
-                    zos.write(bytes);
-                }finally {
-                    zos.closeEntry();
-                }
-            }
-            return bos.toByteArray();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ZipOutputStream zos = new ZipOutputStream(bos);
+        try(bos; zos) {
+            ZipEntry zipEntry = new ZipEntry(entry);
+            zos.putNextEntry(zipEntry);
+            zos.write(bytes);
+            zos.closeEntry();
         }
+        return bos.toByteArray();
     }
 
     /**
@@ -172,12 +149,11 @@ public class Compress {
      * @throws IOException
      */
     public static void unzip(String src, String out) throws IOException{
-        try( ZipFile zipFile = new ZipFile(src);
-             FileOutputStream fos = new FileOutputStream(out) ){
-            ZipEntry zipEntry = zipFile.entries().nextElement();
-            try( InputStream is = zipFile.getInputStream(zipEntry) ){
-                IOUtil.copy(is,fos);
-            }
+        ZipFile zipFile = new ZipFile(src);
+        FileOutputStream fos = new FileOutputStream(out);
+        InputStream is = zipFile.getInputStream(zipFile.entries().nextElement());
+        try(zipFile; fos ; is){
+            IOUtil.copy(is,fos);
         }
     }
 
@@ -188,13 +164,13 @@ public class Compress {
      * @throws IOException
      */
     public static byte[] unzip(byte[] bytes)throws IOException{
-        try(ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bytes)) ){
-            try{
-                zis.getNextEntry();
-                return zis.readAllBytes();
-            }finally {
-                zis.closeEntry();
-            }
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+        ZipInputStream zis = new ZipInputStream(bis);
+        try(bis; zis){
+            zis.getNextEntry();
+            byte[] zipBytes = zis.readAllBytes();
+            zis.closeEntry();
+            return zipBytes;
         }
     }
 
@@ -204,8 +180,10 @@ public class Compress {
      * @throws IOException
      */
     public static void gz(String srcPath) throws IOException{
-        try(FileInputStream fis = new FileInputStream(srcPath);
-            GZIPOutputStream gzos = new GZIPOutputStream(new FileOutputStream(srcPath+".gz")) ){
+        FileInputStream fis = new FileInputStream(srcPath);
+        FileOutputStream fos = new FileOutputStream(srcPath + ".gz");
+        GZIPOutputStream gzos = new GZIPOutputStream(fos);
+        try(fis; fos; gzos){
             IOUtil.copy(fis,gzos);
         }
     }
@@ -216,12 +194,12 @@ public class Compress {
      * @throws IOException
      */
     public static byte[] gz(byte[] bytes) throws IOException{
-        try(ByteArrayOutputStream bos = new ByteArrayOutputStream()){
-            try(GZIPOutputStream gzos = new GZIPOutputStream(bos)){
-                gzos.write(bytes);
-            }
-            return bos.toByteArray();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        GZIPOutputStream gzos = new GZIPOutputStream(bos);
+        try(bos; gzos){
+            gzos.write(bytes);
         }
+        return bos.toByteArray();
     }
 
     /**
@@ -230,8 +208,10 @@ public class Compress {
      * @throws IOException
      */
     public static void ungz(String src) throws IOException {
-        try(GZIPInputStream gz = new GZIPInputStream(new FileInputStream(src));
-            FileOutputStream os = new FileOutputStream(src.replace(".gz",""))){
+        FileInputStream fis = new FileInputStream(src);
+        GZIPInputStream gz = new GZIPInputStream(fis);
+        FileOutputStream os = new FileOutputStream(src.replace(".gz",""));
+        try(fis; gz; os){
             IOUtil.copy(gz,os);
         }
     }
@@ -241,7 +221,9 @@ public class Compress {
      * @throws IOException
      */
     public static byte[] ungz(byte[] bytes) throws IOException {
-        try(GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(bytes)) ){
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+        GZIPInputStream gzis = new GZIPInputStream(bis);
+        try(bis; gzis){
             return gzis.readAllBytes();
         }
     }

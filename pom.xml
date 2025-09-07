@@ -62,10 +62,12 @@
                 <version>2.0.56</version>
             </dependency>
 
+            <!-- 文档地址:https://github.com/fast-excel/fastexcel/-->
+            <!-- https://readmex.com/fast-excel/fastexcel -->
             <dependency>
                 <groupId>cn.idev.excel</groupId>
                 <artifactId>fastexcel</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.0</version>
             </dependency>
 
             <dependency>

@@ -25,6 +25,7 @@
       <div class="table-header">
         <div class="header-button-lf">
           <el-button
+            v-perms="['sysOrg:add']"
             type="primary"
             :icon="useRenderIcon(EpCirclePlus)"
             @click="openEdit()"
@@ -95,6 +96,7 @@
         <el-table-column fixed="right" label="操作" width="220">
           <template #default="scope">
             <el-button
+              v-perms="['sysOrg:add']"
               type="primary"
               :icon="useRenderIcon(EpCirclePlus)"
               link
@@ -102,6 +104,7 @@
               >新增</el-button
             >
             <el-button
+              v-perms="['sysOrg:edit']"
               type="primary"
               :icon="useRenderIcon(EpEditPen)"
               link
@@ -110,6 +113,7 @@
             >
             <el-button
               v-show="!scope.row.children || scope.row.children.length <= 0"
+              v-perms="['sysOrg:del']"
               type="danger"
               :icon="useRenderIcon(EpDelete)"
               link

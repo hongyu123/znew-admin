@@ -1,7 +1,10 @@
 package com.hfw.model.utils;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -328,22 +331,6 @@ public class StrUtil {
         return true;
     }
 
-    /**
-     * 处理html富文本中的src中的转义
-     * name=1&age=2 会被转义成 name=1&amp;age=2
-     * @param html
-     * @return
-     */
-    public static String handHtmlSrcEscape(String html){
-        Pattern pattern = Pattern.compile("src=\"(.+?)\"");
-        Matcher matcher = pattern.matcher(html);
-        StringBuilder sb = new StringBuilder();
-        while (matcher.find()){
-            matcher.appendReplacement(sb, matcher.group().replaceAll("&amp;","&"));
-        }
-        return sb.length()>0 ?sb.toString():html;
-    }
-
     public static byte[] hex2Bytes(String hexString) {
         int len = hexString.length();
         byte[] bytes = new byte[len / 2];
@@ -356,7 +343,7 @@ public class StrUtil {
     public static String bytes2Hex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte aByte : bytes) {
-            sb.append(String.format("%02X", aByte));
+            sb.append("%02X".formatted(aByte));
         }
         return sb.toString();
     }

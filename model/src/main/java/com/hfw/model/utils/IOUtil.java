@@ -51,7 +51,7 @@ public class IOUtil {
      * @throws IOException
      */
     public long length(InputStream is) throws IOException {
-        try (is) {
+        try(is) {
             long size = 0;
             byte[] buf = new byte[1024];
             int read;

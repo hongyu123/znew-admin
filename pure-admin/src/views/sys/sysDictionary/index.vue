@@ -24,6 +24,7 @@
     >
       <template #buttons>
         <el-button
+          v-perms="['sysDict:add']"
           type="primary"
           :icon="useRenderIcon(EpCirclePlus)"
           @click="openEdit()"
@@ -67,6 +68,7 @@
         >
           <template #operation="{ row }">
             <el-button
+              v-perms="['sysDict:add']"
               type="primary"
               :icon="useRenderIcon(EpCirclePlus)"
               link
@@ -74,6 +76,7 @@
               >新增</el-button
             >
             <el-button
+              v-perms="['sysDict:edit']"
               class="reset-margin"
               link
               type="primary"
@@ -85,6 +88,7 @@
             </el-button>
             <el-button
               v-show="row.childrenNum <= 0"
+              v-perms="['sysDict:del']"
               class="reset-margin"
               link
               type="danger"
@@ -108,9 +112,15 @@
       draggable
     >
       <div class="mb-2">
-        <el-button type="primary" @click="openItemsEdit()">新增</el-button>
+        <el-button
+          v-perms="['sysDict:add']"
+          type="primary"
+          @click="openItemsEdit()"
+          >新增</el-button
+        >
         <el-button
           v-show="itemsSelectedData.length > 0"
+          v-perms="['sysDict:del']"
           type="danger"
           plain
           @click="itemsDeleteBatch"
@@ -141,6 +151,7 @@
       >
         <template #operation="{ row }">
           <el-button
+            v-perms="['sysDict:edit']"
             class="reset-margin"
             link
             type="primary"
@@ -150,6 +161,7 @@
             编辑
           </el-button>
           <el-button
+            v-perms="['sysDict:del']"
             class="reset-margin"
             link
             type="danger"

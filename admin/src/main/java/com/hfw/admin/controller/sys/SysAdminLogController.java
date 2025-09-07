@@ -3,6 +3,7 @@ package com.hfw.admin.controller.sys;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
+import com.hfw.model.enums.sys.SortByWay;
 import com.hfw.model.po.sys.SysAdminLog;
 import com.hfw.service.sys.sysAdminLog.SysAdminLogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class SysAdminLogController {
     @SaCheckPermission("sysAdminLog:page")
     @GetMapping("/page")
     public PageResult<SysAdminLog> page(Page<SysAdminLog> page, SysAdminLog po) {
+        page.sortDefault(SortByWay.desc,"id");
         return PageResult.of(sysAdminLogService.page(page, po));
     }
 

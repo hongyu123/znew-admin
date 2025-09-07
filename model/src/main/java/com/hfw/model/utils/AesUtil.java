@@ -128,23 +128,4 @@ public class AesUtil {
         return new String(decrypt, StandardCharsets.UTF_8);
     }
 
-
-    public static void main(String[] args) throws Exception {
-        AesUtil aes = new AesUtil("AES/CBC/PKCS5Padding");
-        aes.setKey("1234567890123456");
-        aes.setIv(new byte[16]);
-        String ciphertext = aes.encrypt("abcdefghigklmnopqrstuvwxyz0123456789");
-        String plaintext = aes.decrypt(ciphertext);
-        System.out.println(ciphertext); //8Z3dZzqn05FmiuBLowExK0CAbs4TY2GorC2dDPVlsn/tP+VuJGePqIMv1uSaVErr
-        System.out.println(plaintext);
-
-        aes = new AesUtil("AES/ECB/PKCS7Padding");
-        aes.setProvider("BC");
-        aes.setKeys(Base64.getDecoder().decode("pyJxan+SxWU8sGiZYL9Nqw=="));
-        ciphertext = aes.encrypt("1");
-        plaintext = aes.decrypt(ciphertext);
-        System.out.println(ciphertext); //e2eXyCsfJ66lPHYb9gm44w==
-        System.out.println(plaintext);
-    }
-
 }

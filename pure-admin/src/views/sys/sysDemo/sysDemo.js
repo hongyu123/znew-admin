@@ -22,3 +22,10 @@ export const del = id => {
 export const dels = ids => {
   return http.delete("/sysDemo/dels", ids);
 };
+
+export const imp = data => {
+  return http.post("/sysDemo/import", data);
+};
+export const exp = params => {
+  return http.get("/sysDemo/export", params, { responseType: "blob" });
+};

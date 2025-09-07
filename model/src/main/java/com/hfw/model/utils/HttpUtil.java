@@ -174,11 +174,11 @@ public class HttpUtil {
         String bodyParams = "";
         if(params!=null && !params.isEmpty()){
             bodyParams =  params.entrySet().stream().map(entry->
-                            String.format("--%s\r\nContent-Disposition: form-data; name=\"%s\"\r\n\r\n%s", boundary, entry.getKey(),entry.getValue()))
+                            "--%s\r\nContent-Disposition: form-data; name=\"%s\"\r\n\r\n%s".formatted(boundary, entry.getKey(),entry.getValue()))
                     .collect(Collectors.joining("\r\n"));
         }
-        String bodyStart = String.format("--%s\r\nContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\nContent-Type: %s\r\n\r\n", boundary, formData.name, formData.filename, formData.contentType);
-        String bodyEnd = bodyParams.isBlank() ?String.format("\r\n--%s--\r\n", boundary) :String.format("\r\n%s\r\n--%s--\r\n", bodyParams, boundary);
+        String bodyStart = "--%s\r\nContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\nContent-Type: %s\r\n\r\n".formatted(boundary, formData.name, formData.filename, formData.contentType);
+        String bodyEnd = bodyParams.isBlank() ?"\r\n--%s--\r\n".formatted(boundary) :"\r\n%s\r\n--%s--\r\n".formatted(bodyParams, boundary);
 
         byte[] bodyStartBytes = bodyStart.getBytes(StandardCharsets.UTF_8);
         byte[] bodyEndBytes = bodyEnd.getBytes(StandardCharsets.UTF_8);

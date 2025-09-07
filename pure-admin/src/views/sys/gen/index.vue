@@ -24,6 +24,7 @@
     >
       <template #buttons>
         <el-button
+          v-perms="['gen:gen']"
           type="primary"
           :disabled="selectedData.length <= 0"
           @click="handleBatchGenToPath()"
@@ -31,6 +32,7 @@
           配置路径生成
         </el-button>
         <el-button
+          v-perms="['gen:genToProject']"
           type="primary"
           :disabled="selectedData.length <= 0"
           @click="handleBatchGenToProject()"
@@ -68,6 +70,7 @@
         >
           <template #operation="{ row }">
             <el-button
+              v-perms="['gen:genView']"
               type="primary"
               :icon="useRenderIcon(EpView)"
               link
@@ -75,13 +78,28 @@
             >
               预览
             </el-button>
-            <el-button type="primary" link @click="handleGenToPath(row)">
+            <el-button
+              v-perms="['gen:gen']"
+              type="primary"
+              link
+              @click="handleGenToPath(row)"
+            >
               配置路径生成
             </el-button>
-            <el-button type="primary" link @click="handleGenToProject(row)">
+            <el-button
+              v-perms="['gen:genToProject']"
+              type="primary"
+              link
+              @click="handleGenToProject(row)"
+            >
               项目路径生成
             </el-button>
-            <el-button type="primary" link @click="formGen(row)">
+            <el-button
+              v-perms="['gen:gen']"
+              type="primary"
+              link
+              @click="formGen(row)"
+            >
               表单生成
             </el-button>
           </template>
