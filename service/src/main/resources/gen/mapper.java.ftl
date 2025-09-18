@@ -4,6 +4,7 @@ import cn.xbatis.core.mybatis.mapper.MybatisMapper;
 import cn.xbatis.db.annotations.Paging;
 import com.hfw.model.entity.Page;
 import ${packageName}.model.po.${projectName}.${className};
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -11,6 +12,7 @@ import org.apache.ibatis.annotations.Param;
  * @author ${author}
  * @date ${.now?string('yyyy-MM-dd')}
  */
+@Mapper
 public interface ${className}Mapper extends MybatisMapper<${className}> {
     /**
      * 分页条件查询
