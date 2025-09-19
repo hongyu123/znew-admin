@@ -109,11 +109,23 @@
             <id>aliyun</id>
             <name>Nexus aliyun</name>
             <url>https://maven.aliyun.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled> <!-- 通常公共镜像不代理snapshots，按需开启 -->
+            </snapshots>
         </repository>
         <repository>
-            <id>central</id>
+            <id>maven central</id>
             <name>central</name>
             <url>https://repo.maven.apache.org/maven2/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 

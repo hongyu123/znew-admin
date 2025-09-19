@@ -483,6 +483,21 @@ System.out.println(ciphertext);
 System.out.println(rsa.decryptByPrivateKey(ciphertext));
 ```
 
+SM2
+BouncyCastleProvider 实现
+``` java
+Sm2Util sm2 = new Sm2Util();
+sm2.generateKey();
+//sm2.setPublicKey("");
+//sm2.setPrivateKey("");
+//sm2.setMode(SM2Engine.Mode.C1C3C2);
+System.out.println("公钥:"+sm2.getPublicKey());
+System.out.println("私钥:"+sm2.getPrivateKey());
+String data = sm2.encrypt("123456");
+System.out.println(data);
+System.out.println(sm2.decrypt(data));
+```
+
 防伪造
 1. 对内容签名后
 2. 用私钥加密签名
