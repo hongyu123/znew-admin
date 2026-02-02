@@ -17,6 +17,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.List;
+
 /**
  * 系统示例表
  * @author farkle
@@ -60,7 +62,7 @@ public class SysDemo {
 
     /** 兴趣(多选框) */
     @ExcelProperty("兴趣")
-    private String interest;
+    private List<String> interest;
 
     /** 生日(日期) */
     @ExcelProperty("生日")

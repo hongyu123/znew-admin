@@ -35,14 +35,16 @@ spring:
 
 mybatis:
   mapper-locations: classpath*:com/hfw/service/**/*Mapper.xml
+
+
+  type-handlers-package: com.hfw.model.component
   configuration:
-    map-underscore-to-camel-case=true: true #字段下划线映射驼峰命名
+    map-underscore-to-camel-case: true #字段下划线映射驼峰命名
     default-enum-type-handler:  com.hfw.model.component.EnumCodeTypeHandler #枚举处理
-    databaseId: MYSQL #xbatis数据库识别
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    databaseId: PGSQL #xbatis数据库识别
 
 upload:
-  storage-path: D:\\tmp\\upload
+  storage-path: C:\\tmp\\upload
 
 gen:
   pack: com.hfw

@@ -13,15 +13,6 @@ import java.util.List;
 
 @Getter @Setter
 public class SysDemoDTO extends SysDemo {
-
-    public List<String> interestList;
-    public List<String> getInterestList(){
-        if(StringUtils.hasText(super.getInterest())){
-            interestList = JSON.parseArray(super.getInterest(),String.class);
-        }
-        return interestList;
-    }
-
     public List<UploadFile> photosList;
     public List<UploadFile> getPhotosList(){
         if(StringUtils.hasText(super.getPhotos())){
@@ -46,9 +37,6 @@ public class SysDemoDTO extends SysDemo {
         po.setAvatar(UploadFile.removeServerPrefix(this.avatarUrl));
         UploadFile.removeServerPrefix(photosList);
         UploadFile.removeServerPrefix(attachmentList);
-        if(!CollectionUtils.isEmpty(interestList)){
-            po.setInterest(JSON.toJSONString(interestList));
-        }
         if(!CollectionUtils.isEmpty(photosList)){
             po.setPhotos(JSON.toJSONString(photosList));
         }

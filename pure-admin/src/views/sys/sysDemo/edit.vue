@@ -73,8 +73,8 @@
           <el-radio :value="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="兴趣" prop="interestList">
-        <el-checkbox-group v-model="row.interestList">
+      <el-form-item label="兴趣" prop="interest">
+        <el-checkbox-group v-model="row.interest">
           <el-checkbox value="1" label="篮球" />
           <el-checkbox value="2" label="足球" />
         </el-checkbox-group>
@@ -178,7 +178,7 @@ const rules = reactive({
   score: [{ required: true, message: "请填写" }],
   gender: [{ required: true, message: "请填写" }],
   state: [{ required: true, message: "请填写" }],
-  interestList: [{ required: true, message: "请填写" }],
+  interest: [{ required: true, message: "请填写" }],
   birth: [{ required: true, message: "请填写" }],
   registTime: [{ required: true, message: "请填写" }],
   avatarUrl: [{ required: true, message: "请填写" }],
