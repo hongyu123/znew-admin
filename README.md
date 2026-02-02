@@ -270,7 +270,7 @@ System.out.println(res);
 ``` java
 String url = "http://127.0.0.1/test_get";
 Map<String,String> params = ChainMap.<String>create().putVal("name", "new牛").putVal("type", "student");
-String uri = url +"?"+ HttpUtil.formToBody(params,"UTF-8");
+String uri = url +"?"+ HttpUtil.formToBody(params, StandardCharsets.UTF_8);
 String res = HttpUtil.get(uri);
 System.out.println(res);
 ```
@@ -294,7 +294,7 @@ System.out.println(res);
 ``` java
 String url = "http://127.0.0.1/test_post_form";
 Map<String,String> params = ChainMap.<String>create().putVal("name", "new牛");
-String res = HttpUtil.postForm(url, params, "UTF-8");
+String res = HttpUtil.postForm(url, params, StandardCharsets.UTF_8);
 System.out.println(res);
 ```
 
@@ -321,6 +321,37 @@ String res = HttpUtil.init()
         .post(url, HttpRequest.BodyPublishers.ofByteArray(bytes))
         .body();
 System.out.println(res);
+```
+
+### session
+单HttpUtil实例提供cookie管理, 管理规则:Domain为后缀匹配, Path为startsWith匹配
+``` java
+String url = "http://*.*.com";
+HttpUtil session = HttpUtil.session();
+//登录页面
+String loginHtml = session.get_str(url+"/log_f.do").body();
+//获取图片验证码
+byte[] bytes = session.get_byte(url+"/validateCode.vld?"+ ThreadLocalRandom.current().nextInt(100)).body();
+//识别验证码
+String captcha = parseCaptcha(bytes);
+Map<String,String> loginParam = new HashMap<>();
+loginParam.put("j_username","username");
+loginParam.put("j_password","password");
+loginParam.put("kaptcha",captcha);
+//登录
+String loginRes = session.post(url+"/log_f_login.do", HttpUtil.formToBody(loginParam, StandardCharsets.UTF_8), "Content-Type","application/x-www-form-urlencoded").body();
+//业务处理...
+String indexHtml = session.get_str(url+"/home_f.do").body();
+Map<String,Map<String, HttpUtil.Cookie>> cookies = session.getCookies();
+//业务处理完毕,保存cookie,以便下次不用重复登录
+
+//...
+
+//下次爬虫开始
+session = HttpUtil.session(cookies);
+//因为保存了cookie,已经是登录状态, cookie失效请自行判断!
+indexHtml = session.get_str(url+"/home_f.do").body();
+//继续业务处理...
 ```
 
 ### 其它
@@ -363,6 +394,7 @@ System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "false");
 System.setProperty("jdk.http.auth.proxying.disabledSchemes", "false");
 
 String url = "http://www.java1234.com/";
+//IP代理
 ProxySelector proxySelector = new ProxySelector() {
     @Override
     public List<Proxy> select(URI uri) {
@@ -374,15 +406,14 @@ ProxySelector proxySelector = new ProxySelector() {
     public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
     }
 };
+//代理认证
 Authenticator authenticator = new Authenticator() {
     @Override
     protected PasswordAuthentication getPasswordAuthentication() {
         return new PasswordAuthentication("user", "password".toCharArray());
     }
 };
-HttpResponse<String> response = HttpUtil.init()
-        .proxySelector(proxySelector) //IP代理
-        //.authenticator(authenticator) //代理认证
+HttpResponse<String> response = HttpUtil.init(proxySelector, authenticator, HttpClient.Version.HTTP_2)
         .get_str(url);
 System.out.println(response.body());
 ```
@@ -503,6 +534,6 @@ System.out.println(sm2.decrypt(data));
 2. 用私钥加密签名
 
 协商加密数据传输
-1. 随机生成对称加密秘钥 
+1. 随机生成对称加密秘钥
 2. 用公钥对`对称加密秘钥`进行加密, 把`对称加密秘钥密文`传给服务器作为`会话加密传输的秘钥`
 3. 接下来的会话都用`协商好的秘钥`进行对称加/解密
