@@ -1,6 +1,5 @@
-package com.hfw.service.mybatis.jsqlparser;
+package com.hfw.model.mybatis.jsqlparser;
 
-import com.hfw.service.mybatis.DataScopeInterceptor;
 import lombok.Setter;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Alias;
@@ -44,7 +43,7 @@ public class SqlFromItemVisitor extends FromItemVisitorAdapter<Void> {
                     plainSelect.setWhere(andExpression);
                 }
             }catch (JSQLParserException e){
-                DataScopeInterceptor.monitorLog.error("数据权限SQL表达式解析失败", e);
+                SqlSelectVisitor.monitorLog.error("数据权限SQL表达式解析失败", e);
             }
         }
         return null;

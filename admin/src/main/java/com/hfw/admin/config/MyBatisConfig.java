@@ -1,6 +1,6 @@
 package com.hfw.admin.config;
 
-import com.hfw.service.mybatis.DataScopeInterceptor;
+import com.hfw.service.component.DataScopeInterceptor;
 import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

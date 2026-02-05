@@ -1,4 +1,4 @@
-package com.hfw.model.component;
+package com.hfw.model.mybatis.typehandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,13 +8,9 @@ import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 // JSONB 类型处理器
-@MappedTypes({Map.class, List.class, LinkedHashMap.class, ArrayList.class})
+@MappedTypes({DBMap.class, DBList.class})
 @MappedJdbcTypes(JdbcType.OTHER)
 public class JsonbTypeHandler<T> extends BaseTypeHandler<T> {
     private static final ObjectMapper objectMapper = new ObjectMapper();

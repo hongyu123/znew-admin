@@ -37,11 +37,11 @@ mybatis:
   mapper-locations: classpath*:com/hfw/service/**/*Mapper.xml
 
 
-  type-handlers-package: com.hfw.model.component
+  type-handlers-package: com.hfw.model.mybatis.typehandler
   configuration:
     map-underscore-to-camel-case: true #字段下划线映射驼峰命名
-    default-enum-type-handler:  com.hfw.model.component.EnumCodeTypeHandler #枚举处理
-    databaseId: PGSQL #xbatis数据库识别
+    default-enum-type-handler:  com.hfw.model.mybatis.EnumCodeTypeHandler #枚举处理
+    databaseId: PGSQL
 
 upload:
   storage-path: C:\\tmp\\upload

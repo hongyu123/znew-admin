@@ -1,16 +1,19 @@
-package com.hfw.service.mybatis.jsqlparser;
+package com.hfw.model.mybatis.jsqlparser;
 
-import com.hfw.service.mybatis.DataScopeInterceptor;
 import lombok.Setter;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.ExpressionVisitor;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 @Setter
 public class SqlSelectVisitor extends SelectVisitorAdapter<Void> {
+    public static final Logger monitorLog = LoggerFactory.getLogger("monitor_log");
+
     private FromItemVisitor<Void> fromItemVisitor;
     private ExpressionVisitor<Void> expressionVisitor;
 
@@ -25,7 +28,7 @@ public class SqlSelectVisitor extends SelectVisitorAdapter<Void> {
             }else if(fromItem instanceof Select select){
                 select.accept(this, context);
             }else{
-                DataScopeInterceptor.monitorLog.error("数据权限SQL解析表名失败:{}", fromItem);
+                monitorLog.error("数据权限SQL解析表名失败:{}", fromItem);
             }
         }
         if(where!=null){

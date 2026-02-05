@@ -1,14 +1,13 @@
-package com.hfw.service.mybatis;
+package com.hfw.service.component;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.hfw.model.enums.sys.DataScope;
 import com.hfw.model.po.sys.SysDataScope;
-import com.hfw.service.component.AppHolder;
 import com.hfw.service.dto.LoginUser;
-import com.hfw.service.mybatis.jsqlparser.SqlExpressionVisitor;
-import com.hfw.service.mybatis.jsqlparser.SqlFromItemVisitor;
-import com.hfw.service.mybatis.jsqlparser.SqlSelectVisitor;
-import com.hfw.service.mybatis.jsqlparser.SqlStatementVisitor;
+import com.hfw.model.mybatis.jsqlparser.SqlExpressionVisitor;
+import com.hfw.model.mybatis.jsqlparser.SqlFromItemVisitor;
+import com.hfw.model.mybatis.jsqlparser.SqlSelectVisitor;
+import com.hfw.model.mybatis.jsqlparser.SqlStatementVisitor;
 import com.hfw.service.sys.sysDataScope.SysDataScopeService;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;

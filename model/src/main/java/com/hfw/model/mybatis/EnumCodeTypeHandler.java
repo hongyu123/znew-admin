@@ -1,4 +1,4 @@
-package com.hfw.model.component;
+package com.hfw.model.mybatis;
 
 import com.hfw.model.enums.sys.BaseEnum;
 import org.apache.ibatis.type.BaseTypeHandler;

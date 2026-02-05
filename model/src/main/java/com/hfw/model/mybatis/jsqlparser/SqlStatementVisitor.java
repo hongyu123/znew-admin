@@ -1,4 +1,4 @@
-package com.hfw.service.mybatis.jsqlparser;
+package com.hfw.model.mybatis.jsqlparser;
 
 import lombok.Setter;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;

@@ -1,4 +1,4 @@
-package com.hfw.model.component;
+package com.hfw.model.mybatis.typehandler;
 
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
@@ -18,7 +18,7 @@ import java.time.ZoneOffset;
  * mybatis默认的typeHandler null->LocalDateTime
  * xbatis @TypeHandler默认的typeHandler JdbcType.UNDEFINED->LocalDateTime
  */
-//@MappedJdbcTypes(value = {JdbcType.TIMESTAMP, JdbcType.TIMESTAMP_WITH_TIMEZONE, JdbcType.UNDEFINED}, includeNullJdbcType = true)
+@MappedJdbcTypes(value = {JdbcType.TIMESTAMP, JdbcType.TIMESTAMP_WITH_TIMEZONE}, includeNullJdbcType = true)
 public class DateTimeTypeHandler extends BaseTypeHandler<LocalDateTime> {
     private final ZoneOffset zoneOffset = ZoneOffset.of("+08:00");
     @Override
