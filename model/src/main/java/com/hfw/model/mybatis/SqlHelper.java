@@ -80,6 +80,7 @@ public class SqlHelper {
                 Method method = innerClass.getMethod("values");
                 Enum<?>[] enums = (Enum<?>[])method.invoke(null);
                 StringJoiner joiner = new StringJoiner(",");
+                List<ColumnInfo> mapColumns  = new ArrayList<>();
                 for (Enum<?> e : enums){
                     String fieldName  = e.name();
                     Field field = fieldsMap.get(fieldName);
@@ -112,7 +113,11 @@ public class SqlHelper {
                     }
                     columnMap.put(fieldName, columnInfo);
                     joiner.add(columnName);
+                    if(!columnInfo.getColumnName().equals(StrUtil.humpToLine(columnInfo.getFieldName()))){
+                        mapColumns.add(columnInfo);
+                    }
                 }
+                MybatisGlobalConfig.registerDynamicResultMap(tableClass, mapColumns);
                 tableInfo.setSelectColumns(joiner.toString());
                 return;
             }
@@ -225,7 +230,7 @@ public class SqlHelper {
         SQL sql = new SQL()
                 .SELECT(tableInfo.getSelectColumns())
                 .FROM(tableInfo.tableName());
-        this.applyWhere(tableInfo, sql, where, "");
+        this.applyWhere(tableInfo, sql, where, "where.");
         ColumnInfo logicDelete = tableInfo.getLogicDelete();
         if(logicDelete!=null){
             sql.WHERE("%s=%s".formatted(logicDelete.getColumnName(), logicDelete.getBeforeValue()));
@@ -245,7 +250,7 @@ public class SqlHelper {
         SQL sql = new SQL()
                 .SELECT("count(*)")
                 .FROM(tableInfo.tableName());
-        this.applyWhere(tableInfo, sql, where,"");
+        this.applyWhere(tableInfo, sql, where,"where.");
         ColumnInfo logicDelete = tableInfo.getLogicDelete();
         if(logicDelete!=null){
             sql.WHERE("%s=%s".formatted(logicDelete.getColumnName(), logicDelete.getBeforeValue()));
@@ -440,13 +445,13 @@ public class SqlHelper {
             SQL sql = new SQL()
                     .UPDATE(tableInfo.tableName())
                     .SET("%s=%s".formatted(logicDelete.getColumnName(), logicDelete.getDeletedValue()));
-            this.applyWhere(tableInfo, sql, where, "");
+            this.applyWhere(tableInfo, sql, where, "where.");
             sql.WHERE("%s=%s".formatted(logicDelete.getColumnName(), logicDelete.getBeforeValue()));
             return sql.toString();
         }
         SQL sql = new SQL()
                 .DELETE_FROM(tableInfo.tableName());
-        this.applyWhere(tableInfo, sql, where, "");
+        this.applyWhere(tableInfo, sql, where, "where.");
         return sql.toString();
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
 public interface BaseMapper<T> {
 
     @SelectProvider(value = SqlProvider.class, method = "selectByPk")
-    T selectByPk(Serializable pk);
+    T selectByPk(@Param("pk") Serializable pk);
 
     default T selectOne(Where<T> where){
         List<T> list = this.selectList(where);
@@ -21,14 +21,14 @@ public interface BaseMapper<T> {
     }
 
     @SelectProvider(value = SqlProvider.class, method = "selectList")
-    List<T> selectList(Where<T> where);
+    List<T> selectList(@Param("where") Where<T> where);
 
     @SelectProvider(value = SqlProvider.class, method = "count")
-    long count(Where<T> where);
+    long count(@Param("where") Where<T> where);
 
     @InsertProvider(value = SqlProvider.class, method = "insert")
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    int insert(T t);
+    int insert(T entity);
 
     @InsertProvider(value = SqlProvider.class, method = "insertBatch")
     @Options(useGeneratedKeys = true, keyProperty = "id")
@@ -44,12 +44,12 @@ public interface BaseMapper<T> {
     int update(@Param("entity")T entity, @Param("where")Where<T> where);
 
     @DeleteProvider(value = SqlProvider.class, method = "deleteByPk")
-    int deleteByPk(Serializable pk);
+    int deleteByPk(@Param("pk") Serializable pk);
 
     @DeleteProvider(value = SqlProvider.class, method = "deleteByPks")
-    int deleteByPks(Collection<? extends Serializable> pks);
+    int deleteByPks(@Param("pks") Collection<? extends Serializable> pks);
 
     @DeleteProvider(value = SqlProvider.class, method = "delete")
-    int delete(Where<T> where);
+    int delete(@Param("where") Where<T> where);
 
 }

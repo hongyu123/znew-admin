@@ -34,17 +34,17 @@ public class SqlProvider {
         }
     }
 
-    public String selectByPk(ProviderContext context, Serializable pk) throws Exception {
+    public String selectByPk(ProviderContext context, @Param("pk")Serializable pk) throws Exception {
         Class<?> tableClass = this.getTableClass(context);
         return sqlHelper.selectByPk(tableClass);
     }
 
-    public String selectList(ProviderContext context, Where<?> where) throws Exception{
+    public String selectList(ProviderContext context, @Param("where")Where<?> where) throws Exception{
         Class<?> tableClass = this.getTableClass(context);
         return sqlHelper.selectList(tableClass, where);
     }
 
-    public String count(ProviderContext context, Where<?> where) throws Exception{
+    public String count(ProviderContext context, @Param("where")Where<?> where) throws Exception{
         Class<?> tableClass = this.getTableClass(context);
         return sqlHelper.count(tableClass, where);
     }
@@ -73,17 +73,17 @@ public class SqlProvider {
         return sqlHelper.update(entity, where);
     }
 
-    public String deleteByPk(ProviderContext context, Serializable pk) throws Exception {
+    public String deleteByPk(ProviderContext context, @Param("pk")Serializable pk) throws Exception {
         Class<?> tableClass = this.getTableClass(context);
         return sqlHelper.deleteByPk(tableClass);
     }
 
-    public String deleteByPks(ProviderContext context, Collection<? extends Serializable> pks) throws Exception {
+    public String deleteByPks(ProviderContext context, @Param("pks")Collection<? extends Serializable> pks) throws Exception {
         Class<?> tableClass = this.getTableClass(context);
         return sqlHelper.deleteByPks(tableClass, pks);
     }
 
-    public String delete(ProviderContext context, Where<?> where) throws Exception{
+    public String delete(ProviderContext context, @Param("where")Where<?> where) throws Exception{
         this.assertWhere(context, where);
         Class<?> tableClass = this.getTableClass(context);
         return sqlHelper.delete(tableClass, where);
