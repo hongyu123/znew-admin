@@ -31,7 +31,7 @@ public class GenController {
     @SaCheckPermission("gen:page")
     @GetMapping("/tablePage")
     public PageResult<Table> tableList(Page<Table> page, String tableName){
-        return PageResult.of(genService.tablePage(page, tableName));
+        return genService.tablePage(page, tableName);
     }
 
     //代码生成到配置路径

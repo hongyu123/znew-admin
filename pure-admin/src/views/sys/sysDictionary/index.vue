@@ -10,7 +10,6 @@
       label-position="right"
       :colProps="colProps"
       :prevent="true"
-      @change="handleSearchChange"
       @search="handleSearch"
       @reset="handleReset"
       @keydown.enter="handleSearch"
@@ -211,21 +210,13 @@ const searchColumns = reactive([
   },
   {
     label: "字典类型",
-    prop: "params.dictKey_like"
+    prop: "dictKey"
   },
   {
     label: "字典名称",
-    prop: "params.dictValue_like"
+    prop: "dictValue"
   }
 ]);
-
-const inputColumns = ["params.dictKey_like", "params.dictValue_like"];
-/** 搜索表单字段变化处理 */
-const handleSearchChange = (values, column) => {
-  if (inputColumns.indexOf(column.prop) < 0) {
-    getTableList();
-  }
-};
 
 const tableRef = ref();
 const tableColumns = [

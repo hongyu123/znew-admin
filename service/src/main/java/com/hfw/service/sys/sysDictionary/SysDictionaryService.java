@@ -1,6 +1,5 @@
 package com.hfw.service.sys.sysDictionary;
 
-import com.hfw.model.entity.Page;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.po.sys.SysDictionary;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +19,8 @@ public class SysDictionaryService {
     @Autowired
     private SysDictionaryMapper sysDictionaryMapper;
 
-    public Page<SysDictionary> page(Page<SysDictionary> page, SysDictionary po) {
-        return sysDictionaryMapper.page(page, po);
-    }
-    public SysDictionary detail(Long id){
-        return sysDictionaryMapper.getById(id);
-    }
-
     public int add(SysDictionary sysDictionary){
-        int res = sysDictionaryMapper.save(sysDictionary);
+        int res = sysDictionaryMapper.insert(sysDictionary);
         Long pid = sysDictionary.getPid();
         if(pid!=null && pid>0){
             sysDictionaryMapper.updateParentChildrenNum(pid);
@@ -36,14 +28,14 @@ public class SysDictionaryService {
         return res;
     }
     public int edit(SysDictionary sysDictionary){
-        return sysDictionaryMapper.update(sysDictionary);
+        return sysDictionaryMapper.updateByPk(sysDictionary);
     }
     public Result<Void> del(Long id){
-        SysDictionary dict = sysDictionaryMapper.getById(id);
+        SysDictionary dict = sysDictionaryMapper.selectByPk(id);
         if(dict.getChildrenNum()>0){
             return Result.error("节点下有子节点,无法删除!");
         }
-        int res = sysDictionaryMapper.deleteById(id);
+        int res = sysDictionaryMapper.deleteByPk(id);
         Long pid = dict.getPid();
         if(pid!=null && pid>0){
             sysDictionaryMapper.updateParentChildrenNum(pid);
@@ -54,9 +46,9 @@ public class SysDictionaryService {
         int res = 0;
         Set<Long> pidSet = new HashSet<>();
         for (Long id : ids) {
-            SysDictionary dict = sysDictionaryMapper.getById(id);
+            SysDictionary dict = sysDictionaryMapper.selectByPk(id);
             if(dict.getChildrenNum()<=0){
-                res += sysDictionaryMapper.deleteById(id);
+                res += sysDictionaryMapper.deleteByPk(id);
                 Long pid = dict.getPid();
                 if(pid!=null && pid>0){
                     pidSet.add(pid);

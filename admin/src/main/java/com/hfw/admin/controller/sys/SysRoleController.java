@@ -28,7 +28,7 @@ public class SysRoleController {
     @SaCheckPermission("sysRole:page")
     @GetMapping("/page")
     public PageResult<SysRole> page(Page<SysRole> page, SysRole po) {
-        return PageResult.of(sysRoleService.page(page, po));
+        return sysRoleService.page(page, po);
     }
 
     @SaCheckPermission("sysRole:view")
@@ -67,7 +67,7 @@ public class SysRoleController {
     //查询角色下的用户
     @GetMapping("/users")
     public PageResult<SysUser> users(Page<SysUser> page, @RequestParam Long roleId){
-        return PageResult.of( sysRoleService.users(page, roleId) );
+        return sysRoleService.users(page, roleId);
     }
 
     @AdminLog("角色授权用户")

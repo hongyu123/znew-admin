@@ -10,7 +10,6 @@
       label-position="right"
       :colProps="colProps"
       :prevent="true"
-      @change="handleSearchChange"
       @search="handleSearch"
       @reset="handleReset"
       @keydown.enter="handleSearch"
@@ -65,7 +64,6 @@ import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useQueryTable } from "@/hooks/useQueryTable";
 
-import { enums } from "@/api/sys/common";
 import { page } from "./sysAdminLog";
 
 onMounted(() => {
@@ -75,19 +73,19 @@ onMounted(() => {
 const searchColumns = reactive([
   {
     label: "标题",
-    prop: "params.title_like"
+    prop: "title"
   },
   {
     label: "账号",
-    prop: "params.account_like"
+    prop: "account"
   },
   {
     label: "IP",
-    prop: "params.requestIp_like"
+    prop: "requestIp"
   },
   {
     label: "耗时",
-    prop: "params.times_gt",
+    prop: "times",
     valueType: "number"
   },
   {
@@ -100,19 +98,6 @@ const searchColumns = reactive([
     ]
   }
 ]);
-
-const inputColumns = [
-  "params.title_like",
-  "params.account_like",
-  "params.requestIp_like",
-  "params.times_gt"
-];
-/** 搜索表单字段变化处理 */
-const handleSearchChange = (values, column) => {
-  if (inputColumns.indexOf(column.prop) < 0) {
-    getTableList();
-  }
-};
 
 const tableRef = ref();
 const tableColumns = [

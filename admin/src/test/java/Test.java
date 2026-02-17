@@ -1,19 +1,16 @@
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.google.common.cache.CacheBuilder;
-import com.hfw.service.mybatis.jsqlparser.SqlExpressionVisitor;
-import com.hfw.service.mybatis.jsqlparser.SqlFromItemVisitor;
-import com.hfw.service.mybatis.jsqlparser.SqlSelectVisitor;
-import com.hfw.service.mybatis.jsqlparser.SqlStatementVisitor;
+import com.hfw.model.mybatis.jsqlparser.SqlExpressionVisitor;
+import com.hfw.model.mybatis.jsqlparser.SqlFromItemVisitor;
+import com.hfw.model.mybatis.jsqlparser.SqlSelectVisitor;
+import com.hfw.model.mybatis.jsqlparser.SqlStatementVisitor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 /**
  * https://jsqlparser.github.io/JSqlParser/

@@ -5,9 +5,12 @@ import com.hfw.admin.log.AdminLog;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
 import com.hfw.model.jackson.Result;
+import com.hfw.model.mybatis.Where;
 import com.hfw.model.po.sys.SysDataScope;
+import com.hfw.service.component.CommonService;
 import com.hfw.service.sys.sysDataScope.SysDataScopeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,12 +24,18 @@ import java.util.List;
 @RequestMapping("/sysDataScope")
 public class SysDataScopeController {
     @Autowired
+    private CommonService commonService;
+    @Autowired
     private SysDataScopeService sysDataScopeService;
 
     @SaCheckPermission("sysDataScope:page")
     @GetMapping("/page")
     public PageResult<SysDataScope> page(Page<SysDataScope> page, SysDataScope po) {
-        return PageResult.of(sysDataScopeService.page(page, po));
+        Where<SysDataScope> where = Where.<SysDataScope>where()
+                .eq(po.getConfigType() != null, SysDataScope.COLUMN.configType, po.getConfigType())
+                .like(StringUtils.hasText(po.getConfigName()), SysDataScope.COLUMN.configName, po.getConfigName() + "%")
+                .like(StringUtils.hasText(po.getDataKey()), SysDataScope.COLUMN.dataKey, po.getDataKey() + "%");
+        return commonService.page(SysDataScope.class, where, page);
     }
 
     @SaCheckPermission("sysDataScope:view")

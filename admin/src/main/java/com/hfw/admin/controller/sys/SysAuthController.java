@@ -2,8 +2,6 @@ package com.hfw.admin.controller.sys;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.hfw.admin.log.AdminLog;
-import com.hfw.model.entity.Page;
-import com.hfw.model.entity.PageResult;
 import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.po.sys.SysAuth;
@@ -23,12 +21,6 @@ import java.util.List;
 public class SysAuthController {
     @Autowired
     private SysAuthService sysAuthService;
-
-    @SaCheckPermission("sysAuth:page")
-    @GetMapping("/page")
-    public PageResult<SysAuth> page(Page<SysAuth> page, SysAuth po) {
-        return PageResult.of(sysAuthService.page(page, po));
-    }
 
     @SaCheckPermission("sysAuth:view")
     @GetMapping

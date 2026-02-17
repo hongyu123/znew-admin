@@ -1,8 +1,5 @@
 import { http } from "@/utils/http";
 
-export const page = params => {
-  return http.get("/sysAuth/page", params);
-};
 export const detail = id => {
   return http.get("/sysAuth", { id });
 };

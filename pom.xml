@@ -41,13 +41,15 @@
                 <version>${znew.version}</version>
             </dependency>
 
-            <!-- https://xbatis.cn/ -->
             <dependency>
-                <groupId>cn.xbatis</groupId>
-                <artifactId>xbatis-spring-boot-parent</artifactId>
-                <version>1.9.0-spring-boot3</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>3.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper</artifactId>
+                <version>6.1.1</version>
             </dependency>
             <!-- Sa-Token 权限认证，在线文档：https://sa-token.cc -->
             <dependency>

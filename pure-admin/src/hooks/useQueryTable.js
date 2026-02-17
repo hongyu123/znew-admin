@@ -44,7 +44,7 @@ export function useQueryTable(tableRef, getTableList) {
   /** 表格排序 */
   const handleSortChange = ({ column, prop, order }) => {
     if (order) {
-      queryParams.value.sortByWay = order == "ascending" ? "asc" : "desc";
+      queryParams.value.sortByWay = order == "ascending" ? "ASC" : "DESC";
       queryParams.value.sortByField =
         column.sortable === "string" ? column.sortable : prop;
     } else {

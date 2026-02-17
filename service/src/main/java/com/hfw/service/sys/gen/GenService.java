@@ -1,6 +1,7 @@
 package com.hfw.service.sys.gen;
 
 import com.hfw.model.entity.Page;
+import com.hfw.model.entity.PageResult;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.po.sys.SysGenColumn;
 import com.hfw.model.po.sys.SysGenTable;
@@ -20,7 +21,9 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -30,27 +33,93 @@ import java.util.stream.Collectors;
  */
 @Service
 public class GenService{
-
     @Autowired
     private GenProperty genProperty;
+//    @Autowired
+//    private GenMapper genMapper;
     @Autowired
-    private GenMapper genMapper;
+    private PGGenMapper pgGenMapper;
     @Autowired
     private EnumScan enumScan;
 
-    public List<Table> tableList(String tableLike){
-        Page<Table> page = genMapper.tableList(Page.nonePage(), genProperty.getDb(), tableLike);
-        return page.getList();
+    private static final Map<String,String> COLUMN_FIELD_MAP = new HashMap<>();
+    private static final Map<String,String> COLUMN_FORM_MAP = new HashMap<>();
+    static {
+        /*COLUMN_FIELD_MAP.put("tinyint","Integer");
+        COLUMN_FIELD_MAP.put("int","Integer");
+        COLUMN_FIELD_MAP.put("bigint","Long");
+        COLUMN_FIELD_MAP.put("float","Float");
+        COLUMN_FIELD_MAP.put("double","Double");
+        COLUMN_FIELD_MAP.put("decimal","java.math.BigDecimal");
+        COLUMN_FIELD_MAP.put("char","String");
+        COLUMN_FIELD_MAP.put("varchar","String");
+        COLUMN_FIELD_MAP.put("tinytext","String");
+        COLUMN_FIELD_MAP.put("text","String");
+        COLUMN_FIELD_MAP.put("mediumtext","String");
+        COLUMN_FIELD_MAP.put("longtext","String");
+        COLUMN_FIELD_MAP.put("date","java.time.LocalDate");
+        COLUMN_FIELD_MAP.put("datetime","java.time.LocalDateTime");
+
+        COLUMN_FORM_MAP.put("tinyint","number");
+        COLUMN_FORM_MAP.put("int","number");
+        COLUMN_FORM_MAP.put("bigint","number");
+        COLUMN_FORM_MAP.put("float","number");
+        COLUMN_FORM_MAP.put("double","number");
+        COLUMN_FORM_MAP.put("decimal","number");
+        COLUMN_FORM_MAP.put("char","input");
+        COLUMN_FORM_MAP.put("varchar","input");
+        COLUMN_FORM_MAP.put("tinytext","richtext");
+        COLUMN_FORM_MAP.put("text","richtext");
+        COLUMN_FORM_MAP.put("mediumtext","richtext");
+        COLUMN_FORM_MAP.put("longtext","richtext");
+        COLUMN_FORM_MAP.put("date","date");
+        COLUMN_FORM_MAP.put("datetime","datetime");*/
+
+        COLUMN_FIELD_MAP.put("int2","Integer");
+        COLUMN_FIELD_MAP.put("int4","Integer");
+        COLUMN_FIELD_MAP.put("int8","Long");
+        COLUMN_FIELD_MAP.put("float4","Float");
+        COLUMN_FIELD_MAP.put("float8","Double");
+        COLUMN_FIELD_MAP.put("numeric","java.math.BigDecimal");
+        COLUMN_FIELD_MAP.put("bpchar","String");
+        COLUMN_FIELD_MAP.put("varchar","String");
+        COLUMN_FIELD_MAP.put("text","String");
+        COLUMN_FIELD_MAP.put("date","java.time.LocalDate");
+        COLUMN_FIELD_MAP.put("timestamp","java.time.LocalDateTime");
+        COLUMN_FIELD_MAP.put("timestamptz","java.time.LocalDateTime");
+        COLUMN_FIELD_MAP.put("json","com.hfw.model.mybatis.typehandler.DBMap");
+        COLUMN_FIELD_MAP.put("jsonb","com.hfw.model.mybatis.typehandler.DBMap");
+
+        COLUMN_FORM_MAP.put("int2","number");
+        COLUMN_FORM_MAP.put("int4","number");
+        COLUMN_FORM_MAP.put("int8","number");
+        COLUMN_FORM_MAP.put("float4","number");
+        COLUMN_FORM_MAP.put("float8","number");
+        COLUMN_FORM_MAP.put("numeric","number");
+        COLUMN_FORM_MAP.put("bpchar","input");
+        COLUMN_FORM_MAP.put("varchar","input");
+        COLUMN_FORM_MAP.put("text","richtext");
+        COLUMN_FORM_MAP.put("date","date");
+        COLUMN_FORM_MAP.put("timestamp","datetime");
+        COLUMN_FORM_MAP.put("timestamptz","datetime");
+        COLUMN_FORM_MAP.put("json","input");
+        COLUMN_FORM_MAP.put("jsonb","input");
     }
-    public Page<Table> tablePage(Page<Table> page, String tableLike){
-        return genMapper.tableList(page, genProperty.getDb(), tableLike);
+
+    public List<Table> tableList(String tableLike){
+        return pgGenMapper.tableList(genProperty.getSchema(), tableLike);
+    }
+    public PageResult<Table> tablePage(Page<Table> page, String tableLike){
+        page.startPage();
+        List<Table> list = pgGenMapper.tableList(genProperty.getSchema(), tableLike);
+        return PageResult.of(list);
     }
 
     public Table tableInfo(String tableName){
-        return genMapper.table(genProperty.getDb(), tableName);
+        return pgGenMapper.table(genProperty.getSchema(), tableName);
     }
     public List<Column> tableColumn(String tableName){
-        return genMapper.tableColumn(genProperty.getDb(), tableName);
+        return pgGenMapper.tableColumn(genProperty.getSchema(), tableName);
     }
 
     /**
@@ -74,7 +143,8 @@ public class GenService{
         //表字段信息处理
         for(Column column : columnList){
             //主键,逻辑删除处理
-            if("PRI".equals(column.getColumnKey())){
+            //if("PRI".equals(column.getColumnKey())){
+            if("PRIMARY KEY".equals(column.getColumnKey())){
                 table.setPk(column);
             }else if(column.getColumnName().equals(genProperty.getLogicDeleteField())){
                 table.setLogicDeleted(column);
@@ -82,24 +152,10 @@ public class GenService{
                 table.getColumnList().add(column);
             }
             //java字段类型处理
-            if("bigint".equals(column.getDataType())){
-                column.setJavaType("Long");
-            }else if(column.getDataType().contains("int")){
-                column.setJavaType("Integer");
-            }else if("float".equals(column.getDataType())){
-                column.setJavaType("Float");
-            }else if("double".equals(column.getDataType())){
-                column.setJavaType("Double");
-            }else if("decimal".equals(column.getDataType())){
-                column.setJavaType("java.math.BigDecimal");
-            }else if(column.getDataType().contains("char") || column.getDataType().contains("text")){
-                column.setJavaType("String");
-            }else if( "date".equals(column.getDataType()) ){
-                column.setJavaType("java.time.LocalDate");
-                //table.setDateField(true);
-            }else if( "datetime".equals(column.getDataType()) ){
-                column.setJavaType("java.time.LocalDateTime");
-                //table.setDateField(true);
+            column.setJavaType("String");
+            String javaType = COLUMN_FIELD_MAP.get(column.getDataType());
+            if(javaType!=null){
+                column.setJavaType(javaType);
             }
             String columnComment = column.getColumnComment();
             //注释为空处理
@@ -251,22 +307,9 @@ public class GenService{
             if(c.getIsNullable().equals("NO") && !StringUtils.hasText(c.getColumnDefault()) ){
                 column.setRequired(1);
             }
-            if("bigint".equals(c.getDataType())){
-                column.setFormType("number");
-            }else if(c.getDataType().contains("int")){
-                column.setFormType("number");
-            }else if("float".equals(c.getDataType())){
-                column.setFormType("number");
-            }else if("double".equals(c.getDataType())){
-                column.setFormType("number");
-            }else if("decimal".equals(c.getDataType())){
-                column.setFormType("number");
-            }else if(c.getDataType().contains("text")){
-                column.setFormType("richtext");
-            }else if( "date".equals(c.getDataType()) ){
-                column.setFormType("date");
-            }else if( "datetime".equals(c.getDataType()) ){
-                column.setFormType("datetime");
+            String formType = COLUMN_FORM_MAP.get(c.getDataType());
+            if(formType!=null){
+                column.setFormType(formType);
             }
             //枚举处理
             if(StringUtils.hasText(c.getEnumClass())){

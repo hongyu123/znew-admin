@@ -1,30 +1,34 @@
 package com.hfw.model.po.sys;
 
-import cn.xbatis.db.annotations.Table;
-import cn.xbatis.db.annotations.TableField;
-import cn.xbatis.db.annotations.TableId;
+import com.hfw.model.mybatis.anno.*;
+import com.hfw.model.mybatis.Column;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * 系统配置
  * @author farkle
- * @date 2022-11-25
+ * @date 2026-02-10
  */
 @Getter @Setter
 @Table("sys_config")
 public class SysConfig {
+
     @TableId
     private Long id;
 
-    /** key **/
-    @TableField("`key`")
+    /** key */
     private String key;
 
-    /** value **/
+    /** value */
     private String value;
 
-    /** 备注 **/
+    /** 备注 */
     private String comment;
 
+
+    public enum COLUMN implements Column<SysConfig>{
+        id,
+        key,value,comment
+    }
 }

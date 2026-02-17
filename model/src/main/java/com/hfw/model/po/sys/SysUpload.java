@@ -1,28 +1,20 @@
 package com.hfw.model.po.sys;
 
-import cn.xbatis.db.annotations.Table;
-import cn.xbatis.db.annotations.TableId;
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.hfw.model.jackson.Result;
-import com.hfw.model.validation.ValidGroup;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import com.hfw.model.mybatis.anno.*;
+import com.hfw.model.mybatis.Column;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 
 /**
  * 系统文件上传
  * @author farkle
- * @date 2023-02-10
+ * @date 2026-02-10
  */
 @Getter @Setter
-@JsonFilter(Result.INCLUDE_FILTER)
 @Table("sys_upload")
 public class SysUpload {
-    public static final String SERVER = "http://localhost:8080/upload";
 
     @TableId
     private Long id;
@@ -48,6 +40,14 @@ public class SysUpload {
     /** 文件大小 */
     private Long fileSize;
 
+
+    public enum COLUMN implements Column<SysUpload>{
+        id,
+        md5,url,path,name,fileSuffix, uploadTime,fileSize
+    }
+
+    public static final String SERVER = "http://localhost:8080/upload";
+
     public static String removeServerPrefix(String url){
         return url!=null ? url.replace(SERVER,"") : null;
     }
@@ -66,3 +66,4 @@ public class SysUpload {
     }
 
 }
+

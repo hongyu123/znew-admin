@@ -9,7 +9,6 @@
       label-width="80"
       label-position="right"
       :colProps="colProps"
-      @change="handleSearchChange"
       @search="handleSearch"
       @reset="handleReset"
       @keydown.enter="handleSearch"
@@ -146,21 +145,13 @@ onMounted(() => {
 const searchColumns = reactive([
   {
     label: "角色名",
-    prop: "params.name_like"
+    prop: "name"
   },
   {
     label: "角色编码",
-    prop: "params.code_like"
+    prop: "code"
   }
 ]);
-
-const inputColumns = ["params.name_like", "params.code_like"];
-/** 搜索表单字段变化处理 */
-const handleSearchChange = (values, column) => {
-  // if (inputColumns.indexOf(column.prop) < 0) {
-  //   getTableList();
-  // }
-};
 
 const tableRef = ref();
 const tableColumns = [

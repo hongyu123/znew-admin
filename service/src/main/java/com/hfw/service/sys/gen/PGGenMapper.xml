@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hfw.service.sys.gen.PGGenMapper">
+
+    <select id="tableList" resultType="com.hfw.service.sys.gen.Table">
+        SELECT tb.table_name, d.description table_comment
+        FROM information_schema.tables tb
+        LEFT JOIN pg_class c ON c.relname = tb.table_name
+        LEFT JOIN pg_description d ON d.objoid = c.oid AND d.objsubid = 0
+        WHERE tb.table_schema=#{schema}
+        <if test="tableLike!=null and tableLike!=''">
+            and tb.table_name like concat('%',#{tableLike},'%')
+        </if>
+    </select>
+
+    <select id="table" resultType="com.hfw.service.sys.gen.Table">
+        SELECT tb.table_name, d.description table_comment
+        FROM information_schema.tables tb
+        LEFT JOIN pg_class c ON c.relname = tb.table_name
+        LEFT JOIN pg_description d ON d.objoid = c.oid AND d.objsubid = 0
+        WHERE tb.table_schema=#{schema}  and tb.table_name=#{tableName}
+    </select>
+
+    <select id="tableColumn"  resultType="com.hfw.service.sys.gen.Column">
+        SELECT co.column_name, co.ordinal_position, co.is_nullable, co.data_type type,co.udt_name data_type,
+        co.character_maximum_length, co.column_default,
+        tc.constraint_type column_key, d.description column_comment
+        FROM information_schema.columns co
+        LEFT JOIN pg_class c ON c.relname = co.table_name
+        LEFT JOIN pg_description d ON d.objoid=c.oid and d.objsubid=co.ordinal_position
+        LEFT JOIN information_schema.key_column_usage kc on kc.table_schema=co.table_schema and kc.table_name=co.table_name and kc.column_name=co.column_name
+        LEFT JOIN information_schema.table_constraints tc on tc.table_schema=kc.table_schema and tc.table_name=kc.table_name and tc.constraint_name=kc.constraint_name
+        WHERE co.table_schema = #{schema}
+        and co.table_name = #{tableName}
+        order by co.ordinal_position
+    </select>
+
+</mapper>

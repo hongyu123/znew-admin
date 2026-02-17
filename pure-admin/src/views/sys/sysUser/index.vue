@@ -20,7 +20,6 @@
         label-position="right"
         :colProps="colProps"
         :prevent="true"
-        @change="handleSearchChange"
         @search="handleSearch"
         @reset="handleReset"
         @keydown.enter="handleSearch"
@@ -204,18 +203,6 @@ const searchColumns = reactive([
     options: []
   }
 ]);
-
-const inputColumns = [
-  "params.account_like",
-  "params.nickname_like",
-  "params.phone_like"
-];
-/** 搜索表单字段变化处理 */
-const handleSearchChange = (values, column) => {
-  if (inputColumns.indexOf(column.prop) < 0) {
-    getTableList();
-  }
-};
 
 const tableRef = ref();
 const tableColumns = [

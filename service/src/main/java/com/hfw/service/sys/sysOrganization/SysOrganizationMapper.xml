@@ -3,68 +3,6 @@
 
 <mapper namespace="com.hfw.service.sys.sysOrganization.SysOrganizationMapper">
 
-    <select id="page" resultType="com.hfw.model.po.sys.SysOrganization">
-        select
-            id,
-            pid,
-            type,
-            name,
-            sort,
-            link_name,
-            link_phone,
-            link_email,
-            state,
-            create_user,
-            create_time,
-            update_user,
-            update_time
-        from sys_organization
-        <where>
-            <if test="po.id!=null">
-                and id=#{po.id}
-            </if>
-            <if test="po.pid!=null">
-                and pid=#{po.pid}
-            </if>
-            <if test="po.type!=null">
-                and type=#{po.type}
-            </if>
-            <if test="po.name!=null and po.name!=''">
-                and name=#{po.name}
-            </if>
-            <if test="page.params.name_like!=null and page.params.name_like!=''">
-                and name like concat(#{page.params.name_like},'%')
-            </if>
-            <if test="po.sort!=null">
-                and sort=#{po.sort}
-            </if>
-            <if test="po.linkName!=null and po.linkName!=''">
-                and link_name=#{po.linkName}
-            </if>
-            <if test="page.params.linkName_like!=null and page.params.linkName_like!=''">
-                and link_name like concat(#{page.params.linkName_like},'%')
-            </if>
-            <if test="po.linkPhone!=null and po.linkPhone!=''">
-                and link_phone=#{po.linkPhone}
-            </if>
-            <if test="page.params.linkPhone_like!=null and page.params.linkPhone_like!=''">
-                and link_phone like concat(#{page.params.linkPhone_like},'%')
-            </if>
-            <if test="po.linkEmail!=null and po.linkEmail!=''">
-                and link_email=#{po.linkEmail}
-            </if>
-            <if test="page.params.linkEmail_like!=null and page.params.linkEmail_like!=''">
-                and link_email like concat(#{page.params.linkEmail_like},'%')
-            </if>
-            <if test="po.state!=null">
-                and state=#{po.state}
-            </if>
-        </where>
-        <if test="page.sortByField!=null and page.sortByWay!=null">
-            order by ${page.sortByField} ${page.sortByWay}
-        </if>
-    </select>
-
     <select id="orgTreeList" resultType="com.hfw.model.po.sys.SysOrganization">
         select * from sys_organization
         where ancestors like concat(#{ancestors},',%')

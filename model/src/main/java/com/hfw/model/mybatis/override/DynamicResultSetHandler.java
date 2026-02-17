@@ -1,7 +1,6 @@
 package com.hfw.model.mybatis.override;
 
 import com.hfw.model.mybatis.MybatisGlobalConfig;
-import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.resultset.DefaultResultSetHandler;
@@ -15,6 +14,7 @@ import org.apache.ibatis.session.RowBounds;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.util.Map;
 
 public class DynamicResultSetHandler extends DefaultResultSetHandler {
     private static final Field boundSqlField;
@@ -43,7 +43,7 @@ public class DynamicResultSetHandler extends DefaultResultSetHandler {
                     Object parameterObject = boundSql.getParameterObject();
                     if(parameterObject instanceof Class<?> param){
                         type = param;
-                    }else if(parameterObject instanceof MapperMethod.ParamMap<?> paramMap && paramMap.containsKey("type")){
+                    }else if(parameterObject instanceof Map<?,?> paramMap && paramMap.containsKey("type")){
                         type = (Class<?>) paramMap.get("type");
                     }
                 } catch (IllegalAccessException e) {

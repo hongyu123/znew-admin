@@ -2,14 +2,12 @@ package com.hfw.model.po.sys;
 
 import cn.idev.excel.annotation.ExcelIgnore;
 import cn.idev.excel.annotation.ExcelProperty;
-import cn.xbatis.db.annotations.Ignore;
-import cn.xbatis.db.annotations.LogicDelete;
-import cn.xbatis.db.annotations.Table;
-import cn.xbatis.db.annotations.TableId;
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.hfw.model.enums.sys.Gender;
 import com.hfw.model.excel.IEnumConverter;
-import com.hfw.model.jackson.Result;
+import com.hfw.model.mybatis.Column;
+import com.hfw.model.mybatis.anno.LogicDelete;
+import com.hfw.model.mybatis.anno.Table;
+import com.hfw.model.mybatis.anno.TableId;
 import com.hfw.model.validation.ValidGroup;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,19 +15,15 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.List;
-
 /**
  * 系统示例表
  * @author farkle
- * @date 2023-01-05
+ * @date 2026-02-10
  */
 @Getter @Setter
-@JsonFilter(Result.INCLUDE_FILTER)
 @Table("sys_demo")
 public class SysDemo {
 
-    /** id */
     @ExcelIgnore
     @NotNull(message = "id不能为空",groups = ValidGroup.Update.class)
     @TableId
@@ -62,7 +56,7 @@ public class SysDemo {
 
     /** 兴趣(多选框) */
     @ExcelProperty("兴趣")
-    private List<String> interest;
+    private com.hfw.model.mybatis.typehandler.DBList interest;
 
     /** 生日(日期) */
     @ExcelProperty("生日")
@@ -78,17 +72,12 @@ public class SysDemo {
     @NotBlank(message = "头像(图片上传)不能为空", groups = ValidGroup.Add.class)
     @Length(max = 200,message = "头像(图片上传)最多200字符")
     private String avatar;
-    @Ignore
-    public String avatarUrl;
-    public String getAvatarUrl(){
-        return SysUpload.addServerPrefix(this.avatar);
-    }
 
-    @ExcelProperty("视频")
     /** 视频(视频上传) */
+    @ExcelProperty("视频")
     private String video;
 
-    /** 照片(多图删除) */
+    /** 照片(多图上传) */
     @ExcelProperty("照片")
     private String photos;
 
@@ -130,11 +119,31 @@ public class SysDemo {
     @ExcelIgnore
     private String fileInput;
 
+    /** user_id */
+    @ExcelIgnore
+    private Long userId;
+
+    /** org_id */
+    @ExcelIgnore
+    private Long orgId;
+
     /** 逻辑删除 */
     @ExcelIgnore
     @LogicDelete
     private Integer deleted;
 
+    public enum COLUMN implements Column<SysDemo>{
+        id,
+        name,age,score,gender,state, interest,birth,registTime,avatar,video,
+        photos,attachment,introduction,detail,phone, location,lng,lat,fileInput,userId,
+        orgId,
+        deleted
+    }
+
+    public String avatarUrl;
+    public String getAvatarUrl(){
+        return SysUpload.addServerPrefix(this.avatar);
+    }
     public SysDemo saveFilter(){
         this.setId(null);
         /*this.setUpdator(null);

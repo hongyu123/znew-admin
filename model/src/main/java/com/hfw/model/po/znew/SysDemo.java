@@ -1,17 +1,16 @@
 package com.hfw.model.po.znew;
 
-import cn.xbatis.db.annotations.Table;
-import cn.xbatis.db.annotations.TableId;
-import cn.xbatis.db.annotations.LogicDelete;
+import com.hfw.model.mybatis.anno.*;
+import com.hfw.model.mybatis.Column;
 import com.hfw.model.enums.sys.Gender;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
-* 系统示例表
-* @author farkle
-* @date 2025-03-16
-*/
+ * 系统示例表
+ * @author farkle
+ * @date 2026-02-17
+ */
 @Getter @Setter
 @Table("sys_demo")
 public class SysDemo {
@@ -38,7 +37,7 @@ public class SysDemo {
     private Integer state;
 
     /** 兴趣(多选框) */
-    private String interest;
+    private com.hfw.model.mybatis.typehandler.DBMap interest;
 
     /** 生日(日期) */
     private java.time.LocalDate birth;
@@ -79,8 +78,21 @@ public class SysDemo {
     /** 文件输入 */
     private String fileInput;
 
+    /** user_id */
+    private Long userId;
+
+    /** org_id */
+    private Long orgId;
+
     /** 逻辑删除 */
     @LogicDelete
     private Integer deleted;
 
+    public enum COLUMN implements Column<SysDemo>{
+        id,
+        name,age,score,gender,state, interest,birth,registTime,avatar,video,
+        photos,attachment,introduction,detail,phone, location,lng,lat,fileInput,userId,
+        orgId,
+        deleted
+    }
 }

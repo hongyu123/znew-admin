@@ -5,6 +5,7 @@ import com.hfw.admin.log.AdminLog;
 import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.po.sys.SysOrganization;
+import com.hfw.service.component.CommonService;
 import com.hfw.service.sys.sysOrganization.SysOrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,17 +21,14 @@ import java.util.List;
 @RequestMapping("/sysOrganization")
 public class SysOrganizationController {
     @Autowired
+    private CommonService commonService;
+    @Autowired
     private SysOrganizationService sysOrganizationService;
-
-    /*@GetMapping("/page")
-    public PageResult<SysOrganization> page(Page<SysOrganization> page, SysOrganization po) {
-        return PageResult.of(sysOrganizationService.page(page, po));
-    }*/
 
     @SaCheckPermission("sysOrg:view")
     @GetMapping
     public Result<SysOrganization> detail(@RequestParam Long id){
-        return Result.success( sysOrganizationService.detail( id) );
+        return Result.success( commonService.selectByPk(SysOrganization.class, id) );
     }
 
     @AdminLog("新增组织机构")

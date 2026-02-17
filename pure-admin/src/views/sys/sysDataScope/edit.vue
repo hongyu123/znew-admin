@@ -92,7 +92,7 @@
         class="plus-form-item"
       >
         <el-tree-select
-          v-model="row.customIdArr"
+          v-model="row.customIds"
           :props="{ label: 'name', children: 'children' }"
           :data="treeSelectData"
           :render-after-expand="false"
@@ -175,9 +175,6 @@ const acceptParams = (rowData, getTableList, isView) => {
       : "新增数据权限配置";
   }
   drawerProps.value.visible = true;
-  if (row.value.customIds) {
-    row.value.customIdArr = JSON.parse(row.value.customIds);
-  }
 };
 
 // 提交数据（新增/编辑）
@@ -187,9 +184,6 @@ const handleSubmit = () => {
     if (!valid) return;
     try {
       const api = row.value && row.value.id ? edit : add;
-      if (row.value.customIdArr) {
-        row.value.customIds = JSON.stringify(row.value.customIdArr);
-      }
       await api(row.value);
       ElMessage.success({ message: `${drawerProps.value.title}成功！` });
       drawerProps.value.getTableList();

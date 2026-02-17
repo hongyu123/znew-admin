@@ -51,7 +51,7 @@ gen:
   author: farkle
   path: D:\\tmp\\admin
   table-prefix: t_
-  db: znew
+  schema: public
   project-name: znew
   logic-delete-field: deleted
 

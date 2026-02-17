@@ -1,14 +1,13 @@
 package com.hfw.model.entity;
 
-import cn.xbatis.page.IPager;
-import cn.xbatis.page.PagerField;
-import com.hfw.model.enums.sys.SortByWay;
+import com.github.pagehelper.PageHelper;
+import com.hfw.model.mybatis.anno.Sort;
 import com.hfw.model.utils.LimitedParamMap;
+import com.hfw.model.utils.StrUtil;
 
-import java.util.List;
 import java.util.Map;
 
-public class Page<T> implements IPager<T> {
+public class Page<T> {
     private int pageNumber = 1;
     private int pageSize = 10;
     public Page<T> setPageNumber(int pageNumber) {
@@ -40,7 +39,7 @@ public class Page<T> implements IPager<T> {
     /** 排序字段 */
     private String sortByField;
     /** 排序方式 */
-    private SortByWay sortByWay;
+    private Sort sortByWay;
 
     public String getSortByField() {
         return sortByField;
@@ -49,37 +48,34 @@ public class Page<T> implements IPager<T> {
         this.sortByField = sortByField;
         return this;
     }
-    public SortByWay getSortByWay() {
+    public Sort getSortByWay() {
         return sortByWay;
     }
-    public Page<T> setSortByWay(SortByWay sortByWay) {
+    public Page<T> setSortByWay(Sort sortByWay) {
         this.sortByWay = sortByWay;
         return this;
     }
-    public void sortDefault(SortByWay sortByWay, String sortByField){
-        if(this.sortByWay==null && this.sortByField==null){
-            this.sortByWay = sortByWay;
-            this.sortByField = sortByField;
-        }
+    public boolean sort(){
+        return this.sortByWay!=null && StrUtil.hasText(this.sortByField);
     }
 
-    private boolean executeCount = true;
+    private boolean count = true;
     public static <T> Page<T> of(int pageNumber, int pageSize){
         Page<T> page = new Page<>();
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
         return page;
     }
-    public static <T> Page<T> of(int pageNumber, int pageSize, boolean executeCount){
+    public static <T> Page<T> of(int pageNumber, int pageSize, boolean count){
         Page<T> page = new Page<>();
         page.setPageNumber(pageNumber);
         page.setPageSize(pageSize);
-        page.executeCount = executeCount;
+        page.count = count;
         return page;
     }
-    public static <T> Page<T> nonePage(){
+    public static <T> Page<T> noPage(){
         Page<T> page = new Page<>();
-        page.executeCount = false;
+        page.count = false;
         page.pageSize = -1;
         return page;
     }
@@ -92,45 +88,12 @@ public class Page<T> implements IPager<T> {
         this.params = params;
     }
 
-    private Integer total;
-    private List<T> list;
-    public Integer getTotal() {
-        return total;
-    }
-    public void setTotal(Integer total) {
-        this.total = total;
-    }
-    public List<T> getList() {
-        return list;
-    }
-    public void setList(List<T> list) {
-        this.list = list;
-    }
 
-    @Override
-    public <V> V get(PagerField<V> field) {
-        if (PagerField.IS_EXECUTE_COUNT == field) {
-            return (V) (Boolean)(executeCount);
-        }
-        if (PagerField.NUMBER == field) {
-            return (V) (Integer)(this.pageNumber);
-        }
-        if (PagerField.SIZE == field) {
-            return (V) (Integer)(this.pageSize);
-        }
-        throw new RuntimeException("not support field: " + field);
-    }
-    @Override
-    public <V> void set(PagerField<V> field, V value) {
-        if (PagerField.TOTAL == field) {
-            this.total = (Integer) value;
-            return;
-        }
-        if (PagerField.RESULTS == field) {
-            this.list = (List<T>) value;
-            return;
-        }
-        throw new RuntimeException("not support field: " + field);
+    /**
+     * PageHelper开启分页
+     */
+    public void startPage(){
+        PageHelper.startPage(this.pageNumber, this.pageSize, this.count);
     }
 
 }

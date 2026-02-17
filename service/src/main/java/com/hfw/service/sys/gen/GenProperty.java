@@ -19,7 +19,7 @@ public class GenProperty {
     private String author;
     private String path;
     private String tablePrefix;
-    private String db;
+    private String schema;
     private String projectName;
     private String logicDeleteField;
 }

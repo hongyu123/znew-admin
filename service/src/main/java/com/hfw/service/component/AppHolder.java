@@ -1,7 +1,7 @@
 package com.hfw.service.component;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.xbatis.core.XbatisGlobalConfig;
+import com.hfw.model.mybatis.MybatisGlobalConfig;
 import com.hfw.service.dto.LoginUser;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -22,17 +22,17 @@ public class AppHolder implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         AppHolder.applicationContext = applicationContext;
-        XbatisGlobalConfig.setDynamicValue("{CREATE_USER}", (entityClass, fieldClass) -> {
-            return StpUtil.isLogin() ?LoginUser.getLoginUser().getAccount() :"";
+        MybatisGlobalConfig.registerDynamic("$NOW", type -> {
+            if(LocalDateTime.class == type){
+                return LocalDateTime.now();
+            }
+            return null;
         });
-        XbatisGlobalConfig.setDynamicValue("{CREATE_TIME}", (entityClass, fieldClass) -> {
-            return LocalDateTime.now();
-        });
-        XbatisGlobalConfig.setDynamicValue("{UPDATE_USER}", (entityClass, fieldClass) -> {
-            return StpUtil.isLogin() ?LoginUser.getLoginUser().getAccount() :"";
-        });
-        XbatisGlobalConfig.setDynamicValue("{UPDATE_TIME}", (entityClass, fieldClass) -> {
-            return LocalDateTime.now();
+        MybatisGlobalConfig.registerDynamic("$CURRENT_USER", type -> {
+            if(String.class == type){
+                return StpUtil.isLogin() ?LoginUser.getLoginUser().getAccount() :"";
+            }
+            return null;
         });
     }
 

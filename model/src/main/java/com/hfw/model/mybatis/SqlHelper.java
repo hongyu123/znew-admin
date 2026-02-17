@@ -242,6 +242,12 @@ public class SqlHelper {
                 sql.ORDER_BY(columnName+" "+order.sort());
             }
         }
+        if(where.getLimit()>0){
+            sql.LIMIT(where.getLimit());
+            if(where.getOffset()>0){
+                sql.OFFSET(where.getOffset());
+            }
+        }
         return sql.toString();
     }
 

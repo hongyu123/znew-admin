@@ -3,63 +3,6 @@
 
 <mapper namespace="com.hfw.service.sys.sysAuth.SysAuthMapper">
 
-    <select id="page" resultType="com.hfw.model.po.sys.SysAuth">
-        select
-            id,
-            parent_id,
-            title,
-            name,
-            code,
-            auth_type,
-            sort,
-            icon,
-            path,
-            component,
-            frame_flag,
-            frame_url,
-            cache_flag,
-            show_flag,
-            state,
-            create_user,
-            create_time,
-            update_user,
-            update_time,
-            remark
-        from sys_auth
-        <where>
-            <if test="po.id!=null">
-                and id=#{po.id}
-            </if>
-            <if test="po.parentId!=null">
-                and parent_id=#{po.parentId}
-            </if>
-            <if test="po.name!=null and po.name!=''">
-                and name=#{po.name}
-            </if>
-            <if test="page.params.name_like!=null and page.params.name_like!=''">
-                and name like concat(#{page.params.name_like},'%')
-            </if>
-            <if test="po.code!=null and po.code!=''">
-                and code=#{po.code}
-            </if>
-            <if test="po.authType!=null">
-                and auth_type=#{po.authType}
-            </if>
-            <if test="po.cacheFlag!=null">
-                and cache_flag=#{po.cacheFlag}
-            </if>
-            <if test="po.showFlag!=null">
-                and show_flag=#{po.showFlag}
-            </if>
-            <if test="po.state!=null">
-                and state=#{po.state}
-            </if>
-        </where>
-        <if test="page.sortByField!=null and page.sortByWay!=null">
-            order by ${page.sortByField} ${page.sortByWay}
-        </if>
-    </select>
-
     <select id="userAuths" resultType="com.hfw.model.po.sys.SysAuth">
         (select a.*
         from sys_auth a

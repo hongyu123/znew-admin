@@ -9,7 +9,6 @@
       label-width="80"
       label-position="right"
       :colProps="{ xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }"
-      @change="handleSearchChange"
       @search="handleSearch"
       @reset="handleReset"
       @keydown.enter="handleSearch"
@@ -101,17 +100,9 @@ const searchColumns = reactive([
   },
   {
     label: "表注释",
-    prop: "params.tableRemark_like"
+    prop: "tableRemark"
   }
 ]);
-
-const inputColumns = ["params.tableName_like", "params.tableRemark_like"];
-/** 搜索表单字段变化处理 */
-const handleSearchChange = (values, column) => {
-  if (inputColumns.indexOf(column.prop) < 0) {
-    getTableList();
-  }
-};
 
 const tableRef = ref();
 const tableColumns = [

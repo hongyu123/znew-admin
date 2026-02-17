@@ -10,7 +10,6 @@
       label-position="right"
       :colProps="colProps"
       :prevent="true"
-      @change="handleSearchChange"
       @search="handleSearch"
       @reset="handleReset"
       @keydown.enter="handleSearch"
@@ -146,21 +145,13 @@ const searchColumns = reactive([
   },
   {
     label: "配置名称",
-    prop: "params.configName_like"
+    prop: "configName"
   },
   {
     label: "数据key",
-    prop: "params.dataKey_like"
+    prop: "dataKey"
   }
 ]);
-
-const inputColumns = ["params.configName_like", "params.dataKey_like"];
-/** 搜索表单字段变化处理 */
-const handleSearchChange = (values, column) => {
-  if (inputColumns.indexOf(column.prop) < 0) {
-    getTableList();
-  }
-};
 
 const tableRef = ref();
 const tableColumns = [

@@ -3,14 +3,14 @@ package com.hfw.service.satoken;
 import cn.dev33.satoken.listener.SaTokenListener;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
 import com.hfw.model.enums.sys.LogoutType;
-import com.hfw.service.sys.sysLoginLog.SysLoginLogMapper;
+import com.hfw.service.sys.sysLoginLog.SysLoginLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LogSaTokenListener implements SaTokenListener {
     @Autowired
-    private SysLoginLogMapper sysLoginLogMapper;
+    private SysLoginLogService sysLoginLogService;
 
     /** 每次登录时触发 */
     @Override
@@ -20,19 +20,19 @@ public class LogSaTokenListener implements SaTokenListener {
     /** 每次注销时触发 */
     @Override
     public void doLogout(String loginType, Object loginId, String tokenValue) {
-        sysLoginLogMapper.logout(tokenValue, LogoutType.Logout);
+        sysLoginLogService.logout(tokenValue, LogoutType.Logout);
     }
 
     /** 每次被踢下线时触发 */
     @Override
     public void doKickout(String loginType, Object loginId, String tokenValue) {
-        sysLoginLogMapper.logout(tokenValue, LogoutType.Kickout);
+        sysLoginLogService.logout(tokenValue, LogoutType.Kickout);
     }
 
     /** 每次被顶下线时触发 */
     @Override
     public void doReplaced(String loginType, Object loginId, String tokenValue) {
-        sysLoginLogMapper.logout(tokenValue, LogoutType.PushedOff);
+        sysLoginLogService.logout(tokenValue, LogoutType.PushedOff);
     }
 
     /** 每次被封禁时触发 */

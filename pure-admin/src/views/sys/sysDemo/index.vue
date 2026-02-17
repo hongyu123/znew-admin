@@ -175,7 +175,7 @@ const searchColumns = reactive([
   },
   {
     label: "手机",
-    prop: "params.phone_like"
+    prop: "phone"
   },
   {
     label: "性别",
@@ -212,7 +212,7 @@ const searchColumns = reactive([
   }
 ]);
 
-const inputColumns = ["name", "params.phone_like"];
+const inputColumns = ["name", "phone"];
 /** 搜索表单字段变化处理 */
 const handleSearchChange = (values, column) => {
   if (inputColumns.indexOf(column.prop) < 0) {

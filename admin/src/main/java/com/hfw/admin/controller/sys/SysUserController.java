@@ -28,7 +28,7 @@ public class SysUserController {
     @SaCheckPermission("sysUser:page")
     @GetMapping("/page")
     public PageResult<SysUser> page(Page<SysUser> page, SysUser po) {
-        return PageResult.of(sysUserService.page(page, po));
+        return sysUserService.page(page, po);
     }
 
     @SaCheckPermission("sysUser:view")

@@ -1,15 +1,13 @@
 package com.hfw.service.sys.sysAuth;
 
-import cn.xbatis.core.sql.executor.chain.QueryChain;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.hfw.model.entity.Page;
 import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.enums.sys.SysAuthEnum;
 import com.hfw.model.jackson.Result;
+import com.hfw.model.mybatis.Where;
 import com.hfw.model.po.sys.SysAuth;
 import com.hfw.model.utils.TreeUtil;
-import com.hfw.service.component.CommonMapper;
 import com.hfw.service.dto.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,34 +25,28 @@ public class SysAuthService {
     private final Cache<Long, List<String>> cache = Caffeine.newBuilder().maximumSize(10240).expireAfterWrite(24, TimeUnit.HOURS).build();
     @Autowired
     private SysAuthMapper sysAuthMapper;
-    @Autowired
-    private CommonMapper commonMapper;
-
-    public Page<SysAuth> page(Page<SysAuth> page, SysAuth po) {
-        return sysAuthMapper.page(page, po);
-    }
 
     public SysAuth detail(Long id){
-        return sysAuthMapper.getById(id);
+        return sysAuthMapper.selectByPk(id);
     }
 
     public int add(SysAuth sysAuth){
-        return sysAuthMapper.save(sysAuth);
+        return sysAuthMapper.insert(sysAuth);
     }
     public Result<Void> edit(SysAuth sysAuth){
         if(sysAuth.getId().equals(sysAuth.getParentId())){
             return Result.error("不能设置父节点为自己");
         }
         this.clearCache();
-        return Result.result( sysAuthMapper.update(sysAuth) );
+        return Result.result( sysAuthMapper.updateByPk(sysAuth) );
     }
     public Result<Void> del(Long id){
-        Integer cnt = QueryChain.of(sysAuthMapper).eq(SysAuth::getParentId, id).count();
+        long cnt = sysAuthMapper.count(Where.<SysAuth>where().eq(SysAuth.COLUMN.parentId, id));
         if(cnt>0){
             return Result.error("节点下有子节点,无法删除!");
         }
         this.clearCache();
-        return Result.result( sysAuthMapper.deleteById(id) );
+        return Result.result( sysAuthMapper.deleteByPk(id) );
     }
 
     /**
@@ -95,7 +87,7 @@ public class SysAuthService {
         List<SysAuth> list = null;
         LoginUser loginUser = LoginUser.getLoginUser();
         if(loginUser.getId() == 1){
-            list= QueryChain.of(sysAuthMapper).eq(state!=null, SysAuth::getState, EnableState.Enable).orderBy(SysAuth::getSort).list();
+            list= sysAuthMapper.selectList(Where.<SysAuth>where().eq(state!=null, SysAuth.COLUMN.state, EnableState.Enable).orderBy(SysAuth.COLUMN.sort));
         }else{
             list = sysAuthMapper.userAuths(loginUser.getId(),1, loginUser.getAccount(), 0);
         }
@@ -110,7 +102,7 @@ public class SysAuthService {
         List<SysAuth> list = null;
         LoginUser loginUser = LoginUser.getLoginUser();
         if(loginUser.getId() == 1){
-            list = QueryChain.of(sysAuthMapper).eq(SysAuth::getState, EnableState.Enable).in(SysAuth::getAuthType, SysAuthEnum.Dir, SysAuthEnum.Menu).orderBy(SysAuth::getSort).list();
+            list = sysAuthMapper.selectList(Where.<SysAuth>where().eq(SysAuth.COLUMN.state, EnableState.Enable).in(SysAuth.COLUMN.authType, SysAuthEnum.Dir,SysAuthEnum.Menu));
         }else{
             list = sysAuthMapper.userAuths(loginUser.getId(),0, "", 1);
         }

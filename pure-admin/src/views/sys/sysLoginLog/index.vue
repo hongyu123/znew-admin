@@ -10,7 +10,6 @@
       label-position="right"
       :colProps="colProps"
       :prevent="true"
-      @change="handleSearchChange"
       @search="handleSearch"
       @reset="handleReset"
       @keydown.enter="handleSearch"
@@ -90,15 +89,15 @@ onMounted(() => {
 const searchColumns = reactive([
   {
     label: "用户账号",
-    prop: "params.account_like"
+    prop: "account"
   },
   {
     label: "登录IP",
-    prop: "params.ip_like"
+    prop: "ip"
   },
   {
     label: "登录地点",
-    prop: "params.location_like"
+    prop: "location"
   },
   {
     label: "状态",
@@ -137,18 +136,6 @@ const searchColumns = reactive([
     options: []
   }
 ]);
-
-const inputColumns = [
-  "params.account_like",
-  "params.ip_like",
-  "params.location_like"
-];
-/** 搜索表单字段变化处理 */
-const handleSearchChange = (values, column) => {
-  if (inputColumns.indexOf(column.prop) < 0) {
-    getTableList();
-  }
-};
 
 const tableRef = ref();
 const tableColumns = [

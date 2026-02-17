@@ -1,5 +1,6 @@
 package com.hfw.model.mybatis;
 
+import com.hfw.model.entity.Page;
 import com.hfw.model.mybatis.anno.Sort;
 import com.hfw.model.mybatis.anno.UpdateStrategy;
 import lombok.Getter;
@@ -16,6 +17,8 @@ public class Where<T> {
     private Map<String,Object> params = new HashMap<>();
     private UpdateStrategy updateStrategy;
     private Column<?>[] nullUpdateColumns;
+    private int limit;
+    private int offset;
 
     public static <T> Where<T> where() {
         Where<T> where = new Where<>();
@@ -24,6 +27,12 @@ public class Where<T> {
     }
     public Where<T> eq(Column<T> column, Object val){
         condList.add(new Condition<>(column, val, "="));
+        return this;
+    }
+    public Where<T> eq(boolean condition, Column<T> column, Object val){
+        if(condition){
+            condList.add(new Condition<>(column, val, "="));
+        }
         return this;
     }
     public Where<T> ne(Column<T> column, Object val){
@@ -39,6 +48,12 @@ public class Where<T> {
         condList.add(new Condition<>(column, val, ">="));
         return this;
     }
+    public Where<T> ge(boolean condition, Column<T> column, Object val){
+        if(condition){
+            condList.add(new Condition<>(column, val, ">="));
+        }
+        return this;
+    }
     public Where<T> lt(Column<T> column, Object val){
         condList.add(new Condition<>(column, val, "<"));
         return this;
@@ -47,9 +62,21 @@ public class Where<T> {
         condList.add(new Condition<>(column, val, "<="));
         return this;
     }
+    public <V> Where<T> le(boolean condition, Column<T> column, Object val){
+        if(condition){
+            condList.add(new Condition<>(column, val, "<="));
+        }
+        return this;
+    }
 
     public Where<T> like(Column<T> column, Object val){
         condList.add(new Condition<>(column, val, "like"));
+        return this;
+    }
+    public Where<T> like(boolean condition, Column<T> column, Object val){
+        if(condition){
+            condList.add(new Condition<>(column, val, "like"));
+        }
         return this;
     }
     public Where<T> notLike(Column<T> column, Object val){
@@ -64,6 +91,10 @@ public class Where<T> {
 
     public Where<T> in(Column<T> column, Collection<?> value){
         condList.add(new Condition<>(column, value, "in"));
+        return this;
+    }
+    public Where<T> in(Column<T> column, Object... values){
+        condList.add(new Condition<>(column, List.of(values), "in"));
         return this;
     }
     public Where<T> notIn(Column<T> column, Collection<?> value){
@@ -86,11 +117,32 @@ public class Where<T> {
         orderBy(Order.by(column, sort));
         return this;
     }
+    public boolean orderBy(Page<T> page){
+        boolean sort = page.sort();
+        if(sort){
+            orderBy(Order.by(new Column<>() {
+                @Override
+                public String columnName() {
+                    return page.getSortByField();
+                }
+            }, page.getSortByWay()));
+        }
+        return sort;
+    }
 
     @SafeVarargs
     public final Where<T> updateStrategy(UpdateStrategy updateStrategy, Column<T>... column){
         this.updateStrategy = updateStrategy;
         this.nullUpdateColumns = column;
+        return this;
+    }
+
+    public Where<T> limit(int limit){
+        this.limit = limit;
+        return this;
+    }
+    public Where<T> offset(int offset){
+        this.offset = offset;
         return this;
     }
 

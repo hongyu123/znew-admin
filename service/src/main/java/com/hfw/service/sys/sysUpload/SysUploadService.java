@@ -1,6 +1,6 @@
 package com.hfw.service.sys.sysUpload;
 
-import cn.xbatis.core.sql.executor.chain.QueryChain;
+import com.hfw.model.mybatis.Where;
 import com.hfw.model.po.sys.SysUpload;
 import com.hfw.model.utils.LocalDateUtil;
 import com.hfw.model.utils.SignUtil;
@@ -49,11 +49,11 @@ public class SysUploadService {
 
     public SysUpload upload(MultipartFile file) throws Exception {
         String md5 = SignUtil.md5(file.getBytes());
-        SysUpload sysUpload = QueryChain.of(commonMapper, SysUpload.class).eq(SysUpload::getMd5, md5).get();
+        SysUpload sysUpload = commonMapper.selectOne(SysUpload.class, Where.<SysUpload>where().eq(SysUpload.COLUMN.md5, md5));
         if(sysUpload==null){
             sysUpload = uploadLocal(file);
             sysUpload.setMd5(md5);
-            commonMapper.save(sysUpload);
+            commonMapper.insert(sysUpload);
         }
         sysUpload.setUrl(SysUpload.addServerPrefix(sysUpload.getUrl()));
         return sysUpload;

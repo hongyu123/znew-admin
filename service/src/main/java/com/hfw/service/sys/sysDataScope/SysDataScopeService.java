@@ -1,19 +1,17 @@
 package com.hfw.service.sys.sysDataScope;
 
-import cn.xbatis.core.sql.executor.chain.QueryChain;
-import com.alibaba.fastjson2.JSON;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.hfw.model.entity.Page;
 import com.hfw.model.enums.sys.DataScope;
 import com.hfw.model.enums.sys.EnableState;
+import com.hfw.model.mybatis.Where;
+import com.hfw.model.mybatis.typehandler.DBList;
 import com.hfw.model.po.sys.SysDataScope;
 import com.hfw.model.po.sys.SysOrganization;
 import com.hfw.service.dto.LoginUser;
 import com.hfw.service.sys.sysOrganization.SysOrganizationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -33,28 +31,24 @@ public class SysDataScopeService {
     @Autowired
     public SysOrganizationMapper sysOrganizationMapper;
 
-    public Page<SysDataScope> page(Page<SysDataScope> page, SysDataScope po) {
-        return sysDataScopeMapper.page(page, po);
-    }
     public SysDataScope detail(Long id){
-        return sysDataScopeMapper.getById(id);
+        return sysDataScopeMapper.selectByPk(id);
     }
-
     public int add(SysDataScope sysDataScope){
         this.clearCache();
-        return sysDataScopeMapper.save(sysDataScope);
+        return sysDataScopeMapper.insert(sysDataScope);
     }
     public int edit(SysDataScope sysDataScope){
         this.clearCache();
-        return sysDataScopeMapper.update(sysDataScope);
+        return sysDataScopeMapper.updateByPk(sysDataScope);
     }
     public int del(Long id){
         this.clearCache();
-        return sysDataScopeMapper.deleteById(id);
+        return sysDataScopeMapper.deleteByPk(id);
     }
     public int dels(List<Long> ids){
         this.clearCache();
-        return sysDataScopeMapper.deleteByIds(ids);
+        return sysDataScopeMapper.deleteByPks(ids);
     }
 
     public void clearCache(){
@@ -82,9 +76,9 @@ public class SysDataScopeService {
         loginUser.setDataScopeKey(null);
         SysOrganization sysOrg = null;
         if(orgId!=null){
-            sysOrg = sysOrganizationMapper.getById(orgId);
+            sysOrg = sysOrganizationMapper.selectByPk(orgId);
         }
-        List<SysDataScope> dataScopeList = QueryChain.of(sysDataScopeMapper).eq(SysDataScope::getDataKey, key).list();
+        List<SysDataScope> dataScopeList = sysDataScopeMapper.selectList(Where.<SysDataScope>where().eq(SysDataScope.COLUMN.dataKey,key));
         Map<String, SysDataScope> dataScopeMap = dataScopeList.stream().collect(Collectors.toMap(dataScope->dataScope.getConfigType()+"_"+dataScope.getConfigId(), dataScope->dataScope, (old, current) -> current));
         SysDataScope dataScope = dataScopeMap.get("1_" + userId);
         if(dataScope==null && sysOrg!=null){
@@ -98,14 +92,11 @@ public class SysDataScopeService {
             }
         }
         if(dataScope!=null){
-            if(DataScope.Custom==dataScope.getDataScope() && StringUtils.hasText(dataScope.getCustomIds())){
-                List<Long> idList = JSON.parseArray(dataScope.getCustomIds(), Long.class);
-                dataScope.setCustomIds(org.apache.commons.lang3.StringUtils.join(idList,","));
-            }else if (sysOrg!=null && DataScope.OrganizationAndChildren==dataScope.getDataScope()){
+            if (DataScope.OrganizationAndChildren==dataScope.getDataScope() && sysOrg!=null){
                 List<SysOrganization> orgTree = sysOrganizationMapper.orgTreeList(sysOrg.getAncestors(), EnableState.Enable);
                 orgTree.add(sysOrg);
-                String ids = orgTree.stream().map(item -> String.valueOf(item.getId())).collect(Collectors.joining(","));
-                dataScope.setCustomIds(ids);
+                List<String> list = orgTree.stream().map(item->String.valueOf(item.getId())).toList();
+                dataScope.setCustomIds(new DBList(list));
             }
         }
         loginUser.setDataScopeKey(dataScopeKey);

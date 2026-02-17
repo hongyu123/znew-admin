@@ -24,6 +24,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Properties;
@@ -57,7 +58,7 @@ public class DataScopeInterceptor implements Interceptor {
             return "user_id="+loginUser.getId();
         }else if(DataScope.Organization==sysDataScope.getDataScope()){
             return "org_id="+loginUser.getOrgId();
-        }else if(!StringUtils.hasText(sysDataScope.getCustomIds())){
+        }else if(CollectionUtils.isEmpty(sysDataScope.getCustomIds())){
             //return null;
             return "org_id=0";
         }

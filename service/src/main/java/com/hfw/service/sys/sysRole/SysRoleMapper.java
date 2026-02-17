@@ -1,8 +1,7 @@
 package com.hfw.service.sys.sysRole;
 
-import cn.xbatis.core.mybatis.mapper.MybatisMapper;
-import cn.xbatis.db.annotations.Paging;
 import com.hfw.model.entity.Page;
+import com.hfw.model.mybatis.BaseMapper;
 import com.hfw.model.po.sys.SysRole;
 import com.hfw.model.po.sys.SysUser;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,21 +15,11 @@ import java.util.List;
  * @date 2025-03-17
  */
 @Mapper
-public interface SysRoleMapper extends MybatisMapper<SysRole> {
-    /**
-     * 分页条件查询
-     * @param page 分页参数
-     * @param po 实体类参数
-     * @return 分页数据
-     */
-    @Paging
-    Page<SysRole> page(@Param("page") Page<SysRole> page, @Param("po") SysRole po);
-
+public interface SysRoleMapper extends BaseMapper<SysRole> {
     /**
      * 查询角色下已分配的用户
      */
-    @Paging
-    Page<SysUser> users(@Param("page") Page<SysUser> page, @Param("roleId") Long roleId);
+    List<SysUser> users(@Param("page") Page<SysUser> page, @Param("roleId") Long roleId);
 
     /**
      * 查询用户拥有的角色
@@ -41,6 +30,5 @@ public interface SysRoleMapper extends MybatisMapper<SysRole> {
      */
     List<SysRole> userRoles(@Param("userId") Long userId,  @Param("unionOwn") Integer unionOwn, @Param("account") String account);
     //用户拥有的角色分页
-    @Paging
-    Page<SysRole> userRolePage(@Param("page") Page<SysRole> page, @Param("po") SysRole po);
+    List<SysRole> userRoleList(@Param("page") Page<SysRole> page, @Param("po") SysRole po);
 }

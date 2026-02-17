@@ -5,20 +5,20 @@
 
     <select id="tableList" resultType="com.hfw.service.sys.gen.Table">
         select table_name,table_comment from information_schema.tables
-        where table_schema=#{dbName}
+        where table_schema=#{schema}
         <if test="tableLike!=null and tableLike!=''">
             and table_name like concat('%',#{tableLike},'%')
         </if>
     </select>
 
     <select id="table" resultType="com.hfw.service.sys.gen.Table">
-        select table_name,table_comment from information_schema.tables where table_schema=#{dbName} and table_name=#{tableName}
+        select table_name,table_comment from information_schema.tables where table_schema=#{schema} and table_name=#{tableName}
     </select>
 
     <select id="tableColumn"  resultType="com.hfw.service.sys.gen.Column">
         select column_name,ordinal_position,is_nullable,data_type,character_maximum_length,column_key,column_comment,column_default
         from information_schema.`columns`
-        where table_schema=#{dbName} and table_name=#{tableName}
+        where table_schema=#{schema} and table_name=#{tableName}
         order by ordinal_position
     </select>
 

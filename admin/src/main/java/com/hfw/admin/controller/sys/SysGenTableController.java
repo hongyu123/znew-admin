@@ -5,10 +5,15 @@ import com.hfw.admin.log.AdminLog;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
 import com.hfw.model.jackson.Result;
+import com.hfw.model.mybatis.Where;
 import com.hfw.model.po.sys.SysGenTable;
+import com.hfw.service.component.CommonService;
 import com.hfw.service.sys.gen.SysGenTableService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * 表单生成记录Controller
@@ -19,12 +24,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/sysGenTable")
 public class SysGenTableController {
     @Autowired
+    private CommonService commonService;
+    @Autowired
     private SysGenTableService sysGenTableService;
 
     @SaCheckPermission("sysGenTable:page")
     @GetMapping("/page")
     public PageResult<SysGenTable> page(Page<SysGenTable> page, SysGenTable po) {
-        return PageResult.of(sysGenTableService.page(page, po));
+        Map<String, String> params = page.getParams();
+        Where<SysGenTable> where = Where.<SysGenTable>where()
+                .eq(po.getId() != null, SysGenTable.COLUMN.id, po.getId())
+                .eq(StringUtils.hasText(po.getTableName()), SysGenTable.COLUMN.tableName, po.getTableName())
+                .like(StringUtils.hasText(params.get("tableName_like")), SysGenTable.COLUMN.tableName, params.get("tableName_like") + "%")
+                .like(StringUtils.hasText(po.getTableRemark()), SysGenTable.COLUMN.tableRemark, po.getTableRemark() + "%");
+        where.orderBy(page);
+        return commonService.page(SysGenTable.class, where, page);
     }
 
     @SaCheckPermission("sysGenTable:view")

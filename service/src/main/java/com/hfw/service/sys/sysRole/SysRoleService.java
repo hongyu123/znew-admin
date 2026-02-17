@@ -1,21 +1,22 @@
 package com.hfw.service.sys.sysRole;
 
-import cn.xbatis.core.sql.executor.chain.DeleteChain;
-import cn.xbatis.core.sql.executor.chain.QueryChain;
 import com.hfw.model.entity.Page;
+import com.hfw.model.entity.PageResult;
 import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.jackson.Result;
-import com.hfw.service.component.CommonMapper;
+import com.hfw.model.mybatis.Where;
 import com.hfw.model.po.sys.SysRole;
 import com.hfw.model.po.sys.SysRoleAuth;
 import com.hfw.model.po.sys.SysUser;
 import com.hfw.model.po.sys.SysUserRole;
+import com.hfw.service.component.CommonMapper;
 import com.hfw.service.dto.LoginUser;
 import com.hfw.service.sys.sysAuth.SysAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,18 +35,24 @@ public class SysRoleService {
     @Autowired
     private SysAuthService sysAuthService;
 
-    public Page<SysRole> page(Page<SysRole> page, SysRole po) {
+    public PageResult<SysRole> page(Page<SysRole> page, SysRole po) {
         LoginUser loginUser = LoginUser.getLoginUser();
+        page.startPage();
         if(loginUser.getId() == 1){
-            return sysRoleMapper.page(page, po);
+            Where<SysRole> where = Where.<SysRole>where()
+                    .like(StringUtils.hasText(po.getName()), SysRole.COLUMN.name, po.getName() + "%")
+                    .like(StringUtils.hasText(po.getCode()), SysRole.COLUMN.code, po.getCode() + "%");
+            List<SysRole> list = sysRoleMapper.selectList(where);
+            return PageResult.of(list);
         }
         po.setId(loginUser.getId());
         po.setCreateUser(loginUser.getAccount());
-        return sysRoleMapper.userRolePage(page, po);
+        List<SysRole> list = sysRoleMapper.userRoleList(page, po);
+        return PageResult.of(list);
     }
 
     public SysRole detail(Long id){
-        SysRole sysRole = sysRoleMapper.getById(id);
+        SysRole sysRole = sysRoleMapper.selectByPk(id);
         if(sysRole==null){
             return null;
         }
@@ -56,7 +63,7 @@ public class SysRoleService {
     @Transactional
     public void add(SysRole sysRole){
         //保存角色
-        sysRoleMapper.save(sysRole);
+        sysRoleMapper.insert(sysRole);
         //保存角色权限列表
         if(!CollectionUtils.isEmpty(sysRole.getAuthList())){
             List<SysRoleAuth> ruleAuthList = sysRole.getAuthList().stream().map(auth -> {
@@ -65,13 +72,13 @@ public class SysRoleService {
                 sysRoleAuth.setAuthId(auth.getId());
                 return sysRoleAuth;
             }).collect(Collectors.toList());
-            commonMapper.saveBatch(ruleAuthList);
+            commonMapper.insertBatch(ruleAuthList);
         }
     }
 
     @Transactional
     public Result<Void> edit(SysRole sysRole){
-        SysRole origin = sysRoleMapper.getById(sysRole.getId());
+        SysRole origin = sysRoleMapper.selectByPk(sysRole.getId());
         //内置角色只允许超级管理员修改
         if(origin.getSystemFlag()==1){
             LoginUser loginUser = LoginUser.getLoginUser();
@@ -80,9 +87,9 @@ public class SysRoleService {
             }
         }
         //更新角色
-        sysRoleMapper.update(sysRole);
+        sysRoleMapper.updateByPk(sysRole);
         //更新角色分配的权限
-        DeleteChain.of(commonMapper, SysRoleAuth.class).eq(SysRoleAuth::getRoleId, sysRole.getId()).execute();
+        commonMapper.delete(SysRoleAuth.class, Where.<SysRoleAuth>where().eq(SysRoleAuth.COLUMN.roleId, sysRole.getId()));
         if(!CollectionUtils.isEmpty(sysRole.getAuthList())){
             List<SysRoleAuth> ruleAuthList = sysRole.getAuthList().stream().map(auth -> {
                 SysRoleAuth sysRoleAuth = new SysRoleAuth();
@@ -90,7 +97,7 @@ public class SysRoleService {
                 sysRoleAuth.setAuthId(auth.getId());
                 return sysRoleAuth;
             }).collect(Collectors.toList());
-            commonMapper.saveBatch(ruleAuthList);
+            commonMapper.insertBatch(ruleAuthList);
         }
         sysAuthService.clearCache();
         return Result.success();
@@ -98,19 +105,21 @@ public class SysRoleService {
 
     @Transactional
     public Result<Void> del(Long id){
-        SysRole origin = sysRoleMapper.getById(id);
+        SysRole origin = sysRoleMapper.selectByPk(id);
         if(origin.getSystemFlag()==1){
             return Result.error("系统内置角色,不允许删除!");
         }
-        sysRoleMapper.deleteById(id);
-        DeleteChain.of(commonMapper, SysRoleAuth.class).eq(SysRoleAuth::getRoleId, id).execute();
+        sysRoleMapper.deleteByPk(id);
+        commonMapper.delete(SysRoleAuth.class, Where.<SysRoleAuth>where().eq(SysRoleAuth.COLUMN.roleId, id));
         sysAuthService.clearCache();
         return Result.success();
     }
 
 
-    public Page<SysUser> users(Page<SysUser> page, Long roleId){
-        return sysRoleMapper.users(page, roleId);
+    public PageResult<SysUser> users(Page<SysUser> page, Long roleId){
+        page.startPage();
+        List<SysUser> list = sysRoleMapper.users(page, roleId);
+        return PageResult.of(list);
     }
 
     //角色授权用户
@@ -127,7 +136,7 @@ public class SysRoleService {
                     return userRole;
         }).toList();
         sysAuthService.clearCache();
-        return commonMapper.saveBatch(sysUserRoleList);
+        return commonMapper.insertBatch(sysUserRoleList);
     }
 
     //角色取消授权用户
@@ -136,8 +145,9 @@ public class SysRoleService {
             return 0;
         }
         sysAuthService.clearCache();
+
         return sysUserRole.getUserIds().stream().mapToInt(userId ->
-                DeleteChain.of(commonMapper, SysUserRole.class).eq(SysUserRole::getUserId, userId).eq(SysUserRole::getRoleId, sysUserRole.getRoleId()).execute()
+                commonMapper.delete(SysUserRole.class, Where.<SysUserRole>where().eq(SysUserRole.COLUMN.userId,userId).eq(SysUserRole.COLUMN.roleId, sysUserRole.getRoleId()))
         ).sum();
     }
 
@@ -174,7 +184,7 @@ public class SysRoleService {
     public List<SysRole> currentUserRolesWithOwn(){
         LoginUser loginUser = LoginUser.getLoginUser();
         if(loginUser.getId() == 1){
-             return QueryChain.of(sysRoleMapper).eq(SysRole::getState, EnableState.Enable).orderBy(SysRole::getSort).list();
+            return sysRoleMapper.selectList(Where.<SysRole>where().eq(SysRole.COLUMN.state, EnableState.Enable).orderBy(SysRole.COLUMN.sort));
         }
         return sysRoleMapper.userRoles(loginUser.getId(),1, loginUser.getAccount());
     }

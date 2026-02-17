@@ -44,16 +44,15 @@ public class MybatisGlobalConfig {
 
     private final static Map<Class<?>, ResultMap> DYNAMIC_RESULT_MAP = new ConcurrentHashMap<>();
     public static void registerDynamicResultMap(Class<?> type, List<ColumnInfo> mapColumns){
-        if(mapColumns==null || mapColumns.isEmpty()){
-            return;
-        }
         MapperBuilderAssistant assistant = new MapperBuilderAssistant(configuration, "");
         String id = SingleMapper.class.getName()+".select-dynamic";
         List<ResultMapping> resultMappings = new ArrayList<>();
-        for(ColumnInfo column : mapColumns){
-            if(!column.getColumnName().equals(StrUtil.humpToLine(column.getFieldName()))){
-                ResultMapping resultMapping = assistant.buildResultMapping(type, column.getFieldName(), column.getColumnName(), null, null, null, null, null, null, null, null);
-                resultMappings.add(resultMapping);
+        if(mapColumns!=null && !mapColumns.isEmpty()){
+            for(ColumnInfo column : mapColumns){
+                if(!column.getColumnName().equals(StrUtil.humpToLine(column.getFieldName()))){
+                    ResultMapping resultMapping = assistant.buildResultMapping(type, column.getFieldName(), column.getColumnName(), null, null, null, null, null, null, null, null);
+                    resultMappings.add(resultMapping);
+                }
             }
         }
         ResultMap resultMap = (new ResultMap.Builder(configuration, id, type, resultMappings, null)).discriminator(null).build();

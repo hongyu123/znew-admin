@@ -1,17 +1,17 @@
 package com.hfw.model.po.sys;
 
-import cn.xbatis.db.annotations.Table;
-import cn.xbatis.db.annotations.TableField;
-import cn.xbatis.db.annotations.TableId;
+import com.hfw.model.mybatis.anno.*;
+import com.hfw.model.mybatis.Column;
 import com.hfw.model.enums.sys.DataScope;
+import com.hfw.model.mybatis.typehandler.DBList;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
-* 数据权限表
-* @author farkle
-* @date 2025-03-30
-*/
+ * 数据权限表
+ * @author farkle
+ * @date 2026-02-10
+ */
 @Getter @Setter
 @Table("sys_data_scope")
 public class SysDataScope {
@@ -38,6 +38,11 @@ public class SysDataScope {
     }
 
     /** 自定义数据权限ids */
-    private String customIds;
+    private DBList customIds;
 
+
+    public enum COLUMN implements Column<SysDataScope>{
+        id,
+        configType,configId,configName,dataKey,dataScope, customIds
+    }
 }
