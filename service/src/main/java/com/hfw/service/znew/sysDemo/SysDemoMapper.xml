@@ -24,7 +24,9 @@
             location,
             lng,
             lat,
-            file_input
+            file_input,
+            user_id,
+            org_id
         from sys_demo
         <where>
                 deleted=0
@@ -49,29 +51,20 @@
             <if test="po.state!=null">
                 and state=#{po.state}
             </if>
-            <if test="po.interest!=null and po.interest!=''">
+            <if test="po.interest!=null">
                 and interest=#{po.interest}
-            </if>
-            <if test="page.params.interest_like!=null and page.params.interest_like!=''">
-                and interest like concat(#{page.params.interest_like},'%')
             </if>
             <if test="po.birth!=null">
                 and birth=#{po.birth}
             </if>
-            <if test="page.params.birth_lt!=null">
+            <if test="page.params.birth_lt!=null and page.params.birth_lt!=''">
                 and birth &lt;= #{page.params.birth_lt}
             </if>
-            <if test="page.params.birth_gt!=null">
+            <if test="page.params.birth_gt!=null and page.params.birth_gt!=''">
                 and birth &gt;= #{page.params.birth_gt}
             </if>
             <if test="po.registTime!=null">
                 and regist_time=#{po.registTime}
-            </if>
-            <if test="page.params.registTime_lt!=null">
-                and regist_time &lt;= #{page.params.registTime_lt}
-            </if>
-            <if test="page.params.registTime_gt!=null">
-                and regist_time &gt;= #{page.params.registTime_gt}
             </if>
             <if test="po.avatar!=null and po.avatar!=''">
                 and avatar=#{po.avatar}
@@ -132,6 +125,12 @@
             </if>
             <if test="page.params.fileInput_like!=null and page.params.fileInput_like!=''">
                 and file_input like concat(#{page.params.fileInput_like},'%')
+            </if>
+            <if test="po.userId!=null">
+                and user_id=#{po.userId}
+            </if>
+            <if test="po.orgId!=null">
+                and org_id=#{po.orgId}
             </if>
         </where>
         <if test="page.sortByField!=null and page.sortByWay!=null">

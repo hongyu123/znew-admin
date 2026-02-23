@@ -1,8 +1,8 @@
 # 技术选型
 ### SpringBoot3
 ### JDK 17
-### mysql 8
-### 数据库访问: [xbatis](https://xbatis.cn/)
+### PostgreSQL 15
+### 数据库访问: [mybatis](https://mybatis.org/)
 ### 权限认证: [sa-token](https://sa-token.cc/)
 ### 前端框架选择: [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin)
 ### 接口测试: 采用 [Apifox](https://www.apifox.cn/help/ide-plugin/idea-plugin/quickstart/installation/) + 规范注释 + IDEA插件
@@ -13,6 +13,225 @@
 力求简单,好用,能够快速开发.
 
 新的一年希望有新气象,所以项目名就叫znew.
+
+# mybatis 基于`@SelectProvider`的通用mapper封装
+```java
+public interface BaseMapper<T> {
+
+    @SelectProvider(value = SqlProvider.class, method = "selectByPk")
+    T selectByPk(@Param("pk") Serializable pk);
+
+    default T selectOne(Where<T> where){
+        List<T> list = this.selectList(where);
+        if(list!=null && !list.isEmpty()){
+            return list.get(0);
+        }
+        return null;
+    }
+
+    @SelectProvider(value = SqlProvider.class, method = "selectList")
+    List<T> selectList(@Param("where") Where<T> where);
+
+    @SelectProvider(value = SqlProvider.class, method = "count")
+    long count(@Param("where") Where<T> where);
+
+    @InsertProvider(value = SqlProvider.class, method = "insert")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insert(T entity);
+
+    @InsertProvider(value = SqlProvider.class, method = "insertBatch")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insertBatch(List<T> list);
+
+    @UpdateProvider(value = SqlProvider.class, method = "updateByPk")
+    int updateByPk(@Param("entity")T entity);
+
+    @UpdateProvider(value = SqlProvider.class, method = "updateStrategyByPk")
+    int updateStByPk(@Param("entity")T entity, @Param("updateStrategy")UpdateStrategy updateStrategy, @Param("nullUpdateColumns")Column<?> ... nullUpdateColumns);
+
+    @UpdateProvider(value = SqlProvider.class, method = "update")
+    int update(@Param("entity")T entity, @Param("where")Where<T> where);
+
+    @DeleteProvider(value = SqlProvider.class, method = "deleteByPk")
+    int deleteByPk(@Param("pk") Serializable pk);
+
+    @DeleteProvider(value = SqlProvider.class, method = "deleteByPks")
+    int deleteByPks(@Param("pks") Collection<? extends Serializable> pks);
+
+    @DeleteProvider(value = SqlProvider.class, method = "delete")
+    int delete(@Param("where") Where<T> where);
+
+}
+```
+ 
+单mapper模式
+
+推荐:常用的表继承BaseMapper, 非常用表继承SingleMapper访问, 频繁和复杂SQL写到XML
+```java
+public interface SingleMapper {
+
+    @SelectProvider(value = SingleMapperSqlProvider.class, method = "selectByPk")
+    <T> T selectByPk(@Param("type") Class<T> type, @Param("pk") Serializable pk);
+
+    default <T> T selectOne(Class<T> type, Where<T> where){
+        List<T> list = this.selectList(type, where);
+        if(list!=null && !list.isEmpty()){
+            return list.get(0);
+        }
+        return null;
+    }
+
+    @SelectProvider(value = SingleMapperSqlProvider.class, method = "selectList")
+    <T> List<T> selectList(@Param("type") Class<T> type, @Param("where") Where<T> where);
+
+    @SelectProvider(value = SingleMapperSqlProvider.class, method = "count")
+    <T> long count(@Param("type") Class<T> type, @Param("where") Where<T> where);
+
+    @InsertProvider(value = SingleMapperSqlProvider.class, method = "insert")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insert(Object entity);
+
+    @InsertProvider(value = SingleMapperSqlProvider.class, method = "insertBatch")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insertBatch(List<?> list);
+
+    @UpdateProvider(value = SingleMapperSqlProvider.class, method = "updateByPk")
+    int updateByPk(@Param("entity")Object entity);
+
+    @UpdateProvider(value = SingleMapperSqlProvider.class, method = "updateStrategyByPk")
+    int updateStByPk(@Param("entity")Object entity, @Param("updateStrategy") UpdateStrategy updateStrategy, @Param("nullUpdateColumns")Column<?> ... nullUpdateColumns);
+
+    @UpdateProvider(value = SingleMapperSqlProvider.class, method = "update")
+    <T> int update(@Param("entity")T entity, @Param("where")Where<T> where);
+
+    @DeleteProvider(value = SingleMapperSqlProvider.class, method = "deleteByPk")
+    int deleteByPk(@Param("type") Class<?> type, @Param("pk")Serializable pk);
+
+    @DeleteProvider(value = SingleMapperSqlProvider.class, method = "deleteByPks")
+    int deleteByPks(@Param("type") Class<?> type, @Param("pks")Collection<? extends Serializable> pks);
+
+    @DeleteProvider(value = SingleMapperSqlProvider.class, method = "delete")
+    int delete(@Param("type") Class<?> type, @Param("where")Where<?> where);
+}
+```
+## 注解&核心功能
+@Table
+
+|   属性   |       说明       |
+|:------:|:--------------:|
+| value | 数据库对应的table名称 |
+| schema | 数据库对应的schema名称 |
+
+@TableId
+
+|   属性   |       说明       | 默认值 |
+|:------:|:--------------:|:---:|
+| value |     主键生成方式     |  IdType.AUTO_INCREMENT   |
+
+枚举类 IdType
+
+|   枚举   |       说明       |
+|:------:|:--------------:|
+| AUTO_INCREMENT  |     数据库自增加     |
+| INPUT | 用户自行设置 |
+
+@TableField
+
+|   属性   |     说明     |
+|:------:|:----------:|
+| value | 数据库对应的字段名  |
+| exist |   是否是表字段   |
+| insertValue | 新增时默认填充表达式 |
+| updateValue |    更新时默认填充表达式     |
+
+动态填充表达式
+
+已$ 开头的动态表达式需要自行注册值, 如:`$NOW`
+```java
+// 当前时间
+MybatisGlobalConfig.registerDynamic("$NOW", type -> {
+    if(LocalDateTime.class == type){
+        return LocalDateTime.now();
+    }
+    return null;
+});
+// 当前用户
+MybatisGlobalConfig.registerDynamic("$CURRENT_USER", type -> {
+    if(String.class == type){
+        return StpUtil.isLogin() ?LoginUser.getLoginUser().getAccount() :"";
+    }
+    return null;
+});
+```
+
+不已$开头的会直接拼接成SQL语句, 如: `NOW()`, `CURRENT_TIMESTAMP`
+
+@LogicDelete 逻辑删除
+
+|   属性   |         说明         |
+|:------:|:------------------:|
+| beforeValue |     删除前/未删除的值      |
+| deletedValue | 删除后的值, 如 "1", "id" |
+
+更新策略枚举类 UpdateStrategy
+
+|   枚举   |            说明             |
+|:------:|:-------------------------:|
+| NotEmpty  |     字符串不为空串,其它非null更新     |
+| NotNull |         属性非null更新         |
+| NullUpdate | null字段也更新,需要指定需要更新的null字段 |
+
+## 示例
+```java
+@Mapper
+public interface SysDemoMapper extends BaseMapper<SysDemo> {
+}
+
+// 主键查询
+sysDemoMapper.selectByPk(1L);
+
+// 条件查询
+sysDemoMapper.selectList(Where.<SysDemo>where().eq(SysDemo.COLUMN.name,"test"));
+
+// count
+sysDemoMapper.count(Where.<SysDemo>where().eq(SysDemo.COLUMN.name,"test"));
+
+// 新增
+SysDemo demo = new SysDemo();
+demo.setName("test");
+sysDemoMapper.insert(demo);
+
+// 批量新增
+sysDemoMapper.insertBatch(List.of(demo));
+
+//主键更新
+SysDemo demo = new SysDemo();
+demo.setId(1L);
+demo.setName("test");
+sysDemoMapper.updateByPk(demo);
+
+//条件更新
+sysDemoMapper.update(demo, Where.<SysDemo>where().eq(SysDemo.COLUMN.name,"test"));
+
+//更新策略
+sysDemoMapper.updateStByPk(demo, UpdateStrategy.NotNull);
+sysDemoMapper.update(demo, Where.<SysDemo>where().eq(SysDemo.COLUMN.name,"test").updateStrategy(UpdateStrategy.NullUpdate, SysDemo.COLUMN.age));
+
+//主键删除
+sysDemoMapper.deleteByPk(1L);
+sysDemoMapper.deleteByPks(List.of(1L));
+
+//条件删除
+sysDemoMapper.delete(Where.<SysDemo>where().eq(SysDemo.COLUMN.name,"test"));
+```
+
+## COLUMN 枚举类字段说明
+mybatis-plus LambdaQueryWrapper 是基于SerializedLambda实现的根据Lambda表达式获取实体类属性字段
+
+而本项目基于实体类`内部枚举类COLUMN`来标记数据库表存在的字段, COLUMN枚举类的实例对象需要和实体类属性一一对应,
+否则用COLUMN枚举来构建Where条件的时候会因为找不到对应的属性, 从而无法确定表字段, 抛出SQL异常(枚举列[]没有对应的映射字段)
+
+**COLUMN枚举类目前用代码生成生成, 后期考虑用APT（Annotation Processing Tool）技术(和lombok一样)实时编译生成.**
 
 # znew多模块架构
 目录组织结构采用简易DDD设计

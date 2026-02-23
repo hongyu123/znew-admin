@@ -10,7 +10,6 @@
       label-position="right"
       :colProps="colProps"
       :prevent="true"
-      @change="handleSearchChange"
       @search="handleSearch"
       @reset="handleReset"
       @keydown.enter="handleSearch"
@@ -179,14 +178,6 @@ const searchColumns = reactive([
 </#if>
 </#list>
 ]);
-
-const inputColumns = [<#list columnList as c><#if c.searchFlag==1 && (c.formType=='input' || c.formType=='phone')>"params.${c.property}_like", </#if></#list>];
-/** 搜索表单字段变化处理 */
-const handleSearchChange = (values, column) => {
-  if (inputColumns.indexOf(column.prop) < 0) {
-    getTableList();
-  }
-};
 
 const tableRef = ref();
 const tableColumns = [
