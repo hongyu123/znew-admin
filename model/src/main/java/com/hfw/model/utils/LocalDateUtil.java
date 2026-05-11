@@ -1,13 +1,10 @@
 package com.hfw.model.utils;
 
-import com.hfw.model.entity.Entry;
-
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayDeque;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * LocalDate工具类
@@ -26,129 +23,119 @@ public class LocalDateUtil {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String TIME_FORMAT = "HH:mm:ss";
 
-    private static ArrayDeque<Character> getPatternQueue(){
-        ArrayDeque<Character> queue = new ArrayDeque<>();
-        queue.add('y');
-        queue.add('y');
-        queue.add('y');
-        queue.add('y');
+    /**
+     * 自动解析日期格式
+     */
+    public static class FormatAutoParse{
+        private final List<String> patternList = List.of("yyyy","MM","dd","HH","mm","ss","SSS");
+        private int index = 0;
+        private final String dateStr;
+        public FormatAutoParse(String dateStr){
+            this.dateStr = dateStr;
+        }
 
-        queue.add('M');
-        queue.add('M');
-
-        queue.add('d');
-        queue.add('d');
-
-        queue.add('H');
-        queue.add('H');
-
-        queue.add('m');
-        queue.add('m');
-
-        queue.add('s');
-        queue.add('s');
-
-        queue.add('S');
-        queue.add('S');
-        queue.add('S');
-        return queue;
-    }
-
-    public static Entry<StringBuilder,Integer> parsePattern(String date, ArrayDeque<Character> queue){
-        int dateIndex = 0;
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < date.length(); i++) {
-            char c = date.charAt(i);
-            if(c>='0' && c<='9'){
-                Character ch = queue.poll();
-                if(ch!=null){
-                    sb.append(ch);
-                    dateIndex++;
-                }
-            }else if(c == 'T'){
-                sb.append("'T'");
-            }else{
-                sb.append(c);
+        /**
+         * 解析数字，返回对应的日期格式
+         */
+        private String parse(String partDateStr){
+            if(index>=patternList.size()){
+                throw new IllegalArgumentException("自动解析日期格式错误："+dateStr);
             }
+            String partPattern = patternList.get(index++);
+            if(partDateStr.length()>partPattern.length()){
+                //String left = partDateStr.substring(0,partPattern.length());
+                String right = partDateStr.substring(partPattern.length());
+                return partPattern + parse(right);
+            }else if(partDateStr.length()<partPattern.length()){
+                return partPattern.substring(0, partDateStr.length());
+            }
+            return partPattern;
         }
-        return new Entry<>(sb, dateIndex);
+        public String parse(){
+            Pattern pattern = Pattern.compile("\\d+");
+            Matcher matcher = pattern.matcher(dateStr);
+            String formatPattern = dateStr.replace("T","'T'");
+            while (matcher.find()){
+                String digit = matcher.group();
+                String partPattern = this.parse(digit);
+                formatPattern = formatPattern.replaceFirst(digit, partPattern);
+            }
+            return formatPattern;
+        }
+        public boolean isTimePattern(){
+            return index>3;
+        }
+        public boolean isMonthPattern(){
+            return index<3;
+        }
     }
 
-    private static LocalDate appendDate(String date, Entry<StringBuilder, Integer> entry, ArrayDeque<Character> queue){
-        for (int i = entry.value(); i < 8; i++) {
-            entry.key().append(queue.poll());
-        }
-        if(entry.value()==4){
-            date += "0101";
-        }else if(entry.value()==6){
-            date += "01";
-        }
-        return LocalDate.parse(date, DateTimeFormatter.ofPattern(entry.key().toString()));
-    }
-    public static LocalDate parse(String date){
+    /**
+     * 24小时制日期自动解析
+     * 仅支持年月日的顺序字符解析
+     */
+    public static LocalDate parseDate(String date){
         if(!StrUtil.hasText(date)){
             return null;
         }
-        ArrayDeque<Character> queue = getPatternQueue();
-        Entry<StringBuilder, Integer> entry = parsePattern(date,queue);
-        if(entry.value()==8){
-            return LocalDate.parse(date, DateTimeFormatter.ofPattern(entry.key().toString()));
+        FormatAutoParse parse = new FormatAutoParse(date);
+        String pattern = parse.parse();
+        if(parse.isTimePattern()){
+            return parseDateTime(date, pattern).toLocalDate();
         }
-        if(entry.value()<8){
-            return appendDate(date, entry, queue);
+        if(parse.isMonthPattern()){
+            return YearMonth.parse(date, DateTimeFormatter.ofPattern(pattern)).atDay(1);
         }
-        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern(entry.key().toString()));
-        return dateTime.toLocalDate();
+        return parseDate(date, pattern);
     }
+    /**
+     * 24小时制日期自动解析
+     * 仅支持年月日的顺序字符解析
+     */
     public static LocalDateTime parseDateTime(String date){
         if(!StrUtil.hasText(date)){
             return null;
         }
-        ArrayDeque<Character> queue = getPatternQueue();
-        Entry<StringBuilder, Integer> entry = parsePattern(date,queue);
-        if(entry.value()==8){
-            return LocalDate.parse(date, DateTimeFormatter.ofPattern(entry.key().toString())).atStartOfDay();
+        FormatAutoParse parse = new FormatAutoParse(date);
+        String pattern = parse.parse();
+        if(parse.isTimePattern()){
+            return parseDateTime(date, pattern);
         }
-        if(entry.value()<8){
-            return appendDate(date, entry, queue).atStartOfDay();
+        if(parse.isMonthPattern()){
+            return YearMonth.parse(date, DateTimeFormatter.ofPattern(pattern)).atDay(1).atStartOfDay();
         }
-        return LocalDateTime.parse(date, DateTimeFormatter.ofPattern(entry.key().toString()));
+        return parseDate(date, pattern).atStartOfDay();
     }
     public static LocalDate parseDate(String date, String pattern){
-        return LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern));
-    }
-    public static LocalDateTime parseDateTime(String date, String pattern){
-        return LocalDateTime.parse(date, DateTimeFormatter.ofPattern(pattern));
-    }
-
-    private static boolean isDatePattern(String pattern){
-        for (int i = 0; i < pattern.length(); i++) {
-            char c = pattern.charAt(i);
-            if( c=='h' || c=='m' || c=='s'){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static String format(LocalDate date, String pattern){
-        if(isDatePattern(pattern)){
-            return date.format( DateTimeFormatter.ofPattern(pattern) );
-        }
-        LocalDateTime localDateTime = date.atStartOfDay();
-        return localDateTime.format(DateTimeFormatter.ofPattern(pattern));
-    }
-    public static String format(LocalDate date){
         if(date==null){
             return null;
         }
-        return date.format( DateTimeFormatter.ofPattern(DATE_FORMAT) );
+        return LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern));
+    }
+    public static LocalDateTime parseDateTime(String date, String pattern){
+        if(date==null){
+            return null;
+        }
+        return LocalDateTime.parse(date, DateTimeFormatter.ofPattern(pattern));
+    }
+
+    public static String format(LocalDate date, String pattern){
+        if(date==null){
+            return null;
+        }
+        return date.format(DateTimeFormatter.ofPattern(pattern));
     }
     public static String format(LocalDateTime dateTime, String pattern){
+        if(dateTime==null){
+            return null;
+        }
         return dateTime.format(DateTimeFormatter.ofPattern(pattern));
     }
+    public static String format(LocalDate date){
+        return format(date, DATE_FORMAT);
+    }
     public static String format(LocalDateTime dateTime){
-        return dateTime.format( DateTimeFormatter.ofPattern(DATE_TIME_FORMAT) );
+        return format(dateTime, DATE_TIME_FORMAT);
     }
 
     public static LocalDateTime toLocalDateTime(Long milliseconds){
@@ -157,28 +144,5 @@ public class LocalDateUtil {
     public static long toEpochMilli(LocalDateTime localDateTime){
         return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
-
-    /*public static void main(String[] args) {
-        System.out.println( parse("2022-11") );
-        System.out.println( parse("2022-11-10") );
-        System.out.println( parse("2022 年 11 余 10 日 ") );
-        System.out.println( parse("2022-11-10 14:39:29  ") );
-
-        System.out.println( parseDateTime("2022-11") );
-        System.out.println( parseDateTime("2022-11-10") );
-        System.out.println( parseDateTime("2022 年 11 余 10 日 ") );
-        System.out.println( parseDateTime("2022-11-10 14:39:29  ") );
-        System.out.println( parseDateTime("2022-11") );
-
-        System.out.println(format(LocalDate.now(),"yyyy"));
-        System.out.println(format(LocalDate.now(),"yyyy-MM-dd"));
-        System.out.println(format(LocalDate.now(),"yyyy-MM-dd HH:mm:ss"));
-
-        System.out.println(format(LocalDateTime.now(),"yyyy"));
-        System.out.println(format(LocalDateTime.now(),"yyyy-MM-dd"));
-        System.out.println(format(LocalDateTime.now(),"yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime dateTime = LocalDateTime.now();
-        System.out.println(format(dateTime,"HH:mm:ss"));
-    }*/
 
 }

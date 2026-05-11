@@ -10,7 +10,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.hfw.model.utils.LocalDateUtil;
-import com.hfw.model.utils.StrUtil;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -64,9 +63,6 @@ public class ObjectMapperBuilder{
             @Override
             public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
                 String text = jsonParser.getText().trim();
-                if(!StrUtil.hasText(text)){
-                    return null;
-                }
                 /**
                  * 时间戳转日期
                 try {
@@ -82,10 +78,7 @@ public class ObjectMapperBuilder{
             @Override
             public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
                 String text = jsonParser.getText().trim();
-                if(!StrUtil.hasText(text)){
-                    return null;
-                }
-                return LocalDateUtil.parse(text);
+                return LocalDateUtil.parseDate(text);
             }
         });
         objectMapper.registerModule(module);

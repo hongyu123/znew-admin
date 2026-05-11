@@ -476,6 +476,27 @@ if(lock.tryLock(5, 10, TimeUnit.SECONDS)) {
 }
 ```
 
+## LocalDate/LocalDateTime
+按给定格式解析
+```java
+System.out.println( LocalDateUtil.parseDate("2022-11-10", "yyyy-MM-dd") );
+System.out.println( LocalDateUtil.parseDateTime("2022-11-10 14:39:29", "yyyy-MM-dd HH:mm:ss") );
+```
+
+日期字符串格式自解析, 仅支持24小时制且按年月日时分秒顺序的字符
+```java
+LocalDate localDate = LocalDateUtil.parseDate("2022-11");
+System.out.println(localDate);
+System.out.println( LocalDateUtil.parseDate("2022-11-10") );
+System.out.println( LocalDateUtil.parseDate("20221110") );
+System.out.println( LocalDateUtil.parseDate("2022/1/1") );
+LocalDateTime dateTime = LocalDateUtil.parseDateTime("2022 年 11 余 10 日 ");
+System.out.println( dateTime );
+System.out.println( LocalDateUtil.parseDate("2022-11-10 14:39:29  ") );
+System.out.println( LocalDateUtil.parseDateTime("20221110 143929") );
+System.out.println( LocalDateUtil.parseDateTime("2026-05-11T15:53:19.268") );
+```
+
 ## JAVA11 HttpClient
 ### GET
 发送请求

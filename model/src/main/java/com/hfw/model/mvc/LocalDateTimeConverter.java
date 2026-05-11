@@ -14,9 +14,6 @@ public class LocalDateTimeConverter implements Converter<String, LocalDateTime> 
 
     @Override
     public LocalDateTime convert(String source) {
-        if(!StringUtils.hasText(source)){
-            return null;
-        }
         return LocalDateUtil.parseDateTime(source);
     }
 

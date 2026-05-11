@@ -2,7 +2,6 @@ package com.hfw.model.mvc;
 
 import com.hfw.model.utils.LocalDateUtil;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 
@@ -14,10 +13,7 @@ public class LocalDateConverter implements Converter<String, LocalDate> {
 
     @Override
     public LocalDate convert(String source) {
-        if(!StringUtils.hasText(source)){
-            return null;
-        }
-        return LocalDateUtil.parse(source);
+        return LocalDateUtil.parseDate(source);
     }
 
 }

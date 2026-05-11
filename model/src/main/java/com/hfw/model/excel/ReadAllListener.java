@@ -2,11 +2,16 @@ package com.hfw.model.excel;
 
 import cn.idev.excel.annotation.ExcelProperty;
 import cn.idev.excel.context.AnalysisContext;
+import cn.idev.excel.enums.CellExtraTypeEnum;
 import cn.idev.excel.exception.ExcelDataConvertException;
+import cn.idev.excel.metadata.CellExtra;
+import cn.idev.excel.metadata.Head;
 import cn.idev.excel.metadata.data.CellData;
 import cn.idev.excel.read.listener.ReadListener;
+import cn.idev.excel.read.metadata.property.ExcelReadHeadProperty;
 import org.apache.poi.ss.util.CellReference;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +64,41 @@ public class ReadAllListener<T> implements ReadListener<T> {
             return;
         }
         throw exception;
+    }
+
+    /**
+     * 额外信息(批注、超链接、合并单元格信息)处理
+     */
+    @Override
+    public void extra(CellExtra extra, AnalysisContext context) {
+        //analysisContext.readSheetHolder().excelReadHeadProperty()
+        ExcelReadHeadProperty headProperty = context.currentReadHolder().excelReadHeadProperty();
+        if(CellExtraTypeEnum.MERGE != extra.getType()){
+            return;
+        }
+        //合并行属性处理
+        if(extra.getRowIndex()>headProperty.getHeadRowNumber()-1){
+            Head head = headProperty.getHeadMap().get(extra.getColumnIndex());
+            if(head==null){
+                return;
+            }
+            Field field = head.getField();
+            if(field==null){
+                return;
+            }
+            try {
+                field.setAccessible(true);
+                int index = extra.getFirstRowIndex()-headProperty.getHeadRowNumber();
+                Object value = field.get(this.list.get(index));
+                if(value!=null){
+                    for(int i =index+1; i<=extra.getLastRowIndex()-headProperty.getHeadRowNumber(); i++){
+                        field.set(this.list.get(i), value);
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
