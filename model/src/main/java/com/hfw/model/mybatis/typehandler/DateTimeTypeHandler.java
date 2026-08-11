@@ -31,7 +31,7 @@ public class DateTimeTypeHandler extends BaseTypeHandler<LocalDateTime> {
     public LocalDateTime getNullableResult(ResultSet rs, String columnName) throws SQLException {
         OffsetDateTime dateTime = rs.getObject(columnName, OffsetDateTime.class);
         if(dateTime!=null){
-            return dateTime.toLocalDateTime();
+            return dateTime.withOffsetSameInstant(zoneOffset).toLocalDateTime();
         }
         return null;
     }
@@ -40,7 +40,7 @@ public class DateTimeTypeHandler extends BaseTypeHandler<LocalDateTime> {
     public LocalDateTime getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         OffsetDateTime dateTime = rs.getObject(columnIndex, OffsetDateTime.class);
         if(dateTime!=null){
-            return dateTime.toLocalDateTime();
+            return dateTime.withOffsetSameInstant(zoneOffset).toLocalDateTime();
         }
         return null;
     }
@@ -49,7 +49,7 @@ public class DateTimeTypeHandler extends BaseTypeHandler<LocalDateTime> {
     public LocalDateTime getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         OffsetDateTime dateTime = cs.getObject(columnIndex, OffsetDateTime.class);
         if(dateTime!=null){
-            return dateTime.toLocalDateTime();
+            return dateTime.withOffsetSameInstant(zoneOffset).toLocalDateTime();
         }
         return null;
     }

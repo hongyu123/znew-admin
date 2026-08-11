@@ -90,7 +90,19 @@ public class HttpUtil {
             cookieMap.put(cookie.getName(), cookie);
         }
     }
-    private String getCookie(String domain, String path){
+    public void parseCookie(String cookieStr, String domain){
+        if(StrUtil.hasText(cookieStr)){
+            String[] cookieArr = cookieStr.split("; ");
+            Map<String,Map<String,Cookie>> cookies = new HashMap<>();
+            for (String cookieItem : cookieArr) {
+                Cookie cookie = new Cookie(cookieItem, domain);
+                Map<String,Cookie> cookieMap = cookies.computeIfAbsent(cookie.getDomain(), k -> new HashMap<>());
+                cookieMap.put(cookie.getName(), cookie);
+            }
+            this.cookies = cookies;
+        }
+    }
+    public String getCookie(String domain, String path){
         Collection<Cookie> cookieList = new ArrayList<>();
         String subDomain = domain;
         int index = subDomain.indexOf(".");
@@ -232,7 +244,7 @@ public class HttpUtil {
     }
 
     public <T> HttpResponse<T> formData(String url, FormData formData, HttpResponse.BodyHandler<T> responseBodyHandler) throws Exception {
-        Map<String, Object> params = formData.params;
+        Map<String, String> params = formData.params;
         byte[] fileBytes = formData.fileBytes;
         String boundary = "----WebKitFormBoundary" + System.currentTimeMillis();
         String bodyParams = "";
@@ -296,9 +308,9 @@ public class HttpUtil {
         //文件名
         private String filename;
         private String contentType = "application/octet-stream";
-        private Map<String,Object> params = new HashMap<>();
+        private Map<String,String> params = new HashMap<>();
         private byte[] fileBytes;
-        public FormData (String name, String filename, Map<String,Object> params, byte[] fileBytes){
+        public FormData (String name, String filename, Map<String,String> params, byte[] fileBytes){
             this.name = name;
             this.filename = filename;
             this.params = params;

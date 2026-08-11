@@ -1,8 +1,7 @@
 package com.hfw.model.utils;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 
 import java.util.Collection;
 import java.util.Map;
@@ -11,24 +10,21 @@ import java.util.Set;
 public class LimitedParamMap implements Map<String, String> {
     private final LoadingCache<String, String> cache;
     public LimitedParamMap(int maxSize) {
-        cache = CacheBuilder.newBuilder()
+        cache = Caffeine.newBuilder()
                 .maximumSize(maxSize)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public String load(String key) {
-                        return null; // 对于不存在的键，返回null或适当的默认值
-                    }
+                .build(key -> {
+                    return null; // 对于不存在的键，返回null或适当的默认值
                 });
     }
 
     @Override
     public int size() {
-        return (int)cache.size();
+        return (int) cache.estimatedSize();
     }
 
     @Override
     public boolean isEmpty() {
-        return cache.size()<=0;
+        return size()<=0;
     }
 
     @Override
