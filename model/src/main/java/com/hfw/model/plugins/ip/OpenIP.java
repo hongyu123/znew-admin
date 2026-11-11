@@ -1,6 +1,6 @@
 package com.hfw.model.plugins.ip;
 
-import com.alibaba.fastjson2.JSON;
+import com.hfw.model.jackson.ObjectMapperUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ public class OpenIP {
             HttpRequest request = HttpRequest.newBuilder(URI.create(url)).GET().build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             String res = response.body();
-            BaiduApiResult result = JSON.parseObject(res, BaiduApiResult.class);
+            BaiduApiResult result = ObjectMapperUtil.singleton().readValue(res, BaiduApiResult.class);
             if ("0".equals(result.status) && result.data != null && result.data.size() > 0) {
                 return result.data.get(0).location;
             }

@@ -1,10 +1,12 @@
 package com.hfw.model.entity;
 
+import com.hfw.model.jackson.ObjectMapperUtil;
 import com.hfw.model.po.sys.SysUpload;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -28,6 +30,26 @@ public class UploadFile {
         if(list!=null){
             list.forEach(item->item.setUrl(SysUpload.addServerPrefix(item.getUrl())));
         }
+    }
+    public static List<UploadFile> mapToFile(List<Map<String,Object>> list){
+        if(list==null || list.isEmpty()){
+            return null;
+        }
+        return list.stream().map(map-> {
+            UploadFile file = ObjectMapperUtil.singleton().convertValue(map, UploadFile.class);
+            file.setUrl(SysUpload.addServerPrefix(file.getUrl()));
+            return file;
+        }).toList();
+    }
+    public static List<Map<String,Object>> fileToMap(List<UploadFile> list){
+        if(list==null || list.isEmpty()){
+            return null;
+        }
+        return list.stream().map(file-> {
+            Map<String,Object> map = ObjectMapperUtil.singleton().convertValue(file, Map.class);
+            map.put("url", SysUpload.removeServerPrefix(file.getUrl()));
+            return map;
+        }).toList();
     }
 
 }

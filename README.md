@@ -498,6 +498,16 @@ System.out.println( LocalDateUtil.parseDateTime("2026-05-11T15:53:19.268") );
 ```
 
 ## JAVA11 HttpClient
+
+### 问题记录
+从 JDK 17 到 JDK 23，当你为 HttpClient 设置了 Authenticator（通常用于代理认证）后，JDK 会强制移除你手动为目标服务器设置的 Authorization 请求头
+该问题已在 JDK 24 中得到修复
+解决方案:
+在 HttpRequest 中同时设置 Proxy-Authorization 和 Authorization 头，并不要在 HttpClient 上设置 Authenticator
+String proxyAuth = proxyUser + ":" + proxyPass;
+String encodedProxyAuth = Base64.getEncoder().encodeToString(proxyAuth.getBytes());
+.header("Proxy-Authorization", "Basic " + encodedProxyAuth) // 代理认证
+
 ### GET
 发送请求
 ``` java

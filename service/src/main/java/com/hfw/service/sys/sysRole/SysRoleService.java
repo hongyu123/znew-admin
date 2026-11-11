@@ -19,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -157,12 +158,12 @@ public class SysRoleService {
      * @param id 用户id
      * @return 角色编码列表
      */
-    public List<String> userRoles(Long id){
+    public Set<String> userRoles(Long id){
         if(id==1L){
-            return List.of("*");
+            return Set.of("*");
         }
         List<SysRole> roleList = sysRoleMapper.userRoles(id,0, "");
-        return roleList.stream().map(SysRole::getCode).toList();
+        return roleList.stream().map(SysRole::getCode).collect(Collectors.toSet());
     }
 
     /**

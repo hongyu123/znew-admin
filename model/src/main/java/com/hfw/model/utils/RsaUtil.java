@@ -53,26 +53,26 @@ public class RsaUtil {
         return new String(decodedData);
     }
 
-    private static String encryptByPublicKey(String algorithm, String publicKey, String plaintext) throws  Exception {
+    public static String encryptByPublicKey(String algorithm, String publicKey, String plaintext) throws  Exception {
         byte[] decodedPublicKey = Base64.getDecoder().decode(publicKey);
         KeySpec keySpec = new X509EncodedKeySpec(decodedPublicKey);
         PublicKey pubKey = KeyFactory.getInstance(algorithm).generatePublic(keySpec);
         return RsaUtil.encrypt(algorithm, pubKey, plaintext);
     }
-    private static String decryptByPrivateKey(String algorithm, String privateKey, String ciphertext) throws  Exception {
+    public static String decryptByPrivateKey(String algorithm, String privateKey, String ciphertext) throws  Exception {
         byte[] decodedPrivateKey = Base64.getDecoder().decode(privateKey);
         KeySpec keySpec = new PKCS8EncodedKeySpec(decodedPrivateKey);
         PrivateKey priKey = KeyFactory.getInstance(algorithm).generatePrivate(keySpec);
         return RsaUtil.decrypt(algorithm, priKey, ciphertext);
     }
 
-    private static String encryptByPrivateKey(String algorithm, String privateKey, String plaintext) throws  Exception {
+    public static String encryptByPrivateKey(String algorithm, String privateKey, String plaintext) throws  Exception {
         byte[] decodedPrivateKey = Base64.getDecoder().decode(privateKey);
         KeySpec keySpec = new PKCS8EncodedKeySpec(decodedPrivateKey);
         PrivateKey priKey = KeyFactory.getInstance(algorithm).generatePrivate(keySpec);
         return RsaUtil.encrypt(algorithm, priKey, plaintext);
     }
-    private static String decryptByPublicKey(String algorithm, String publicKey, String ciphertext) throws  Exception {
+    public static String decryptByPublicKey(String algorithm, String publicKey, String ciphertext) throws  Exception {
         byte[] decodedPublicKey = Base64.getDecoder().decode(publicKey);
         KeySpec keySpec = new X509EncodedKeySpec(decodedPublicKey);
         PublicKey pubKey = KeyFactory.getInstance(algorithm).generatePublic(keySpec);

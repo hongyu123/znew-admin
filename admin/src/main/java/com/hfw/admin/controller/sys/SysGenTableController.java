@@ -1,6 +1,5 @@
 package com.hfw.admin.controller.sys;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.hfw.admin.log.AdminLog;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
@@ -28,7 +27,6 @@ public class SysGenTableController {
     @Autowired
     private SysGenTableService sysGenTableService;
 
-    @SaCheckPermission("sysGenTable:page")
     @GetMapping("/page")
     public PageResult<SysGenTable> page(Page<SysGenTable> page, SysGenTable po) {
         Map<String, String> params = page.getParams();
@@ -41,14 +39,12 @@ public class SysGenTableController {
         return commonService.page(SysGenTable.class, where, page);
     }
 
-    @SaCheckPermission("sysGenTable:view")
     @GetMapping
     public Result<SysGenTable> detail(@RequestParam Long id){
         return Result.success( sysGenTableService.detail( id) );
     }
 
     @AdminLog("新增表单生成记录")
-    @SaCheckPermission("sysGenTable:add")
     @PostMapping
     public Result<Void> add(@RequestBody SysGenTable sysGenTable){
         sysGenTableService.saveGenFormRecord(sysGenTable);

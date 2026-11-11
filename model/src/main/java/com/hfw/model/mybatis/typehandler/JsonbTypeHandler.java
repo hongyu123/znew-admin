@@ -1,16 +1,23 @@
 package com.hfw.model.mybatis.typehandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hfw.model.utils.JsonMap;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
+import org.postgresql.util.PGobject;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // JSONB 类型处理器
-@MappedTypes({DBMap.class, DBList.class})
+@MappedTypes({Map.class,HashMap.class, List.class,ArrayList.class, JsonNode.class,JsonMap.class })
 @MappedJdbcTypes(JdbcType.OTHER)
 public class JsonbTypeHandler<T> extends BaseTypeHandler<T> {
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -23,6 +30,7 @@ public class JsonbTypeHandler<T> extends BaseTypeHandler<T> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType) throws SQLException {
         try {
+            PGobject jsonObject = new PGobject();
             String json = objectMapper.writeValueAsString(parameter);
             ps.setObject(i, json, Types.OTHER);
         }catch (JsonProcessingException e){

@@ -27,7 +27,7 @@ public class LocalDateUtil {
      * 自动解析日期格式
      */
     public static class FormatAutoParse{
-        private final List<String> patternList = List.of("yyyy","MM","dd","HH","mm","ss","SSS");
+        private final List<String> patternList = List.of("yyyy","MM","dd","HH","mm","ss","SSSSSSSSS");
         private int index = 0;
         private final String dateStr;
         public FormatAutoParse(String dateStr){
@@ -95,6 +95,15 @@ public class LocalDateUtil {
     public static LocalDateTime parseDateTime(String date){
         if(!StrUtil.hasText(date)){
             return null;
+        }
+        int index = date.indexOf("+");
+        if(index>-1){
+            String time = date.substring(0, index);
+            String zone = date.substring(index);
+            FormatAutoParse parse = new FormatAutoParse(time);
+            String pattern = parse.parse();
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(time, DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.of(zone)));
+            return offsetDateTime.withOffsetSameInstant(ZoneOffset.of("+08:00")).toLocalDateTime();
         }
         FormatAutoParse parse = new FormatAutoParse(date);
         String pattern = parse.parse();

@@ -1,6 +1,5 @@
 package com.hfw.service.component;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.hfw.model.mybatis.MybatisGlobalConfig;
 import com.hfw.service.dto.LoginUser;
 import org.springframework.beans.BeansException;
@@ -30,7 +29,8 @@ public class AppHolder implements ApplicationContextAware {
         });
         MybatisGlobalConfig.registerDynamic("$CURRENT_USER", type -> {
             if(String.class == type){
-                return StpUtil.isLogin() ?LoginUser.getLoginUser().getAccount() :"";
+                LoginUser loginUser = LoginUser.getLoginUser();
+                return loginUser!=null ?loginUser.getAccount() :"";
             }
             return null;
         });

@@ -1,14 +1,18 @@
 package com.hfw.service.sys.sysUser;
 
-import cn.dev33.satoken.secure.BCrypt;
+import com.hfw.model.entity.GeneralException;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
 import com.hfw.model.enums.sys.EnableState;
+import com.hfw.model.enums.sys.LogoutType;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.mybatis.Where;
+import com.hfw.model.po.sys.SysLoginLog;
 import com.hfw.model.po.sys.SysUser;
 import com.hfw.model.po.sys.SysUserRole;
 import com.hfw.model.utils.ValidUtil;
+import com.hfw.service.auth.AuthService;
+import com.hfw.service.auth.Token;
 import com.hfw.service.component.CommonMapper;
 import com.hfw.service.dto.LoginParam;
 import com.hfw.service.dto.LoginUser;
@@ -17,6 +21,8 @@ import com.hfw.service.sys.sysLoginLog.SysLoginLogService;
 import com.hfw.service.sys.sysRole.SysRoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -38,6 +44,12 @@ public class SysUserService {
     private SysAuthService sysAuthService;
     @Autowired
     private SysLoginLogService sysLoginLogService;
+    @Autowired
+    private AuthService authService;
+
+    @Value("${auth.maxLoginCount:1}")
+    public int maxLoginCount;
+    private final BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder(12);
 
     public PageResult<SysUser> page(Page<SysUser> page, SysUser po) {
         page.startPage();
@@ -63,7 +75,7 @@ public class SysUserService {
             return Result.error("该账号已存在!");
         }
         //密码加密
-        String encodePassword = BCrypt.hashpw(sysUser.getPassword(), BCrypt.gensalt(12));
+        String encodePassword = bCrypt.encode(sysUser.getPassword());
         sysUser.setPassword(encodePassword);
         //保存用户
         sysUserMapper.insert(sysUser);
@@ -106,8 +118,8 @@ public class SysUserService {
             commonMapper.insertBatch(roleList);
         }
         //启用/禁用用户
-        if(sysUser.getState()!=null){
-           LoginUser.enableUser(sysUser.getId(), sysUser.getState());
+        if(EnableState.Disable == sysUser.getState()){
+            this.logout(sysUser.getId(), LogoutType.Kickout);
         }
         sysAuthService.clearCache();
         return Result.success();
@@ -135,16 +147,16 @@ public class SysUserService {
         Long userId = LoginUser.getLoginUser().getId();
         SysUser origin = sysUserMapper.selectByPk(userId);
         //原密码校验
-        if(!BCrypt.checkpw(oldPassword, origin.getPassword())){
+        if(!bCrypt.matches(oldPassword, origin.getPassword())){
             return Result.error("原密码错误!");
         }
         SysUser up = new SysUser();
         up.setId(userId);
         //密码加密
-        String encodePassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
+        String encodePassword = bCrypt.encode(password);
         up.setPassword(encodePassword);
         sysUserMapper.updateByPk(up);
-        LoginUser.logout();
+        this.logout(userId, LogoutType.Kickout);
         return Result.success();
     }
 
@@ -152,7 +164,7 @@ public class SysUserService {
         SysUser up = new SysUser();
         up.setId(userId);
         //密码加密
-        String encodePassword = BCrypt.hashpw("123456", BCrypt.gensalt(12));
+        String encodePassword = bCrypt.encode("123456");
         up.setPassword(encodePassword);
         return sysUserMapper.updateByPk(up);
     }
@@ -160,30 +172,49 @@ public class SysUserService {
     /**
      * 用户登录
      * @param loginParam 登录参数
-     * @return 登录信息
+     * @return 登录用户信息
      */
-    public Result<LoginUser> login(LoginParam loginParam){
+    public LoginUser login(LoginParam loginParam) throws Exception {
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = sra.getRequest();
         SysUser sysUser = sysUserMapper.selectOne(Where.<SysUser>where().eq(SysUser.COLUMN.account, loginParam.getUsername()));
         if(sysUser==null){
-            sysLoginLogService.login(null,loginParam.getUsername(),"用户名不存在", request);
-            return Result.error("用户名/密码错误!");
+            sysLoginLogService.loginError(loginParam.getUsername(),"用户名不存在", request);
+            throw new GeneralException("用户名/密码错误!");
         }
         if(EnableState.Enable != sysUser.getState()){
-            sysLoginLogService.login(null,loginParam.getUsername(),"被禁用的账号", request);
-            return Result.error("被禁用的账号!");
+            sysLoginLogService.loginError(loginParam.getUsername(),"被禁用的账号", request);
+            throw new GeneralException("被禁用的账号!");
         }
-        if(!BCrypt.checkpw(loginParam.getPassword(), sysUser.getPassword())){
-            sysLoginLogService.login(null,loginParam.getUsername(),"密码错误", request);
-            return Result.error("用户名/密码错误!");
+        if(!bCrypt.matches(loginParam.getPassword(), sysUser.getPassword())){
+            sysLoginLogService.loginError(loginParam.getUsername(),"密码错误", request);
+            throw new GeneralException("用户名/密码错误!");
+        }
+        List<SysLoginLog> sysLoginLogs = sysLoginLogService.checkOnline(sysUser.getId());
+        if(!CollectionUtils.isEmpty(sysLoginLogs) && sysLoginLogs.size() >= maxLoginCount){
+            this.logout(sysLoginLogs.get(0), LogoutType.PushedOff);
         }
         LoginUser loginUser = LoginUser.of(sysUser);
         loginUser.setRoles(sysRoleService.userRoles(loginUser.getId()));
         loginUser.setPermissions(sysAuthService.userAuths(loginUser.getId()));
-        LoginUser.store(loginUser);
-        sysLoginLogService.login(loginUser.getAccessToken(),loginUser.getUsername(),"登录成功", request);
-        return Result.success(loginUser);
+        Token token = authService.genToken(loginUser);
+        loginUser.setAccessToken(token.token());
+        loginUser.setExpires(token.expireTime());
+        sysLoginLogService.login(loginUser, token, request);
+        return loginUser;
+    }
+
+    public void logout(Long userId, LogoutType logoutType){
+        List<SysLoginLog> sysLoginLogs = sysLoginLogService.checkOnline(userId);
+        if(!CollectionUtils.isEmpty(sysLoginLogs)){
+            for(SysLoginLog sysLoginLog : sysLoginLogs){
+                this.logout(sysLoginLog, logoutType);
+            }
+        }
+    }
+    public void logout(SysLoginLog loginLog, LogoutType logoutType){
+        authService.delete(loginLog.getToken());
+        sysLoginLogService.logout(loginLog.getId(), logoutType);
     }
 
     public SysUser userInfo(){

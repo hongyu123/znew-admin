@@ -1,6 +1,5 @@
 package com.hfw.admin.controller.sys;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.hfw.admin.log.AdminLog;
 import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.jackson.Result;
@@ -25,34 +24,29 @@ public class SysOrganizationController {
     @Autowired
     private SysOrganizationService sysOrganizationService;
 
-    @SaCheckPermission("sysOrg:view")
     @GetMapping
     public Result<SysOrganization> detail(@RequestParam Long id){
         return Result.success( commonService.selectByPk(SysOrganization.class, id) );
     }
 
     @AdminLog("新增组织机构")
-    @SaCheckPermission("sysOrg:add")
     @PostMapping
     public Result<Void> add(@RequestBody SysOrganization sysOrganization){
         return sysOrganizationService.add(sysOrganization);
     }
 
     @AdminLog("编辑组织机构")
-    @SaCheckPermission("sysOrg:edit")
     @PutMapping
     public Result<Void> edit(@RequestBody SysOrganization  sysOrganization){
         return sysOrganizationService.edit(sysOrganization);
     }
 
     @AdminLog("删除组织机构")
-    @SaCheckPermission("sysOrg:del")
     @DeleteMapping
     public Result<Void> del(@RequestParam Long id){
         return sysOrganizationService.del(id);
     }
 
-    @SaCheckPermission("sysOrg:page")
     @GetMapping("/tree")
     public Result<List<SysOrganization>> tree(@RequestParam(required = false) EnableState state){
         return Result.success( sysOrganizationService.selfOrgTree(state) );

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.hfw.model.jackson.ObjectMapperBuilder;
+import com.hfw.model.jackson.ObjectMapperUtil;
 import com.hfw.model.jackson.Result;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
 public class ResultUtil {
 
     private static String json(Object data, String filterName, String... fields) throws JsonProcessingException {
-        ObjectMapper objectMapper = ObjectMapperBuilder.build();
+        ObjectMapper objectMapper = ObjectMapperUtil.get();
         //2.1创建过滤器
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();
         //2.1.1Person类的属性过滤器（只序列化car,house,name字段）

@@ -1,11 +1,13 @@
 package com.hfw.model.po.sys;
 
-import com.hfw.model.mybatis.anno.*;
-import com.hfw.model.mybatis.Column;
 import com.hfw.model.enums.sys.DataScope;
-import com.hfw.model.mybatis.typehandler.DBList;
+import com.hfw.model.mybatis.Column;
+import com.hfw.model.mybatis.anno.Table;
+import com.hfw.model.mybatis.anno.TableId;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * 数据权限表
@@ -38,7 +40,7 @@ public class SysDataScope {
     }
 
     /** 自定义数据权限ids */
-    private DBList customIds;
+    private List<Long> customIds;
 
 
     public enum COLUMN implements Column<SysDataScope>{

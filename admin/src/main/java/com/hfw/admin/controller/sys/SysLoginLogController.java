@@ -1,7 +1,5 @@
 package com.hfw.admin.controller.sys;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.dev33.satoken.stp.StpUtil;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
 import com.hfw.model.enums.sys.LogoutType;
@@ -11,6 +9,8 @@ import com.hfw.model.mybatis.anno.Sort;
 import com.hfw.model.po.sys.SysLoginLog;
 import com.hfw.service.component.CommonService;
 import com.hfw.service.dto.LoginUser;
+import com.hfw.service.sys.sysLoginLog.SysLoginLogService;
+import com.hfw.service.sys.sysUser.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +28,11 @@ import java.util.Map;
 public class SysLoginLogController {
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private SysUserService sysUserService;
+    @Autowired
+    private SysLoginLogService sysLoginLogService;
 
-    @SaCheckPermission("sysLoginLog:page")
     @GetMapping("/page")
     public PageResult<SysLoginLog> page(Page<SysLoginLog> page, SysLoginLog po) {
         Map<String, String> params = page.getParams();
@@ -50,15 +53,7 @@ public class SysLoginLogController {
         pageResult.getData().forEach(log->{
             if(log.getOnlineFlag()==1 && log.getLoginTime().isBefore(ago)){
                 //登录失效
-                if(StpUtil.getLoginIdByToken(log.getToken()) == null){
-                    log.setOnlineFlag(0);
-                    log.setLogoutType(LogoutType.Expire);
-                    SysLoginLog update = new SysLoginLog();
-                    update.setId(log.getId());
-                    update.setOnlineFlag(log.getOnlineFlag());
-                    update.setLogoutType(log.getLogoutType());
-                    commonService.updateByPk(update);
-                }
+                sysLoginLogService.logout(log.getId(), LogoutType.Expire);
             }
         });
         return pageResult;
@@ -74,12 +69,11 @@ public class SysLoginLogController {
         return commonService.page(SysLoginLog.class, where, page);
     }
 
-    @SaCheckPermission("sysLoginLog:kickout")
     @PostMapping("/kickout")
     public Result<Void> kickout(@RequestParam Long id){
         SysLoginLog log = commonService.selectByPk(SysLoginLog.class, id);
         if(log!=null){
-            StpUtil.kickoutByTokenValue(log.getToken());
+            sysUserService.logout(log, LogoutType.Kickout);
         }
         return Result.success();
     }

@@ -1,6 +1,5 @@
 package com.hfw.admin.controller.sys;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.hfw.admin.log.AdminLog;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
@@ -28,7 +27,6 @@ public class SysDataScopeController {
     @Autowired
     private SysDataScopeService sysDataScopeService;
 
-    @SaCheckPermission("sysDataScope:page")
     @GetMapping("/page")
     public PageResult<SysDataScope> page(Page<SysDataScope> page, SysDataScope po) {
         Where<SysDataScope> where = Where.<SysDataScope>where()
@@ -38,35 +36,30 @@ public class SysDataScopeController {
         return commonService.page(SysDataScope.class, where, page);
     }
 
-    @SaCheckPermission("sysDataScope:view")
     @GetMapping
     public Result<SysDataScope> detail(@RequestParam Long id){
         return Result.success( sysDataScopeService.detail( id) );
     }
 
     @AdminLog("新增数据权限表")
-    @SaCheckPermission("sysDataScope:add")
     @PostMapping
     public Result<Void> add(@RequestBody SysDataScope sysDataScope){
         return Result.result(sysDataScopeService.add(sysDataScope));
     }
 
     @AdminLog("编辑数据权限表")
-    @SaCheckPermission("sysDataScope:edit")
     @PutMapping
     public Result<Void> edit(@RequestBody SysDataScope sysDataScope){
         return Result.result(sysDataScopeService.edit(sysDataScope));
     }
 
     @AdminLog("删除数据权限表")
-    @SaCheckPermission("sysDataScope:del")
     @DeleteMapping
     public Result<Void> del(@RequestParam Long id){
         return Result.result(sysDataScopeService.del(id));
     }
 
     @AdminLog("批量删除数据权限表")
-    @SaCheckPermission("sysDataScope:del")
     @DeleteMapping("/dels")
     public Result<Void> dels(@RequestBody List<Long> ids){
         return Result.result(sysDataScopeService.dels(ids));

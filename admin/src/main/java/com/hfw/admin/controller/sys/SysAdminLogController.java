@@ -1,6 +1,5 @@
 package com.hfw.admin.controller.sys;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
 import com.hfw.model.mybatis.Where;
@@ -24,7 +23,6 @@ public class SysAdminLogController {
     @Autowired
     private CommonService commonService;
 
-    @SaCheckPermission("sysAdminLog:page")
     @GetMapping("/page")
     public PageResult<SysAdminLog> page(Page<SysAdminLog> page, SysAdminLog po) {
         Where<SysAdminLog> where = Where.<SysAdminLog>where()

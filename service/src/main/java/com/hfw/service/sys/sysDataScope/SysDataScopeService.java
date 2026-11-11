@@ -5,7 +5,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.hfw.model.enums.sys.DataScope;
 import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.mybatis.Where;
-import com.hfw.model.mybatis.typehandler.DBList;
 import com.hfw.model.po.sys.SysDataScope;
 import com.hfw.model.po.sys.SysOrganization;
 import com.hfw.service.dto.LoginUser;
@@ -95,8 +94,8 @@ public class SysDataScopeService {
             if (DataScope.OrganizationAndChildren==dataScope.getDataScope() && sysOrg!=null){
                 List<SysOrganization> orgTree = sysOrganizationMapper.orgTreeList(sysOrg.getAncestors(), EnableState.Enable);
                 orgTree.add(sysOrg);
-                List<String> list = orgTree.stream().map(item->String.valueOf(item.getId())).toList();
-                dataScope.setCustomIds(new DBList(list));
+                List<Long> list = orgTree.stream().map(SysOrganization::getId).toList();
+                dataScope.setCustomIds(list);
             }
         }
         loginUser.setDataScopeKey(dataScopeKey);

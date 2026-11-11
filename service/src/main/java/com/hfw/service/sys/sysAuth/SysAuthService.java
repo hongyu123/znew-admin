@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * 系统权限服务
@@ -22,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class SysAuthService {
-    private final Cache<Long, List<String>> cache = Caffeine.newBuilder().maximumSize(10240).expireAfterWrite(24, TimeUnit.HOURS).build();
+    private final Cache<Long, Set<String>> cache = Caffeine.newBuilder().maximumSize(10240).expireAfterWrite(24, TimeUnit.HOURS).build();
     @Autowired
     private SysAuthMapper sysAuthMapper;
 
@@ -55,13 +57,13 @@ public class SysAuthService {
      * @param userId 用户id
      * @return 权限编码列表
      */
-    public List<String> userAuths(Long userId){
+    public Set<String> userAuths(Long userId){
         if(userId==1L){
-            return List.of("*");
+            return Set.of("*");
         }
         return cache.get(userId, key -> {
             List<SysAuth> authList = sysAuthMapper.userAuths(userId, 0, "", 0);
-            return authList.stream().map(SysAuth::getCode).toList();
+            return authList.stream().map(SysAuth::getCode).collect(Collectors.toSet());
         });
     }
     public void clearCache(){

@@ -37,7 +37,7 @@ public class SysDemo {
     private Integer state;
 
     /** 兴趣(多选框) */
-    private com.hfw.model.mybatis.typehandler.DBMap interest;
+    //private com.hfw.model.mybatis.typehandler.DBMap interest;
 
     /** 生日(日期) */
     private java.time.LocalDate birth;

@@ -51,25 +51,12 @@
                 <artifactId>pagehelper</artifactId>
                 <version>6.1.1</version>
             </dependency>
-            <!-- Sa-Token 权限认证，在线文档：https://sa-token.cc -->
-            <dependency>
-                <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-spring-boot3-starter</artifactId>
-                <version>1.44.0</version>
-            </dependency>
 
+            <!-- https://fesod.apache.org/zh-cn/docs/ -->
             <dependency>
-                <groupId>com.alibaba.fastjson2</groupId>
-                <artifactId>fastjson2</artifactId>
-                <version>2.0.56</version>
-            </dependency>
-
-            <!-- 文档地址:https://github.com/fast-excel/fastexcel/-->
-            <!-- https://readmex.com/fast-excel/fastexcel -->
-            <dependency>
-                <groupId>cn.idev.excel</groupId>
-                <artifactId>fastexcel</artifactId>
-                <version>1.2.0</version>
+                <groupId>org.apache.fesod</groupId>
+                <artifactId>fesod-sheet</artifactId>
+                <version>2.1.0-incubating</version>
             </dependency>
 
             <dependency>

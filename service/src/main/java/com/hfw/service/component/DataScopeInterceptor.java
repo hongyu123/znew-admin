@@ -1,6 +1,5 @@
 package com.hfw.service.component;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.hfw.model.enums.sys.DataScope;
 import com.hfw.model.po.sys.SysDataScope;
 import com.hfw.service.dto.LoginUser;
@@ -41,10 +40,6 @@ public class DataScopeInterceptor implements Interceptor {
     private final static Set<String> tables = Set.of("sys_demo");
 
     private String dataScopeExpression(){
-        boolean login = StpUtil.isLogin();
-        if(!login){
-            return null;
-        }
         LoginUser loginUser = LoginUser.getLoginUser();
         if(loginUser==null || loginUser.getId()==1 || !StringUtils.hasText(loginUser.getDataScopeKey())){
             return null;

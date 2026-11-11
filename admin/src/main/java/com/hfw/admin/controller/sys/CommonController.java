@@ -3,7 +3,7 @@ package com.hfw.admin.controller.sys;
 import com.hfw.admin.utils.ResultUtil;
 import com.hfw.model.enums.sys.BaseEnum;
 import com.hfw.model.jackson.Result;
-import com.hfw.model.utils.ChainMap;
+import com.hfw.model.utils.JsonMap;
 import com.hfw.service.component.EnumScan;
 import com.hfw.service.sys.sysUpload.SysUploadService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +32,8 @@ public class CommonController {
     private SysUploadService sysUploadService;
 
     //获取枚举
-    private List<ChainMap<String>> getEnums(Class<?> clazz, String filter){
-        List<ChainMap<String>> list = new ArrayList<>();
+    private List<JsonMap> getEnums(Class<?> clazz, String filter){
+        List<JsonMap> list = new ArrayList<>();
         try {
             Method method = clazz.getMethod("values");
             Object arr = method.invoke(null);
@@ -44,10 +44,10 @@ public class CommonController {
                         continue;
                     }
                     if(obj instanceof BaseEnum e){
-                        ChainMap<String> map = ChainMap.<String>create().putVal("value", e.toString()).putVal("label", e.getDesc());
+                        JsonMap map = JsonMap.create().putVal("value", e.toString()).putVal("label", e.getDesc());
                         list.add(map);
                     }else{
-                        ChainMap<String> map = ChainMap.<String>create().putVal("value", obj.toString()).putVal("label", obj.toString());
+                        JsonMap map = JsonMap.create().putVal("value", obj.toString()).putVal("label", obj.toString());
                         list.add(map);
                     }
                 }
@@ -60,7 +60,7 @@ public class CommonController {
     }
 
     @GetMapping("/enums")
-    public Result<List<ChainMap<String>>> enums(@RequestParam String code, @RequestParam(defaultValue = "") String filter, String type){
+    public Result<List<JsonMap>> enums(@RequestParam String code, @RequestParam(defaultValue = "") String filter, String type){
         Class<?> clazz = null;
         if(type!=null){
             String className  = "com.hfw.model.enums."+type+"."+code;

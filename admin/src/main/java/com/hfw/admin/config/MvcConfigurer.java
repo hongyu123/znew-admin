@@ -1,11 +1,11 @@
 package com.hfw.admin.config;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hfw.model.jackson.ObjectMapperBuilder;
+import com.hfw.model.jackson.ObjectMapperUtil;
 import com.hfw.model.mvc.LocalDateConverter;
 import com.hfw.model.mvc.LocalDateTimeConverter;
-import com.hfw.service.satoken.CorsIgnoreSaInterceptor;
+import com.hfw.service.auth.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +19,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MvcConfigurer implements WebMvcConfigurer {
     @Value("${upload.storage-path}")
     private String storagePath;
+    @Autowired
+    private AuthService authService;
 
     //静态资源路径映射
     @Override
@@ -36,7 +38,7 @@ public class MvcConfigurer implements WebMvcConfigurer {
     //jackson返回配置
     @Bean
     public ObjectMapper objectMapper(){
-        return ObjectMapperBuilder.buildSingleton();
+        return ObjectMapperUtil.singleton();
     }
 
     //跨域处理
@@ -52,8 +54,8 @@ public class MvcConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // Sa-Token 登录拦截
-        registry.addInterceptor(new CorsIgnoreSaInterceptor(handle -> StpUtil.checkLogin()))
+        // Token 登录拦截
+        registry.addInterceptor(new AuthInterceptor(authService))
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login","/test","/upload/**");
         // Sa-Token 注解权限认证拦截

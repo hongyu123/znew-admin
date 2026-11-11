@@ -1,6 +1,6 @@
 package com.hfw.admin.log;
 
-import com.alibaba.fastjson2.JSON;
+import com.hfw.model.jackson.ObjectMapperUtil;
 import com.hfw.model.po.sys.SysAdminLog;
 import com.hfw.model.utils.StrUtil;
 import com.hfw.service.dto.LoginUser;
@@ -62,12 +62,12 @@ public class AdminLogAspect {
                 }
                 argList.add(arg);
             }
-            log.setRequestBody( StrUtil.limitLength(JSON.toJSONString(argList),2000) );
+            log.setRequestBody( StrUtil.limitLength(ObjectMapperUtil.singleton().writeValueAsString(argList),2000) );
             //2.执⾏切⼊点⽅法
             returnValue = point.proceed(args);
             //后置通知
             //System.out.println("后置通知");
-            log.setResponse( StrUtil.limitLength(JSON.toJSONString(returnValue),2000) );
+            log.setResponse( StrUtil.limitLength(ObjectMapperUtil.singleton().writeValueAsString(returnValue),2000) );
             log.setTimes(System.currentTimeMillis()-start);
             sysAdminLogService.add(log);
             return returnValue;

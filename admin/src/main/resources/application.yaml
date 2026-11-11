@@ -21,7 +21,7 @@ spring:
       connection-timeout: 30000  # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒
       connection-test-query: select 1 #连接测试查询语句，用于验证连接是否有效
       validation-timeout: 30000 #验证连接有效性的超时时间，单位为毫秒,默认值 5000 毫秒（5 秒）
-      pool-name: mysql-pool # 连接池名字，用于日志和监控
+      pool-name: ds-pool # 连接池名字，用于日志和监控
   data:
     redis:
       lettuce:
@@ -35,12 +35,10 @@ spring:
 
 mybatis:
   mapper-locations: classpath*:com/hfw/service/**/*Mapper.xml
-
-
   type-handlers-package: com.hfw.model.mybatis.typehandler
   configuration:
     map-underscore-to-camel-case: true #字段下划线映射驼峰命名
-    default-enum-type-handler:  com.hfw.model.mybatis.EnumCodeTypeHandler #枚举处理
+    default-enum-type-handler: com.hfw.model.mybatis.EnumCodeTypeHandler #枚举处理
     databaseId: PGSQL
 
 upload:
