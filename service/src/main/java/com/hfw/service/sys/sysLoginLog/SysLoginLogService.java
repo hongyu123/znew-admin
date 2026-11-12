@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class SysLoginLogService {
@@ -24,13 +23,12 @@ public class SysLoginLogService {
 
     public int loginError(String account, String message, HttpServletRequest request){
         String ip = RequestUtil.getIpAddr(request);
-        Map<String, String> browser = RequestUtil.getSystemBrowserInfo(request);
+        String userAgent = StrUtil.limitLength(request.getHeader("User-Agent"), 250);
         SysLoginLog log = new SysLoginLog();
         log.setAccount(account);
         log.setIp(ip);
         log.setLocation("127.0.0.1".equals(ip) ?"" :OpenIP.baidu(ip));
-        log.setBrowser(browser.get("browser"));
-        log.setOs(browser.get("system"));
+        log.setUserAgent(userAgent);
         log.setMessage( StrUtil.limitLength(message,255) );
         log.setLoginTime(LocalDateTime.now());
         log.setState(0);
@@ -40,14 +38,13 @@ public class SysLoginLogService {
     }
     public int login(LoginUser loginUser, Token token, HttpServletRequest request){
         String ip = RequestUtil.getIpAddr(request);
-        Map<String, String> browser = RequestUtil.getSystemBrowserInfo(request);
+        String userAgent = StrUtil.limitLength(request.getHeader("User-Agent"), 250);
         SysLoginLog log = new SysLoginLog();
         log.setUserId(loginUser.getId());
         log.setAccount(loginUser.getAccount());
         log.setIp(ip);
         log.setLocation("127.0.0.1".equals(ip) ?"" :OpenIP.baidu(ip));
-        log.setBrowser(browser.get("browser"));
-        log.setOs(browser.get("system"));
+        log.setUserAgent(userAgent);
         log.setMessage("登录成功");
         log.setLoginTime(LocalDateTime.now());
         log.setState(1);

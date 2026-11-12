@@ -3,6 +3,7 @@ package com.hfw.model.mybatis;
 import com.hfw.model.entity.Page;
 import com.hfw.model.mybatis.anno.Sort;
 import com.hfw.model.mybatis.anno.UpdateStrategy;
+import com.hfw.model.utils.StrUtil;
 import lombok.Getter;
 
 import java.util.*;
@@ -120,6 +121,21 @@ public class Where<T> {
     public boolean orderBy(Page<T> page){
         boolean sort = page.sort();
         if(sort){
+            orderBy(Order.by(new Column<>() {
+                @Override
+                public String columnName() {
+                    return page.getSortByField();
+                }
+            }, page.getSortByWay()));
+        }
+        return sort;
+    }
+    public boolean orderBy(Page<T> page, boolean hump){
+        boolean sort = page.sort();
+        if(sort){
+            if(hump){
+                page.setSortByField(StrUtil.humpToLine(page.getSortByField()));
+            }
             orderBy(Order.by(new Column<>() {
                 @Override
                 public String columnName() {

@@ -3,8 +3,7 @@
 ### JDK 17
 ### PostgreSQL 15
 ### 数据库访问: [mybatis](https://mybatis.org/)
-### 权限认证: [sa-token](https://sa-token.cc/)
-### 前端框架选择: [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin)
+### 前端框架选择: [Geeker-Admin](https://gitee.com/HalseySpicy/Geeker-Admin/)
 ### 接口测试: 采用 [Apifox](https://www.apifox.cn/help/ide-plugin/idea-plugin/quickstart/installation/) + 规范注释 + IDEA插件
 
 **在此特别感谢大佬们!!!**

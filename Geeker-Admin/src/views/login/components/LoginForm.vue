@@ -31,7 +31,6 @@
 import { CircleClose, UserFilled } from "@element-plus/icons-vue";
 import type { ElForm } from "element-plus";
 import { ElNotification } from "element-plus";
-import md5 from "md5";
 import { onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -70,8 +69,8 @@ const login = (formEl: FormInstance | undefined) => {
     loading.value = true;
     try {
       // 1.执行登录接口
-      const { data } = await loginApi({ ...loginForm, password: md5(loginForm.password) });
-      userStore.setToken(data.access_token);
+      const { data } = await loginApi({ ...loginForm });
+      userStore.setToken(data.accessToken);
 
       // 2.添加动态路由
       await initDynamicRouter();
@@ -88,13 +87,13 @@ const login = (formEl: FormInstance | undefined) => {
       //   type: "success",
       //   duration: 3000
       // });
-      ElNotification({
-        title: "React 付费版本 🔥🔥🔥",
-        dangerouslyUseHTMLString: true,
-        message: "预览地址：<a href='https://pro.spicyboy.cn'>https://pro.spicyboy.cn</a>",
-        type: "success",
-        duration: 8000
-      });
+      // ElNotification({
+      //   title: "React 付费版本 🔥🔥🔥",
+      //   dangerouslyUseHTMLString: true,
+      //   message: "预览地址：<a href='https://pro.spicyboy.cn'>https://pro.spicyboy.cn</a>",
+      //   type: "success",
+      //   duration: 8000
+      // });
     } finally {
       loading.value = false;
     }

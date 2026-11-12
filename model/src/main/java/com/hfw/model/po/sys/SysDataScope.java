@@ -4,10 +4,9 @@ import com.hfw.model.enums.sys.DataScope;
 import com.hfw.model.mybatis.Column;
 import com.hfw.model.mybatis.anno.Table;
 import com.hfw.model.mybatis.anno.TableId;
+import com.hfw.model.utils.JsonList;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 /**
  * 数据权限表
@@ -40,7 +39,7 @@ public class SysDataScope {
     }
 
     /** 自定义数据权限ids */
-    private List<Long> customIds;
+    private JsonList<Long> customIds;
 
 
     public enum COLUMN implements Column<SysDataScope>{

@@ -83,7 +83,7 @@ CREATE TABLE "public"."sys_data_scope" (
 "config_name" varchar(100),
 "data_key" varchar(100),
 "data_scope" int2 NOT NULL,
-"custom_ids" varchar(100),
+"custom_ids" custom_ids jsonb NULL,
 CONSTRAINT "sys_data_scope_pkey" PRIMARY KEY ("id"));
 
 -- public.sys_demo DDL
@@ -172,6 +172,8 @@ CREATE TABLE "public"."sys_login_log" (
 "logout_type" int2,
 "logout_time" timestamptz(6),
 "token" varchar(50),
+"user_id" int8 NULL,
+"expire_time" timestamptz(6) NULL,
 CONSTRAINT "sys_login_log_pkey" PRIMARY KEY ("id"));
 
 -- public.sys_organization DDL

@@ -104,7 +104,7 @@ public class SysAuthService {
         List<SysAuth> list = null;
         LoginUser loginUser = LoginUser.getLoginUser();
         if(loginUser.getId() == 1){
-            list = sysAuthMapper.selectList(Where.<SysAuth>where().eq(SysAuth.COLUMN.state, EnableState.Enable).in(SysAuth.COLUMN.authType, SysAuthEnum.Dir,SysAuthEnum.Menu));
+            list = sysAuthMapper.selectList(Where.<SysAuth>where().eq(SysAuth.COLUMN.state, EnableState.Enable).in(SysAuth.COLUMN.authType, SysAuthEnum.Dir,SysAuthEnum.Menu).orderBy(SysAuth.COLUMN.sort));
         }else{
             list = sysAuthMapper.userAuths(loginUser.getId(),0, "", 1);
         }

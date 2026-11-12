@@ -40,6 +40,7 @@
       :border="border"
       :row-key="rowKey"
       @selection-change="selectionChange"
+      @sort-change="sortChange"
     >
       <!-- 默认插槽 -->
       <slot />
@@ -144,7 +145,7 @@ const props = withDefaults(defineProps<ProTableProps>(), {
   border: true,
   toolButton: true,
   rowKey: "id",
-  searchCol: () => ({ xs: 1, sm: 2, md: 2, lg: 3, xl: 4 })
+  searchCol: () => ({ xs: 1, sm: 2, md: 3, lg: 4, xl: 5 })
 });
 
 // table 实例
@@ -302,6 +303,16 @@ const dragSort = () => {
       emit("dragSort", { newIndex, oldIndex });
     }
   });
+};
+
+const sortChange = (data, prop, order) => {
+  const column = data.column;
+  searchParam.value["sortByField"] = data.prop;
+  if (typeof column.sortable === "string") {
+    searchParam.value["sortByField"] = column.sortable;
+  }
+  searchParam.value["sortByWay"] = "ascending" === data.order ? "ASC" : "DESC";
+  _search();
 };
 
 // 暴露给父组件的参数和方法 (外部需要什么，都可以从这里暴露出去)

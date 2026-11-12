@@ -30,10 +30,7 @@ public class SysLoginLog {
     private String location;
 
     /** 浏览器类型 */
-    private String browser;
-
-    /** 操作系统 */
-    private String os;
+    private String userAgent;
 
     /** 提示消息 */
     private String message;
@@ -64,7 +61,7 @@ public class SysLoginLog {
 
     public enum COLUMN implements Column<SysLoginLog>{
         id,
-        account,ip,location,browser,os, message,loginTime,state,onlineFlag,logoutType,
+        account,ip,location,userAgent, message,loginTime,state,onlineFlag,logoutType,
         logoutTime,token, userId,expireTime
     }
 }

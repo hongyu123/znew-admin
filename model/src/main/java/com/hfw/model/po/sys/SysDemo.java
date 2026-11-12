@@ -1,12 +1,12 @@
 package com.hfw.model.po.sys;
 
-import com.hfw.model.entity.UploadFile;
 import com.hfw.model.enums.sys.Gender;
 import com.hfw.model.excel.IEnumConverter;
 import com.hfw.model.mybatis.Column;
 import com.hfw.model.mybatis.anno.LogicDelete;
 import com.hfw.model.mybatis.anno.Table;
 import com.hfw.model.mybatis.anno.TableId;
+import com.hfw.model.utils.JsonList;
 import com.hfw.model.validation.ValidGroup;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +16,6 @@ import org.apache.fesod.sheet.annotation.ExcelIgnore;
 import org.apache.fesod.sheet.annotation.ExcelProperty;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,7 +59,7 @@ public class SysDemo {
 
     /** 兴趣(多选框) */
     @ExcelProperty("兴趣")
-    private List<String> interest;
+    private JsonList<String> interest;
 
     /** 生日(日期) */
     @ExcelProperty("生日")
@@ -83,11 +82,11 @@ public class SysDemo {
 
     /** 照片(多图上传) */
     @ExcelProperty("照片")
-    private List<Map<String,Object>> photos;
+    private JsonList<Map<String,Object>> photos;
 
     /** 附件(文件上传) */
     @ExcelProperty("附件")
-    private List<Map<String,Object>> attachment;
+    private JsonList<Map<String,Object>> attachment;
 
     /** 简介(文本域) */
     @ExcelProperty("简介")

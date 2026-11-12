@@ -2,9 +2,11 @@
  * @description：请求配置
  */
 export enum ResultEnum {
-  SUCCESS = 200,
-  ERROR = 500,
-  OVERDUE = 401,
+  // 后端 Result 约定：code=1 成功、code=0 失败
+  SUCCESS = 1,
+  ERROR = 0,
+  // 登录失效（后端 ErrorCode.NO_LOGIN）
+  OVERDUE = 100,
   TIMEOUT = 30000,
   TYPE = "success"
 }

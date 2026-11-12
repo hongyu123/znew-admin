@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 import { ResultData } from "@/api/interface";
 import { showFullScreenLoading, tryHideFullScreenLoading } from "@/components/Loading/fullScreen";
@@ -22,7 +22,22 @@ const config = {
   // 设置超时时间
   timeout: ResultEnum.TIMEOUT as number,
   // 跨域时候允许携带凭证
-  withCredentials: true
+  withCredentials: true,
+  paramsSerializer: function (params) {
+    return Object.keys(params)
+      .filter(key => {
+        const value = params[key];
+        return value !== null && value !== "" && typeof value !== "undefined";
+      })
+      .map(key => {
+        if (Array.isArray(params[key])) {
+          return encodeURI(key) + "=" + params[key].join(",");
+        }
+        return encodeURI(key) + "=" + encodeURI(params[key]);
+      })
+      .join("&");
+    //return qs.stringify(params, { encode: true });
+  }
 };
 
 const axiosCanceler = new AxiosCanceler();
@@ -48,7 +63,7 @@ class RequestHttp {
         config.loading ??= true;
         if (config.loading) showFullScreenLoading();
         if (config.headers && typeof config.headers.set === "function") {
-          config.headers.set("x-access-token", userStore.token);
+          config.headers.set("token", userStore.token);
         }
         return config;
       },
@@ -72,12 +87,16 @@ class RequestHttp {
         if (data.code == ResultEnum.OVERDUE) {
           userStore.setToken("");
           router.replace(LOGIN_URL);
-          ElMessage.error(data.msg);
+          ElMessage.error(data.message);
           return Promise.reject(data);
         }
         // 全局错误信息拦截（防止下载文件的时候返回数据流，没有 code 直接报错）
-        if (data.code && data.code !== ResultEnum.SUCCESS) {
-          ElMessage.error(data.msg);
+        if (data.code !== undefined && data.code !== ResultEnum.SUCCESS) {
+          ElMessageBox.alert(data.message, "系统错误", {
+            confirmButtonText: "确定",
+            type: "error"
+          });
+          //ElMessage.error(data.message);
           return Promise.reject(data);
         }
         // 成功请求（在页面上除非特殊情况，否则不用处理失败逻辑）

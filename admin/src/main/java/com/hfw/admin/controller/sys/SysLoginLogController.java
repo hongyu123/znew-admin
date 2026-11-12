@@ -45,17 +45,19 @@ public class SysLoginLogController {
                 .ge(StringUtils.hasText(params.get("loginTime_gt")), SysLoginLog.COLUMN.loginTime, params.get("loginTime_gt"))
                 .le(StringUtils.hasText(params.get("loginTime_lt")), SysLoginLog.COLUMN.loginTime, params.get("loginTime_lt"))
                 .eq(po.getLogoutType() != null, SysLoginLog.COLUMN.logoutType, po.getLogoutType());
-        if(!where.orderBy(page)){
+        if(!where.orderBy(page, true)){
             where.orderBy(SysLoginLog.COLUMN.id, Sort.DESC);
         }
         PageResult<SysLoginLog> pageResult = commonService.page(SysLoginLog.class, where, page);
         LocalDateTime ago = LocalDateTime.now().plusHours(-1);
-        pageResult.getData().forEach(log->{
-            if(log.getOnlineFlag()==1 && log.getLoginTime().isBefore(ago)){
-                //登录失效
-                sysLoginLogService.logout(log.getId(), LogoutType.Expire);
-            }
-        });
+        if(pageResult.getData()!=null){
+            pageResult.getData().forEach(log->{
+                if(log.getOnlineFlag()==1 && log.getLoginTime().isBefore(ago)){
+                    //登录失效
+                    sysLoginLogService.logout(log.getId(), LogoutType.Expire);
+                }
+            });
+        }
         return pageResult;
     }
 

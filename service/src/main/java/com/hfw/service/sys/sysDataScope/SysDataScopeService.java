@@ -7,6 +7,7 @@ import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.mybatis.Where;
 import com.hfw.model.po.sys.SysDataScope;
 import com.hfw.model.po.sys.SysOrganization;
+import com.hfw.model.utils.JsonList;
 import com.hfw.service.dto.LoginUser;
 import com.hfw.service.sys.sysOrganization.SysOrganizationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +96,7 @@ public class SysDataScopeService {
                 List<SysOrganization> orgTree = sysOrganizationMapper.orgTreeList(sysOrg.getAncestors(), EnableState.Enable);
                 orgTree.add(sysOrg);
                 List<Long> list = orgTree.stream().map(SysOrganization::getId).toList();
-                dataScope.setCustomIds(list);
+                dataScope.setCustomIds(new JsonList<>(list));
             }
         }
         loginUser.setDataScopeKey(dataScopeKey);
