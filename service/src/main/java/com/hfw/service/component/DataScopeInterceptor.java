@@ -47,7 +47,10 @@ public class DataScopeInterceptor implements Interceptor {
         SysDataScopeService sysDataScopeService = AppHolder.getApplicationContext().getBean(SysDataScopeService.class);
         SysDataScope sysDataScope = sysDataScopeService.recentDataScopeByCache(loginUser.getDataScopeKey(), loginUser.getId(), loginUser.getOrgId());
         if(sysDataScope==null || sysDataScope.getId()==0){
-            return null;
+            // 无配置的话默认当前用户数据权限
+            return "user_id="+loginUser.getId();
+            // 无配置的话默认全部数据权限
+            //return null;
         }
         if(DataScope.User==sysDataScope.getDataScope()){
             return "user_id="+loginUser.getId();

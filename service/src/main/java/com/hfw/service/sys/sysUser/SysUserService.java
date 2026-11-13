@@ -53,6 +53,7 @@ public class SysUserService {
 
     public PageResult<SysUser> page(Page<SysUser> page, SysUser po) {
         page.startPage();
+        page.paramToLong("withoutRoleId");
         List<SysUser> list = sysUserMapper.page(page, po);
         return PageResult.of(list);
     }

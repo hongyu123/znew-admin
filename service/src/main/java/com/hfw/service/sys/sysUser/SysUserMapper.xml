@@ -62,8 +62,8 @@
             <if test="page.params.createTime_gt!=null and page.params.createTime_gt!=''">
                 and create_time &gt;= #{page.params.createTime_gt}
             </if>
-            <if test="page.params.hasNoRoleId!=null and page.params.hasNoRoleId!=''">
-                and id not in(select user_id from sys_user_role where role_id=#{page.params.hasNoRoleId})
+            <if test="page.params.withoutRoleId!=null and page.params.withoutRoleId!=''">
+                and id not in(select user_id from sys_user_role where role_id=#{page.params.withoutRoleId})
             </if>
         </where>
         <if test="page.sortByField!=null and page.sortByWay!=null">

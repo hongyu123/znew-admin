@@ -55,5 +55,5 @@ pnpm lint:eslint  # ESLint 修复;另有 lint:prettier / lint:stylelint
 
 - 提交信息受 husky + commitlint(conventional 规范)约束。
 - axios POST不使用请求参数params, 统一使用请求头 { "Content-Type": "application/x-www-form-urlencoded" }
-- vue非组件,业务页面统一使用js脚本, 页面和接口js文件放同一目录
+- vue非通用组件,业务组件,业务页面不使用ts语言,统一使用lang="js"或lang="jsx", 页面和接口js文件放同一目录
 - 枚举字段优先看src\enums\commonEnum.js, 其次使用src\api\modules\common.js的enums接口去后端请求, 最后都没有再自定义

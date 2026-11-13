@@ -26,6 +26,7 @@ public class SysRoleController {
 
     @GetMapping("/page")
     public PageResult<SysRole> page(Page<SysRole> page, SysRole po) {
+        page.orderByDefault();
         return sysRoleService.page(page, po);
     }
 

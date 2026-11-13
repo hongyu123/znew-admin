@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -61,4 +62,10 @@ public class SysDictionaryService {
         return res;
     }
 
+    public List<Map<String,Object>> dictList(String key){
+        return sysDictionaryMapper.dictList(key);
+    }
+    public List<Map<String,Object>> dptDictList(String key, Long deptId){
+        return sysDictionaryMapper.dptDictList(key, deptId);
+    }
 }

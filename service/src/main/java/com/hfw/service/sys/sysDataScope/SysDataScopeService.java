@@ -10,13 +10,12 @@ import com.hfw.model.po.sys.SysOrganization;
 import com.hfw.model.utils.JsonList;
 import com.hfw.service.dto.LoginUser;
 import com.hfw.service.sys.sysOrganization.SysOrganizationMapper;
+import com.hfw.service.sys.sysRole.SysRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * 数据权限表服务
@@ -30,6 +29,8 @@ public class SysDataScopeService {
     private SysDataScopeMapper sysDataScopeMapper;
     @Autowired
     public SysOrganizationMapper sysOrganizationMapper;
+    @Autowired
+    public SysRoleService sysRoleService;
 
     public SysDataScope detail(Long id){
         return sysDataScopeMapper.selectByPk(id);
@@ -55,9 +56,8 @@ public class SysDataScopeService {
         cache.invalidateAll();
     }
     public SysDataScope recentDataScopeByCache(String key, Long userId, Long orgId) {
-        SysDataScopeService service = this;
         return cache.get(userId + "_" + key, cacheKey -> {
-            SysDataScope dataScope = service.recentDataScope(key, userId, orgId);
+            SysDataScope dataScope = SysDataScopeService.this.recentDataScope(key, userId, orgId);
             if (dataScope == null) {
                 dataScope = new SysDataScope();
                 dataScope.setId(0L);
@@ -79,8 +79,17 @@ public class SysDataScopeService {
             sysOrg = sysOrganizationMapper.selectByPk(orgId);
         }
         List<SysDataScope> dataScopeList = sysDataScopeMapper.selectList(Where.<SysDataScope>where().eq(SysDataScope.COLUMN.dataKey,key));
-        Map<String, SysDataScope> dataScopeMap = dataScopeList.stream().collect(Collectors.toMap(dataScope->dataScope.getConfigType()+"_"+dataScope.getConfigId(), dataScope->dataScope, (old, current) -> current));
+        Map<String, SysDataScope> dataScopeMap = new HashMap<>(dataScopeList.size());
+        Set<Long> roleDataScopeSet = new HashSet<>();
+        for (SysDataScope dataScope : dataScopeList){
+            dataScopeMap.put(dataScope.getConfigType()+"_"+dataScope.getConfigId(), dataScope);
+            if(dataScope.getConfigType()==3){
+                roleDataScopeSet.add(dataScope.getConfigId());
+            }
+        }
+        // 1. 优先获取用户数据权限
         SysDataScope dataScope = dataScopeMap.get("1_" + userId);
+        // 2. 向部门,父部门查找数据权限
         if(dataScope==null && sysOrg!=null){
             String ancestors = sysOrg.getAncestors();
             String[] ancestorArr = ancestors.split(",");
@@ -91,6 +100,15 @@ public class SysDataScopeService {
                 }
             }
         }
+        // 3. 最后查找角色拥有的数据权限
+        if(dataScope==null){
+            Set<Long> roleSet = sysRoleService.userRoleIds(userId);
+            roleDataScopeSet.retainAll(roleSet);
+            if(!roleDataScopeSet.isEmpty()){
+                dataScope = dataScopeMap.get("3_" + roleDataScopeSet.iterator().next());
+            }
+        }
+        // 当前部门及子部门 类型数据权限赋值具体部门权限数据
         if(dataScope!=null){
             if (DataScope.OrganizationAndChildren==dataScope.getDataScope() && sysOrg!=null){
                 List<SysOrganization> orgTree = sysOrganizationMapper.orgTreeList(sysOrg.getAncestors(), EnableState.Enable);

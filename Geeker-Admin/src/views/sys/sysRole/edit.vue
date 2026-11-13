@@ -10,10 +10,10 @@
       :hide-required-asterisk="drawerProps.isView"
     >
       <el-form-item label="角色名" prop="name">
-        <el-input v-model="row.name" maxlength="50" show-word-limit placeholder="请填写角色名" clearable></el-input>
+        <el-input v-model.trim="row.name" maxlength="50" show-word-limit placeholder="请填写角色名" clearable></el-input>
       </el-form-item>
       <el-form-item label="角色编码" prop="code">
-        <el-input v-model="row.code" maxlength="50" show-word-limit placeholder="请填写角色编码" clearable></el-input>
+        <el-input v-model.trim="row.code" maxlength="50" show-word-limit placeholder="请填写角色编码" clearable></el-input>
       </el-form-item>
       <el-form-item label="排序" prop="sort">
         <el-input-number v-model="row.sort" :min="1" placeholder="请填写排序" clearable></el-input-number>

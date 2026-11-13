@@ -114,6 +114,9 @@ public interface SingleMapper {
 }
 ```
 ## 注解&核心功能
+
+映射json类型字段使用 `JsonMap`/`JsonList`/`JsonNode` 类型
+
 @Table
 
 |   属性   |       说明       |
@@ -307,10 +310,11 @@ public class SqlFromItemVisitor extends FromItemVisitorAdapter<Void> {
 # 规范
 
 ## 后端规范
-- 后端接口强制要求使用`@AdminLog` `@SaCheckPermission`进行日志记录的操作权限校验
+- 后端接口使用`@AdminLog` 注解进行日志记录
 - `LoginUser.getLoginUser();` //获取当前登录用户
 - `LoginUser.enableDataScope("sys_demo");` //开启数据权限隔离,参数为数据权限配置的key
-- 后端允许使用 entity 和 dto(继承entity) 直接接口参数, 但是必须实现 saveFilter 和 updateFilter 进行不接收的字段过滤
+- GET方法查询时使用 `(Page<Entity> page, Entity po)` 接收查询参数, 非Entity字段均使用params[x]=xxx传入page.params中,使用page.getParam()或page.paramToXXX()获取或进行参数转换
+- 后端允许使用 entity 和 dto(继承entity) 直接接收参数, 考虑实现 saveFilter 和 updateFilter 进行不接收的字段过滤
 - POST复杂请求参数强制使用`@RequestBody`
 - 属性拷贝推荐用 org.springframework.cglib.beans.BeanCopier, 工具类`BeanCopierUtil`
 - excel导入导出: 使用easyexcel, 建议使用监听器`PageReadExceptListener` `ReadAllListener`(处理过数据格式转换异常), 参考SysDemoController

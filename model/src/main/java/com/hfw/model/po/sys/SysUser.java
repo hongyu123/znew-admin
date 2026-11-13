@@ -44,7 +44,7 @@ public class SysUser {
     private Long orgId;
 
     /** 手机号码 */
-    @Pattern(regexp = ValidUtil.phoneReg, message = "手机号码格式错误!")
+    @Pattern(regexp = ValidUtil.phoneReg_valid, message = "手机号码格式错误!")
     private String phone;
 
     /** 昵称 */
@@ -54,7 +54,7 @@ public class SysUser {
     private String avatar;
 
     /** 邮箱 */
-    @Pattern(regexp = ValidUtil.emailReg, message = "邮箱格式错误!")
+    @Pattern(regexp = ValidUtil.emailReg_valid, message = "邮箱格式错误!")
     private String email;
 
     /** 性别 */

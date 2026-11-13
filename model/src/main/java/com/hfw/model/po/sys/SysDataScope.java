@@ -20,7 +20,7 @@ public class SysDataScope {
     @TableId
     private Long id;
 
-    /** 配置类型(1用户 2组织机构) */
+    /** 配置类型(1用户 2组织机构 3角色) */
     private Integer configType;
 
     /** 用户/机构id */

@@ -10,6 +10,7 @@ import { useUserStore } from "@/stores/modules/user";
 
 import { AxiosCanceler } from "./helper/axiosCancel";
 import { checkStatus } from "./helper/checkStatus";
+import qs from "qs";
 
 export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   loading?: boolean;
@@ -24,19 +25,7 @@ const config = {
   // 跨域时候允许携带凭证
   withCredentials: true,
   paramsSerializer: function (params) {
-    return Object.keys(params)
-      .filter(key => {
-        const value = params[key];
-        return value !== null && value !== "" && typeof value !== "undefined";
-      })
-      .map(key => {
-        if (Array.isArray(params[key])) {
-          return encodeURI(key) + "=" + params[key].join(",");
-        }
-        return encodeURI(key) + "=" + encodeURI(params[key]);
-      })
-      .join("&");
-    //return qs.stringify(params, { encode: true });
+    return qs.stringify(params, { encode: true });
   }
 };
 
@@ -130,7 +119,7 @@ class RequestHttp {
     return this.service.put(url, params, _object);
   }
   delete<T>(url: string, params?: any, _object = {}): Promise<ResultData<T>> {
-    return this.service.delete(url, { params, ..._object });
+    return this.service.delete(url, { data: params, ..._object });
   }
   download(url: string, params?: object, _object = {}): Promise<BlobPart> {
     return this.service.post(url, params, { ..._object, responseType: "blob" });

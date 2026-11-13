@@ -172,9 +172,9 @@ public class SysRoleService {
      * @param id 用户id
      * @return 角色ID列表
      */
-    public List<Long> userRoleIds(Long id){
+    public Set<Long> userRoleIds(Long id){
         List<SysRole> roleList = sysRoleMapper.userRoles(id,0, "");
-        return roleList.stream().map(SysRole::getId).toList();
+        return roleList.stream().map(SysRole::getId).collect(Collectors.toSet());
     }
 
     /**

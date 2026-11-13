@@ -34,7 +34,6 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 系统示例表控制器
@@ -51,15 +50,14 @@ public class SysDemoController {
     public PageResult<SysDemo> page(Page<SysDemo> page, SysDemo po) {
         LoginUser.enableDataScope("sys_demo");//开启数据权限
 
-        Map<String, String> params = page.getParams();
         Where<SysDemo> where = Where.<SysDemo>where()
                 .eq(StringUtils.hasText(po.getName()), SysDemo.COLUMN.name, po.getName())
                 .like(StringUtils.hasText(po.getPhone()), SysDemo.COLUMN.phone, po.getPhone())
                 .eq(po.getGender() != null, SysDemo.COLUMN.gender, po.getGender())
                 .eq(po.getState() != null, SysDemo.COLUMN.state, po.getState())
                 .eq(po.getBirth() != null, SysDemo.COLUMN.birth, po.getBirth())
-                .ge(StringUtils.hasText(params.get("registTime_gt")), SysDemo.COLUMN.birth, params.get("registTime_gt"))
-                .le(StringUtils.hasText(params.get("registTime_lt")), SysDemo.COLUMN.birth, params.get("registTime_lt"));
+                .ge(StringUtils.hasText(page.getParam("registTime_gt")), SysDemo.COLUMN.birth, page.getParam("registTime_gt"))
+                .le(StringUtils.hasText(page.getParam("registTime_lt")), SysDemo.COLUMN.birth, page.getParam("registTime_lt"));
         if(!where.orderBy(page)){
             where.orderBy(SysDemo.COLUMN.id, Sort.DESC);
         }
@@ -101,15 +99,14 @@ public class SysDemoController {
     }
 
     Where<SysDemo> whereCondition(Page<SysDemo> page, SysDemo po){
-        Map<String, String> params = page.getParams();
         Where<SysDemo> where = Where.<SysDemo>where()
                 .eq(StringUtils.hasText(po.getName()), SysDemo.COLUMN.name, po.getName())
                 .like(StringUtils.hasText(po.getPhone()), SysDemo.COLUMN.phone, po.getPhone())
                 .eq(po.getGender() != null, SysDemo.COLUMN.gender, po.getGender())
                 .eq(po.getState() != null, SysDemo.COLUMN.state, po.getState())
                 .eq(po.getBirth() != null, SysDemo.COLUMN.birth, po.getBirth())
-                .ge(StringUtils.hasText(params.get("registTime_gt")), SysDemo.COLUMN.birth, params.get("registTime_gt"))
-                .le(StringUtils.hasText(params.get("registTime_lt")), SysDemo.COLUMN.birth, params.get("registTime_lt"));
+                .ge(StringUtils.hasText(page.getParam("registTime_gt")), SysDemo.COLUMN.birth, page.getParam("registTime_gt"))
+                .le(StringUtils.hasText(page.getParam("registTime_lt")), SysDemo.COLUMN.birth, page.getParam("registTime_lt"));
         return where;
     }
     //实体类注解导出

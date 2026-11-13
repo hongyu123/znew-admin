@@ -18,7 +18,7 @@
   </div>
 </template>
 
-<script setup name="loginLog">
+<script setup name="SysLoginLog">
 import { reactive, ref } from "vue";
 import { SwitchButton } from "@element-plus/icons-vue";
 

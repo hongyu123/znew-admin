@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public class LimitedParamMap implements Map<String, String> {
-    private final LoadingCache<String, String> cache;
+public class LimitedParamMap implements Map<String, Object> {
+    private final LoadingCache<String, Object> cache;
     public LimitedParamMap(int maxSize) {
         cache = Caffeine.newBuilder()
                 .maximumSize(maxSize)
@@ -38,24 +38,24 @@ public class LimitedParamMap implements Map<String, String> {
     }
 
     @Override
-    public String get(Object key) {
+    public Object get(Object key) {
         return cache.getIfPresent(key.toString());
     }
 
     @Override
-    public String put(String key, String value) {
+    public Object put(String key, Object value) {
         cache.put(key,value);
         return null;
     }
 
     @Override
-    public String remove(Object key) {
+    public Object remove(Object key) {
         cache.invalidate(key.toString());
         return null;
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends String> m) {
+    public void putAll(Map<? extends String, ?> m) {
         cache.putAll(m);
     }
 
@@ -70,12 +70,12 @@ public class LimitedParamMap implements Map<String, String> {
     }
 
     @Override
-    public Collection<String> values() {
+    public Collection<Object> values() {
         return cache.asMap().values();
     }
 
     @Override
-    public Set<Entry<String, String>> entrySet() {
+    public Set<Entry<String, Object>> entrySet() {
         return cache.asMap().entrySet();
     }
 

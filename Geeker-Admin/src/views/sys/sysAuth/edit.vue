@@ -21,7 +21,7 @@
         />
       </el-form-item>
       <el-form-item label="标题" prop="title">
-        <el-input v-model="row.title" maxlength="50" show-word-limit clearable></el-input>
+        <el-input v-model.trim="row.title" maxlength="50" show-word-limit clearable></el-input>
       </el-form-item>
       <el-form-item label="名称" prop="name">
         <el-input v-model.trim="row.name" maxlength="50" show-word-limit clearable></el-input>

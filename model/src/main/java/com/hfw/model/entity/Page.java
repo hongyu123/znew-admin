@@ -58,6 +58,12 @@ public class Page<T> {
     public boolean sort(){
         return this.sortByWay!=null && StrUtil.hasText(this.sortByField);
     }
+    public void orderByDefault() {
+        if (!this.sort()) {
+            this.sortByField = "id";
+            this.sortByWay = Sort.DESC;
+        }
+    }
 
     private boolean count = true;
     public static <T> Page<T> of(int pageNumber, int pageSize){
@@ -80,12 +86,25 @@ public class Page<T> {
         return page;
     }
 
-    private Map<String,String> params = new LimitedParamMap(20);
-    public Map<String, String> getParams() {
+    private Map<String,Object> params = new LimitedParamMap(20);
+    public Map<String, Object> getParams() {
         return params;
     }
-    public void setParams(Map<String, String> params) {
+    public void setParams(Map<String, Object> params) {
         this.params = params;
+    }
+    public void paramToLong(String key){
+        Object obj = params.get(key);
+        if(obj instanceof String str && !str.isEmpty()){
+            params.put(key, Long.valueOf(str));
+        }
+    }
+    public String getParam(String key){
+        Object obj = params.get(key);
+        if(obj==null){
+            return null;
+        }
+        return obj.toString();
     }
 
 

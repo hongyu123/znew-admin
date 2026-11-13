@@ -72,9 +72,9 @@ const editFormRef = ref();
 const openEditForm = async (row, isView = false) => {
   if (row && row.id) {
     const { data } = await detail(row.id);
-    editFormRef.value.acceptParams(data, getTableList, isView);
+    editFormRef.value.acceptParams(data, proTable.value.getTableList, isView);
   } else {
-    editFormRef.value.acceptParams({ state: "Enable" }, getTableList, isView);
+    editFormRef.value.acceptParams({ state: "Enable" }, proTable.value.getTableList, isView);
   }
 };
 

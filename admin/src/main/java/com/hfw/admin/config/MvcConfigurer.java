@@ -5,6 +5,7 @@ import com.hfw.model.jackson.ObjectMapperUtil;
 import com.hfw.model.mvc.LocalDateConverter;
 import com.hfw.model.mvc.LocalDateTimeConverter;
 import com.hfw.service.auth.AuthService;
+import com.hfw.service.sys.sysAuth.SysAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,8 @@ public class MvcConfigurer implements WebMvcConfigurer {
     private String storagePath;
     @Autowired
     private AuthService authService;
+    @Autowired
+    private SysAuthService sysAuthService;
 
     //静态资源路径映射
     @Override
@@ -55,7 +58,7 @@ public class MvcConfigurer implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // Token 登录拦截
-        registry.addInterceptor(new AuthInterceptor(authService))
+        registry.addInterceptor(new AuthInterceptor(authService, sysAuthService))
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login","/test","/upload/**");
         // Sa-Token 注解权限认证拦截

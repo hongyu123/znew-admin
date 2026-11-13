@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 /**
  * 表单生成记录Controller
  * @author  farkle
@@ -29,11 +27,10 @@ public class SysGenTableController {
 
     @GetMapping("/page")
     public PageResult<SysGenTable> page(Page<SysGenTable> page, SysGenTable po) {
-        Map<String, String> params = page.getParams();
         Where<SysGenTable> where = Where.<SysGenTable>where()
                 .eq(po.getId() != null, SysGenTable.COLUMN.id, po.getId())
                 .eq(StringUtils.hasText(po.getTableName()), SysGenTable.COLUMN.tableName, po.getTableName())
-                .like(StringUtils.hasText(params.get("tableName_like")), SysGenTable.COLUMN.tableName, params.get("tableName_like") + "%")
+                .like(StringUtils.hasText(page.getParam("tableName_like")), SysGenTable.COLUMN.tableName, page.getParam("tableName_like") + "%")
                 .like(StringUtils.hasText(po.getTableRemark()), SysGenTable.COLUMN.tableRemark, po.getTableRemark() + "%");
         where.orderBy(page);
         return commonService.page(SysGenTable.class, where, page);

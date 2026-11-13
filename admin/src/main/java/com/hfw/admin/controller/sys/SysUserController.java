@@ -26,6 +26,7 @@ public class SysUserController {
 
     @GetMapping("/page")
     public PageResult<SysUser> page(Page<SysUser> page, SysUser po) {
+        //page.orderByDefault();
         return sysUserService.page(page, po);
     }
 

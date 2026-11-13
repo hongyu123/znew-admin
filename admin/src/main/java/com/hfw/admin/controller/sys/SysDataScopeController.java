@@ -5,7 +5,9 @@ import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.mybatis.Where;
+import com.hfw.model.mybatis.anno.Sort;
 import com.hfw.model.po.sys.SysDataScope;
+import com.hfw.model.po.sys.SysLoginLog;
 import com.hfw.service.component.CommonService;
 import com.hfw.service.sys.sysDataScope.SysDataScopeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class SysDataScopeController {
                 .eq(po.getConfigType() != null, SysDataScope.COLUMN.configType, po.getConfigType())
                 .like(StringUtils.hasText(po.getConfigName()), SysDataScope.COLUMN.configName, po.getConfigName() + "%")
                 .like(StringUtils.hasText(po.getDataKey()), SysDataScope.COLUMN.dataKey, po.getDataKey() + "%");
+        if(!where.orderBy(page)){
+            where.orderBy(SysDataScope.COLUMN.id, Sort.DESC);
+        }
         return commonService.page(SysDataScope.class, where, page);
     }
 

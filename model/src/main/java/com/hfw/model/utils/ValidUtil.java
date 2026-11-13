@@ -6,6 +6,9 @@ package com.hfw.model.utils;
  * @date 2022-04-06
  */
 public class ValidUtil {
+    public static final String phoneReg_valid = "^\\d{11}$|";
+    public static final String emailReg_valid = "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$|";
+
     public static final String phoneReg = "^\\d{11}$";
     public static final String emailReg = "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
     public static final String passwordReg = "^\\w{6,16}$";

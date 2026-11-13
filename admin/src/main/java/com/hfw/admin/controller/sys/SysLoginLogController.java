@@ -16,7 +16,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * 系统登录日志Controller
@@ -35,15 +34,14 @@ public class SysLoginLogController {
 
     @GetMapping("/page")
     public PageResult<SysLoginLog> page(Page<SysLoginLog> page, SysLoginLog po) {
-        Map<String, String> params = page.getParams();
         Where<SysLoginLog> where = Where.<SysLoginLog>where()
                 .eq(StringUtils.hasText(po.getAccount()), SysLoginLog.COLUMN.account, po.getAccount())
                 .like(StringUtils.hasText(po.getIp()), SysLoginLog.COLUMN.ip, po.getIp() + "%")
                 .like(StringUtils.hasText(po.getLocation()), SysLoginLog.COLUMN.location, "%" + po.getLocation() + "%")
                 .eq(po.getState() != null, SysLoginLog.COLUMN.state, po.getState())
                 .eq(po.getOnlineFlag() != null, SysLoginLog.COLUMN.onlineFlag, po.getOnlineFlag())
-                .ge(StringUtils.hasText(params.get("loginTime_gt")), SysLoginLog.COLUMN.loginTime, params.get("loginTime_gt"))
-                .le(StringUtils.hasText(params.get("loginTime_lt")), SysLoginLog.COLUMN.loginTime, params.get("loginTime_lt"))
+                .ge(StringUtils.hasText(page.getParam("loginTime_gt")), SysLoginLog.COLUMN.loginTime, page.getParam("loginTime_gt"))
+                .le(StringUtils.hasText(page.getParam("loginTime_lt")), SysLoginLog.COLUMN.loginTime, page.getParam("loginTime_lt"))
                 .eq(po.getLogoutType() != null, SysLoginLog.COLUMN.logoutType, po.getLogoutType());
         if(!where.orderBy(page, true)){
             where.orderBy(SysLoginLog.COLUMN.id, Sort.DESC);

@@ -94,7 +94,7 @@
     padding: 18px 18px 0;
     margin-bottom: 10px;
     .el-form {
-      .el-form-item__content > * {
+      .el-form-item__content > *:not(button) {
         width: 100%;
       }
 

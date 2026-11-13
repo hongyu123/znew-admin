@@ -6,11 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 public class SysUserDTO extends SysUser {
-    private List<Long> roleList;
+    private Set<Long> roleList;
 
     public SysUser toPo(){
         SysUser po = new SysUser();

@@ -5,6 +5,7 @@ import com.hfw.model.jackson.Result;
 import com.hfw.model.utils.StrUtil;
 import com.hfw.service.auth.AuthService;
 import com.hfw.service.dto.LoginUser;
+import com.hfw.service.sys.sysAuth.SysAuthService;
 import com.hfw.service.utils.RequestUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,8 +21,10 @@ public class AuthInterceptor implements HandlerInterceptor {
     private static final String token = "token";
 
     private final AuthService authService;
-    public AuthInterceptor(AuthService authService){
+    private final SysAuthService sysAuthService;
+    public AuthInterceptor(AuthService authService, SysAuthService sysAuthService){
         this.authService = authService;
+        this.sysAuthService = sysAuthService;
     }
 
     @Override
@@ -70,7 +73,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         if(loginUser.getId()<=1){
             return true;
         }
-        Set<String> permission = loginUser.getPermissions();
+        // 登录后更新用户权限数据
+        //Set<String> permission = loginUser.getPermissions();
+        // 实时获取用户权限数据
+        Set<String> permission = sysAuthService.userAuths(loginUser.getId());
         String uri = request.getRequestURI();
         String method = request.getMethod();
         String key = method+uri;

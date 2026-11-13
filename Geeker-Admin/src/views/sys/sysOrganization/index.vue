@@ -12,6 +12,9 @@
             <el-radio-button label="禁用" value="Disable"></el-radio-button>
           </el-radio-group>
         </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="Search" native-type="submit">查询</el-button>
+        </el-form-item>
       </el-form>
     </div>
     <!-- 表格内容 card -->
