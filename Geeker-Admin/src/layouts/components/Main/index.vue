@@ -10,9 +10,9 @@
       </transition>
     </router-view>
   </el-main>
-  <el-footer v-show="footer">
+  <!-- <el-footer v-show="footer">
     <Footer />
-  </el-footer>
+  </el-footer> -->
 </template>
 
 <script setup lang="ts">

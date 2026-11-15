@@ -100,12 +100,20 @@
     </slot>
   </div>
   <!-- 列设置 -->
-  <ColSetting v-if="toolButton" ref="colRef" v-model:col-setting="colSetting" />
+  <ColSetting
+    v-if="toolButton"
+    ref="colRef"
+    :col-setting="colSetting"
+    :show-footer="!!props.colSettingKey"
+    @save="saveColSetting"
+    @reset="resetColSetting"
+    @reorder="handleColReorder"
+  />
 </template>
 
 <script setup lang="ts" name="ProTable">
 import { Operation, Refresh, Search } from "@element-plus/icons-vue";
-import { ElTable } from "element-plus";
+import { ElMessage, ElTable } from "element-plus";
 import Sortable from "sortablejs";
 import { computed, onMounted, provide, reactive, ref, unref, watch } from "vue";
 
@@ -134,6 +142,7 @@ export interface ProTableProps {
   toolButton?: ("refresh" | "setting" | "search")[] | boolean; // 是否显示表格功能按钮 ==> 非必传（默认为true）
   rowKey?: string; // 行数据的 Key，用来优化 Table 的渲染，当表格数据多选时，所指定的 id ==> 非必传（默认为 id）
   searchCol?: number | Record<BreakPoint, number>; // 表格搜索项 每列占比配置 ==> 非必传 { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }
+  colSettingKey?: string; // 列设置持久化标识，为空时不显示保存/重置按钮，也不读写本地缓存 ==> 非必传
 }
 
 // 接受父组件参数，配置默认值
@@ -268,11 +277,93 @@ searchColumns.value?.forEach((column, index) => {
 
 // 列设置 ==> 需要过滤掉不需要设置的列
 const colRef = ref();
-const colSetting = tableColumns!.filter(item => {
-  const { type, prop, isSetting } = item;
-  return !columnTypes.includes(type!) && prop !== "operation" && isSetting;
-});
 const openColSetting = () => colRef.value.openColSetting();
+
+// 列设置持久化标识（未设置 colSettingKey 时不启用本地缓存）
+const colSettingStorageKey = computed(() => (props.colSettingKey ? `pro-table-col-setting:${props.colSettingKey}` : ""));
+
+// 当前列是否参与列设置
+const isConfigurableColumn = (column: ColumnProps) => {
+  const { type, prop, isSetting } = column;
+  return !columnTypes.includes(type!) && prop !== "operation" && unref(isSetting) !== false;
+};
+
+// 列设置列表（顺序跟随 tableColumns）
+const colSetting = computed(() => tableColumns.filter(isConfigurableColumn));
+
+// 记录初始列顺序与显示状态，用于重置
+const colSettingDefault = ref<{ prop: string; isShow: boolean }[]>(
+  colSetting.value.map(column => ({ prop: column.prop!, isShow: unref(column.isShow) !== false }))
+);
+
+// 将列设置应用到表格列（顺序 + 显示状态）
+const applyColSetting = (setting: { prop: string; isShow?: boolean }[]) => {
+  const orderMap = new Map(setting.map((item, index) => [item.prop, index]));
+  const showMap = new Map(setting.map(item => [item.prop, item.isShow]));
+  const settingColumns = tableColumns.filter(isConfigurableColumn);
+
+  // 恢复显示状态
+  settingColumns.forEach(column => {
+    if (showMap.has(column.prop!)) column.isShow = showMap.get(column.prop!) !== false;
+  });
+
+  // 按保存的顺序排序（新增列保持原有相对位置，并排在已保存列之后）
+  const sortedColumns = [...settingColumns].sort((a, b) => {
+    const aIndex = orderMap.get(a.prop!);
+    const bIndex = orderMap.get(b.prop!);
+    if (aIndex === undefined && bIndex === undefined) return 0;
+    if (aIndex === undefined) return 1;
+    if (bIndex === undefined) return -1;
+    return aIndex - bIndex;
+  });
+
+  // 将新顺序写回 tableColumns，特殊列（selection、index、operation 等）位置保持不变
+  let cursor = 0;
+  tableColumns.forEach((column, index) => {
+    if (isConfigurableColumn(column)) tableColumns[index] = sortedColumns[cursor++];
+  });
+};
+
+// 读取本地保存的列设置
+const loadColSetting = () => {
+  if (!colSettingStorageKey.value) return;
+  try {
+    const setting = JSON.parse(localStorage.getItem(colSettingStorageKey.value) || "null");
+    if (Array.isArray(setting)) applyColSetting(setting);
+  } catch (error) {
+    console.warn("读取列设置失败", error);
+  }
+};
+loadColSetting();
+
+// 保存列设置到 localStorage
+const saveColSetting = () => {
+  if (!colSettingStorageKey.value) return;
+  const setting = colSetting.value.map(column => ({ prop: column.prop!, isShow: unref(column.isShow) !== false }));
+  localStorage.setItem(colSettingStorageKey.value, JSON.stringify(setting));
+  ElMessage.success("列设置已保存");
+};
+
+// 重置列设置（恢复初始顺序与显示状态，并清除本地缓存）
+const resetColSetting = () => {
+  applyColSetting(colSettingDefault.value);
+  if (colSettingStorageKey.value) localStorage.removeItem(colSettingStorageKey.value);
+  ElMessage.success("列设置已重置");
+};
+
+// 拖拽列设置行，同步调整表格列顺序
+const handleColReorder = ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
+  const settingColumns = [...colSetting.value];
+  const [movedColumn] = settingColumns.splice(oldIndex, 1);
+  if (!movedColumn) return;
+  settingColumns.splice(newIndex, 0, movedColumn);
+
+  // 将可配置列的新顺序写回 tableColumns，特殊列位置保持不变
+  let cursor = 0;
+  tableColumns.forEach((column, index) => {
+    if (isConfigurableColumn(column)) tableColumns[index] = settingColumns[cursor++];
+  });
+};
 
 // 定义 emit 事件
 const emit = defineEmits<{

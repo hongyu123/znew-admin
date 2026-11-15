@@ -1,4 +1,4 @@
-import { http } from "@/utils/http";
+import http from "@/api";
 
 export const page = params => {
   return http.get("/${beanName}/page", params);

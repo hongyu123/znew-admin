@@ -1,6 +1,7 @@
 <template>
   <div class="upload-box">
     <el-upload
+      ref="uploadRef"
       v-model:file-list="_fileList"
       action="#"
       list-type="picture-card"
@@ -18,12 +19,12 @@
     >
       <div class="upload-empty">
         <slot name="empty">
-          <el-icon><Plus /></el-icon>
-          <!-- <span>请上传图片</span> -->
+          <el-icon><Picture /></el-icon>
+          <span>请上传图片</span>
         </slot>
       </div>
       <template #file="{ file }">
-        <img :src="file.url" class="upload-image" />
+        <img :src="file.url" class="upload-image" draggable="false" />
         <div class="upload-handle" @click.stop>
           <div class="handle-icon" @click="handlePictureCardPreview(file)">
             <el-icon><ZoomIn /></el-icon>
@@ -44,10 +45,10 @@
 </template>
 
 <script setup lang="ts" name="UploadImgs">
-import { Plus } from "@element-plus/icons-vue";
 import type { UploadFile, UploadProps, UploadRequestOptions, UploadUserFile } from "element-plus";
-import { ElNotification, formContextKey, formItemContextKey } from "element-plus";
-import { computed, inject, ref, watch } from "vue";
+import { ElNotification, ElUpload, formContextKey, formItemContextKey } from "element-plus";
+import Sortable from "sortablejs";
+import { computed, inject, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 import { uploadImg } from "@/api/modules/upload";
 
@@ -95,6 +96,62 @@ watch(
   }
 );
 
+const emit = defineEmits<{
+  "update:fileList": [value: UploadUserFile[]];
+}>();
+
+// 图片列表拖拽排序：鼠标按住图片即可拖动调整顺序
+const uploadRef = ref<InstanceType<typeof ElUpload>>();
+let sortable: Sortable | null = null;
+
+const initSortable = async () => {
+  if (sortable) return;
+  await nextTick();
+  // picture-card 模式下文件列表容器的类名（上传按钮也渲染在该容器内，需通过 draggable 限定可拖拽项）
+  const listEl = uploadRef.value?.$el?.querySelector(".el-upload-list--picture-card") as HTMLElement | null;
+  if (!listEl) return;
+  sortable = Sortable.create(listEl, {
+    animation: 300,
+    draggable: ".el-upload-list__item",
+    filter: ".handle-icon", // 查看/删除按钮区域不触发拖拽
+    preventOnFilter: false,
+    forceFallback: true, // 使用模拟拖拽，避免与图片原生拖拽行为冲突
+    fallbackTolerance: 5,
+    ghostClass: "upload-item-ghost",
+    disabled: self_disabled.value,
+    onEnd: evt => {
+      const { oldIndex, newIndex } = evt;
+      if (oldIndex === undefined || newIndex === undefined || oldIndex === newIndex) return;
+      // Sortable 已直接改动了 DOM，先还原成拖拽前的顺序，再由 Vue 按新数组顺序渲染
+      const items = Array.from(listEl.querySelectorAll(".el-upload-list__item")).filter(el => el !== evt.item);
+      const anchor = items[oldIndex];
+      if (anchor) listEl.insertBefore(evt.item, anchor);
+      else if (items.length) listEl.insertBefore(evt.item, items[items.length - 1].nextSibling);
+      // 按拖拽结果调整数组顺序
+      const list = [..._fileList.value];
+      const current = list.splice(oldIndex, 1)[0];
+      if (!current) return;
+      list.splice(newIndex, 0, current);
+      _fileList.value = list;
+      emit("update:fileList", _fileList.value);
+    }
+  });
+};
+
+// 禁用上传时同步禁止拖拽排序
+watch(self_disabled, val => {
+  sortable?.option("disabled", val);
+});
+
+onMounted(() => {
+  initSortable();
+});
+
+onBeforeUnmount(() => {
+  sortable?.destroy();
+  sortable = null;
+});
+
 /**
  * @description 文件上传之前判断
  * @param rawFile 选择的文件
@@ -140,12 +197,9 @@ const handleHttpUpload = async (options: UploadRequestOptions) => {
  * @param response 上传响应结果
  * @param uploadFile 上传的文件
  * */
-const emit = defineEmits<{
-  "update:fileList": [value: UploadUserFile[]];
-}>();
-const uploadSuccess = (response: { fileUrl: string } | undefined, uploadFile: UploadFile) => {
+const uploadSuccess = (response: { url: string } | undefined, uploadFile: UploadFile) => {
   if (!response) return;
-  uploadFile.url = response.fileUrl;
+  uploadFile.url = response.url;
   emit("update:fileList", _fileList.value);
   // 调用 el-form 内部的校验方法（可自动校验）
   if (formItemContext?.prop) {
@@ -223,6 +277,9 @@ const handlePictureCardPreview: UploadProps["onPreview"] = file => {
       border-color: var(--el-border-color-darker) !important;
     }
   }
+  .el-upload-list__item {
+    cursor: not-allowed;
+  }
 }
 .upload-box {
   .no-border {
@@ -256,6 +313,19 @@ const handlePictureCardPreview: UploadProps["onPreview"] = file => {
       background-color: transparent;
       border-radius: v-bind(borderRadius);
     }
+    .el-upload-list__item {
+      cursor: move;
+      user-select: none;
+      -webkit-user-drag: none; // 禁止图片浏览器原生拖拽，避免与拖拽排序冲突
+      &:hover {
+        .upload-handle {
+          opacity: 1;
+        }
+      }
+    }
+    .upload-item-ghost {
+      opacity: 0.4; // 拖拽时原位置的占位样式
+    }
     .upload-image {
       width: 100%;
       height: 100%;
@@ -271,7 +341,7 @@ const handlePictureCardPreview: UploadProps["onPreview"] = file => {
       justify-content: center;
       width: 100%;
       height: 100%;
-      cursor: pointer;
+      cursor: move;
       background: rgb(0 0 0 / 60%);
       opacity: 0;
       transition: var(--el-transition-duration-fast);
@@ -282,19 +352,13 @@ const handlePictureCardPreview: UploadProps["onPreview"] = file => {
         justify-content: center;
         padding: 0 6%;
         color: aliceblue;
+        cursor: pointer;
         .el-icon {
           margin-bottom: 15%;
           font-size: 140%;
         }
         span {
           font-size: 100%;
-        }
-      }
-    }
-    .el-upload-list__item {
-      &:hover {
-        .upload-handle {
-          opacity: 1;
         }
       }
     }

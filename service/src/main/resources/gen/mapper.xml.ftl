@@ -3,7 +3,7 @@
 
 <mapper namespace="${packageName}.service.${projectName}.${beanName}.${className}Mapper">
 
-    <select id="page" resultType="${packageName}.model.po.${projectName}.${className}">
+    <select id="list" resultType="${packageName}.model.po.${projectName}.${className}">
         select
             ${pk.columnName},
         <#list columnList as c>

@@ -11,16 +11,7 @@ import java.util.List;
 @Getter @Setter
 public class SysDemoDTO extends SysDemo {
     public List<UploadFile> photosList;
-    public List<UploadFile> getPhotosList(){
-        this.photosList = UploadFile.mapToFile(super.getPhotos());
-        return photosList;
-    }
-
     public List<UploadFile> attachmentList;
-    public List<UploadFile> getAttachmentList(){
-        this.attachmentList = UploadFile.mapToFile(super.getAttachment());
-        return attachmentList;
-    }
 
     public SysDemo toPo(){
         SysDemo po = new SysDemo();
@@ -33,6 +24,8 @@ public class SysDemoDTO extends SysDemo {
     public static SysDemoDTO fromPo(SysDemo po){
         SysDemoDTO dto = new SysDemoDTO();
         BeanCopierUtil.copyProperties(po, dto);
+        dto.photosList = UploadFile.mapToFile(po.getPhotos());
+        dto.attachmentList = UploadFile.mapToFile(po.getAttachment());
         return dto;
     }
 

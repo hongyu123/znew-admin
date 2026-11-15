@@ -8,7 +8,7 @@ import { Upload } from "@/api/interface/index";
  * @returns Promise<Upload.ResFileUrl>
  */
 export const uploadImg = (params: FormData) => {
-  return http.post<Upload.ResFileUrl>(PORT1 + `/file/upload/img`, params, { cancel: false });
+  return http.post<Upload.ResFileUrl>(PORT1 + `/common/upload`, params, { cancel: false });
 };
 
 /**
@@ -17,5 +17,5 @@ export const uploadImg = (params: FormData) => {
  * @returns Promise<Upload.ResFileUrl>
  */
 export const uploadVideo = (params: FormData) => {
-  return http.post<Upload.ResFileUrl>(PORT1 + `/file/upload/video`, params, { cancel: false });
+  return http.post<Upload.ResFileUrl>(PORT1 + `/common/upload`, params, { cancel: false });
 };

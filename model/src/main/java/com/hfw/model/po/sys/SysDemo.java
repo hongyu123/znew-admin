@@ -7,6 +7,7 @@ import com.hfw.model.mybatis.anno.LogicDelete;
 import com.hfw.model.mybatis.anno.Table;
 import com.hfw.model.mybatis.anno.TableId;
 import com.hfw.model.utils.JsonList;
+import com.hfw.model.utils.JsonMap;
 import com.hfw.model.validation.ValidGroup;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -120,7 +121,7 @@ public class SysDemo {
 
     /** 文件输入 */
     @ExcelIgnore
-    private String fileInput;
+    private JsonMap fileInput;
 
     /** user_id */
     @ExcelIgnore

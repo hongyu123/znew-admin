@@ -1,7 +1,7 @@
 <template>
   <el-dropdown trigger="click">
     <div class="avatar">
-      <img src="@/assets/images/avatar.gif" alt="avatar" />
+      <img :src="avatarUrl" alt="avatar" />
     </div>
     <template #dropdown>
       <el-dropdown-menu>
@@ -25,9 +25,10 @@
 
 <script setup lang="ts">
 import { ElMessage, ElMessageBox } from "element-plus";
-import { ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
+import defaultAvatar from "@/assets/images/avatar.gif";
 import { logoutApi } from "@/api/modules/login";
 import { LOGIN_URL } from "@/config";
 import { useUserStore } from "@/stores/modules/user";
@@ -37,6 +38,9 @@ import PasswordDialog from "./PasswordDialog.vue";
 
 const router = useRouter();
 const userStore = useUserStore();
+
+// 当前登录用户头像，未设置头像时使用默认头像
+const avatarUrl = computed(() => userStore.userInfo.avatar || defaultAvatar);
 
 // 退出登录
 const logout = () => {

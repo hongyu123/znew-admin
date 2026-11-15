@@ -109,7 +109,7 @@ CREATE TABLE "public"."sys_demo" (
 "location" varchar(200),
 "lng" numeric(20,6),
 "lat" numeric(20,6),
-"file_input" varchar(200),
+"file_input" json,
 "user_id" int8,
 "org_id" int8,
 CONSTRAINT "sys_demo_pkey" PRIMARY KEY ("id"));

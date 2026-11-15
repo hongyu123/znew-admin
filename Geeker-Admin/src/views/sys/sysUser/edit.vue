@@ -42,9 +42,9 @@
       <el-form-item label="昵称" prop="nickname">
         <el-input v-model.trim="row.nickname" maxlength="50" show-word-limit placeholder="请填写昵称" clearable></el-input>
       </el-form-item>
-      <el-form-item label="头像" prop="avatar">
+      <!-- <el-form-item label="头像" prop="avatar">
         <UploadImg v-model:image-url="row.avatar" :api="upload" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="邮箱" prop="email">
         <el-input v-model.trim="row.email" maxlength="50" show-word-limit placeholder="请填写邮箱" clearable></el-input>
       </el-form-item>

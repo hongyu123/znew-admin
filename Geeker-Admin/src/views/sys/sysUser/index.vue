@@ -3,7 +3,14 @@
     <!-- 部门树筛选 -->
     <TreeFilter label="name" title="部门列表" :data="treeData" :default-value="initParam.orgId" @change="changeTreeFilter" />
     <div class="table-box">
-      <ProTable ref="proTable" title="系统用户列表" :columns="columns" :request-api="getTableList" :init-param="initParam">
+      <ProTable
+        ref="proTable"
+        title="系统用户列表"
+        :columns="columns"
+        :request-api="getTableList"
+        :init-param="initParam"
+        colSettingKey="SysUser"
+      >
         <!-- 表格 header 按钮 -->
         <template #tableHeader>
           <el-button type="primary" :icon="CirclePlus" @click="openEditForm()">新增</el-button>

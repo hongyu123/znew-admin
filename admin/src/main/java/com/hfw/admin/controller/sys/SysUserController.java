@@ -54,7 +54,7 @@ public class SysUserController {
     }
 
     /*@GetMapping("/current")
-    public ApiResult currentUserInfo(){
+    public Result<SysUserDTO> currentUserInfo(){
         return this.detail( LoginUser.getLoginUser().getId() );
     }*/
 

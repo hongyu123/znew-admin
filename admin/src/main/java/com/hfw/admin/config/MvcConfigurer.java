@@ -61,8 +61,6 @@ public class MvcConfigurer implements WebMvcConfigurer {
         registry.addInterceptor(new AuthInterceptor(authService, sysAuthService))
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login","/test","/upload/**");
-        // Sa-Token 注解权限认证拦截
-        //registry.addInterceptor(new CorsIgnoreSaInterceptor()).addPathPatterns("/**");
     }
 
 }

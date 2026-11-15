@@ -11,11 +11,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
-* ${tableComment}
-* @author ${author}
-* @date ${.now?string('yyyy-MM-dd')}
-*/
-@Getter @Setter
+ * ${tableComment}
+ * @author ${author}
+ * @date ${.now?string('yyyy-MM-dd')}
+ */
+@Getter
+@Setter
 @Table("${tableName}")
 public class ${className} {
 

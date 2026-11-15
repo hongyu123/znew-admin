@@ -44,7 +44,7 @@ public class SysGenTable {
     private boolean picture = false;
     private boolean pictures = false;
     private boolean file = false;
-    private boolean fileInput = false;
+    private boolean files = false;
     private boolean map = false;
     private boolean video = false;
 

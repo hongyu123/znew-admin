@@ -38,6 +38,8 @@ export namespace Login {
   }
   export interface ResLogin {
     id: number;
+    nickname: string;
+    avatar: string;
     accessToken: string;
   }
   export interface ResAuthButtons {

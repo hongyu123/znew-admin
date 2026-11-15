@@ -7,7 +7,7 @@ export type LanguageType = "zh" | "en" | null;
 /* UserState */
 export interface UserState {
   token: string;
-  userInfo: { name: string };
+  userInfo: { name: string; avatar?: string };
 }
 
 /* tabsMenuProps */

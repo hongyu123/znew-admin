@@ -30,7 +30,13 @@ const config = {
 };
 
 const axiosCanceler = new AxiosCanceler();
-
+/**
+ * 登录失效（code=100）处理节流
+ * 页面并发多个请求时，它们通常同时返回 100，
+ * 这里用时间窗口保证「提示 + 跳转」只执行一次
+ */
+let overdueHandledAt = 0;
+const OVERDUE_INTERVAL = 3000; // 毫秒，3 秒内视为同一批登录失效
 class RequestHttp {
   service: AxiosInstance;
   public constructor(config: AxiosRequestConfig) {
@@ -76,7 +82,12 @@ class RequestHttp {
         if (data.code == ResultEnum.OVERDUE) {
           userStore.setToken("");
           router.replace(LOGIN_URL);
-          ElMessage.error(data.message);
+          const now = Date.now();
+          const isFirst = now - overdueHandledAt > OVERDUE_INTERVAL;
+          if (isFirst) {
+            overdueHandledAt = now;
+            ElMessage.error(data.message);
+          }
           return Promise.reject(data);
         }
         // 全局错误信息拦截（防止下载文件的时候返回数据流，没有 code 直接报错）

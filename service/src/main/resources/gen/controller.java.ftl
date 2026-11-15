@@ -1,6 +1,5 @@
 package ${packageName}.admin.controller.${projectName};
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.hfw.admin.log.AdminLog;
 import com.hfw.model.entity.Page;
 import com.hfw.model.entity.PageResult;
@@ -26,7 +25,6 @@ public class ${className}Controller {
     @Autowired
     private CommonService commonService;
 
-    @SaCheckPermission("${beanName}:page")
     @GetMapping("/page")
     public PageResult<${className}> page(Page<${className}> page, ${className} po) {
         Map<String, String> params = page.getParams();
@@ -38,7 +36,6 @@ public class ${className}Controller {
         return commonService.page(${className}.class, where, page);
     }
 
-    @SaCheckPermission("${beanName}:view")
     @GetMapping
     public Result<${className}> detail(@RequestParam Long id){
         ${className} po = commonService.selectByPk(${className}.class, id);
@@ -46,21 +43,18 @@ public class ${className}Controller {
     }
 
     @AdminLog("新增${tableComment}")
-    @SaCheckPermission("${beanName}:add")
     @PostMapping
     public Result<Void> add(@RequestBody ${className} ${beanName}){
         return Result.result(commonService.insert(${beanName}));
     }
 
     @AdminLog("编辑${tableComment}")
-    @SaCheckPermission("${beanName}:edit")
     @PutMapping
     public Result<Void> edit(@RequestBody ${className} ${beanName}){
         return Result.result(commonService.updateByPk(${beanName}));
     }
 
     @AdminLog("删除${tableComment}")
-    @SaCheckPermission("${beanName}:del")
     @DeleteMapping
     public Result<Void> del(@RequestParam Long id){
         int res = commonService.deleteByPk(${className}.class, id);
@@ -68,7 +62,6 @@ public class ${className}Controller {
     }
 
     @AdminLog("批量删除${tableComment}")
-    @SaCheckPermission("${beanName}:del")
     @DeleteMapping("/dels")
     public Result<Void> dels(@RequestBody List<Long> ids){
         int res = commonService.deleteByPks(${className}.class, ids);

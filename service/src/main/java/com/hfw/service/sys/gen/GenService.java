@@ -352,8 +352,8 @@ public class GenService{
                 table.setPictures(true);
             }else if(c.getFormType().equals("file")){
                 table.setFile(true);
-            }else if(c.getFormType().equals("fileInput")){
-                table.setFileInput(true);
+            }else if(c.getFormType().equals("files")){
+                table.setFiles(true);
             }else if(c.getFormType().equals("map")){
                 table.setMap(true);
             }else if(c.getFormType().equals("video")){
@@ -373,7 +373,7 @@ public class GenService{
         String outDir = genProperty.getPath()+File.separator+table.getBeanName()+File.separator;
         Files.createDirectories(Paths.get(outDir));
         Template template = configuration.getTemplate("api.js.ftl");
-        try(Writer out = new FileWriter(outDir+table.getBeanName()+".js")){
+        try(Writer out = new FileWriter(outDir+"api.js")){
             template.process(table, out);
         }
         template = configuration.getTemplate("index.vue.ftl");
@@ -398,7 +398,7 @@ public class GenService{
         String outDir = "./pure-admin/src/views/"+genProperty.getProjectName()+"/"+table.getBeanName();
         Files.createDirectories(Paths.get(outDir));
         Template template = configuration.getTemplate("api.js.ftl");
-        try(Writer out = new FileWriter(outDir+"/"+table.getBeanName()+".js")){
+        try(Writer out = new FileWriter(outDir+"/"+"api.js")){
             template.process(table, out);
         }
         template = configuration.getTemplate("index.vue.ftl");
