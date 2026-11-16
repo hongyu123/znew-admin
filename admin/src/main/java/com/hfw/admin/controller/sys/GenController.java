@@ -53,24 +53,24 @@ public class GenController {
     }
 
     //代码生成到项目路径
-    @PostMapping("/genToProject")
-    public Result<Void> genToProject(@RequestBody JsonMap params) throws Exception {
-        return genService.genToProject(params.getString("tableName"));
-    }
+//    @PostMapping("/genToProject")
+//    public Result<Void> genToProject(@RequestBody JsonMap params) throws Exception {
+//        return genService.genToProject(params.getString("tableName"));
+//    }
     //代码批量生成到项目路径
-    @PostMapping("/batchGenToProject")
-    public Result<Void> batchGenToProject(@RequestBody List<String> tables) throws Exception{
-        StringJoiner errors = new StringJoiner("<br/>");
-        if(!CollectionUtils.isEmpty(tables)){
-            for(String table : tables){
-                Result<Void> result = genService.genToProject(table);
-                if(!result.successful()){
-                    errors.add(result.getMessage());
-                }
-            }
-        }
-        return errors.length()>0 ? Result.error(errors.toString()) : Result.success();
-    }
+//    @PostMapping("/batchGenToProject")
+//    public Result<Void> batchGenToProject(@RequestBody List<String> tables) throws Exception{
+//        StringJoiner errors = new StringJoiner("<br/>");
+//        if(!CollectionUtils.isEmpty(tables)){
+//            for(String table : tables){
+//                Result<Void> result = genService.genToProject(table);
+//                if(!result.successful()){
+//                    errors.add(result.getMessage());
+//                }
+//            }
+//        }
+//        return errors.length()>0 ? Result.error(errors.toString()) : Result.success();
+//    }
 
     //根据表名获取表单配置信息
     @GetMapping("/formInfo")
@@ -84,11 +84,11 @@ public class GenController {
         return Result.success();
     }
     //表单生成到项目路径
-    @PostMapping("/genFormToProject")
-    public Result<Void> genFormToProject(@RequestBody SysGenTable table) throws Exception {
-        genService.genFormToProject(table);
-        return Result.success();
-    }
+//    @PostMapping("/genFormToProject")
+//    public Result<Void> genFormToProject(@RequestBody SysGenTable table) throws Exception {
+//        genService.genFormToProject(table);
+//        return Result.success();
+//    }
 
     //java代码生成预览
     @GetMapping("/javaCode")

@@ -8,7 +8,7 @@
         <el-input v-model="rowData!.nickname" maxlength="50" show-word-limit placeholder="请填写昵称" clearable></el-input>
       </el-form-item>
       <el-form-item label="头像" prop="avatar">
-        <UploadImg v-model:imageUrl="rowData!.avatar" width="250px" />
+        <UploadImg v-model:imageUrl="rowData!.avatar" />
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="rowData!.email" maxlength="50" show-word-limit placeholder="请填写邮箱" clearable></el-input>
@@ -33,7 +33,7 @@
 import { ref, reactive } from "vue";
 import { ElMessage, FormInstance } from "element-plus";
 import UploadImg from "@/components/Upload/Img.vue";
-import { userInfo, edit } from "@/views/sys/sysUser/api.js";
+import { userInfo, editInfo } from "@/views/sys/sysUser/api.js";
 import { useUserStore } from "@/stores/modules/user";
 
 const rowData = ref<any>({});
@@ -48,7 +48,9 @@ const openDialog = () => {
 };
 
 const rules = reactive({
-  phone: [{ required: false, pattern: /^\d{11}$/, message: "手机号码格式错误", trigger: "change" }],
+  phone: [{ required: true, pattern: /^\d{11}$/, message: "手机号码格式错误", trigger: "change" }],
+  nickname: [{ required: true, message: "请填写昵称", trigger: "change" }],
+  avatar: [{ required: true, message: "请上传头像", trigger: "change" }],
   email: [{ pattern: /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/, message: "邮箱格式错误", trigger: "change" }]
 });
 
@@ -58,9 +60,9 @@ const handleSubmit = () => {
   ruleFormRef.value!.validate(async valid => {
     if (!valid) return;
     try {
-      const { message } = await edit!(rowData.value);
+      const { message } = await editInfo(rowData.value);
       // 修改成功后立即同步当前登录用户的头像
-      userStore.setUserInfo({ ...userStore.userInfo, avatar: rowData.value.avatar || "" });
+      userStore.setUserInfo({ nickname: rowData.value.nickname || "", avatar: rowData.value.avatar || "" });
       ElMessage.success({ message: message });
       dialogVisible.value = false;
     } catch (error) {

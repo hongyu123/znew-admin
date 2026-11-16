@@ -30,10 +30,8 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="兴趣" prop="interest">
-        <el-checkbox-group v-model="row.interest">
-          <el-checkbox label="label1" value="1"></el-checkbox>
-          <el-checkbox label="label2" value="2"></el-checkbox>
-        </el-checkbox-group>
+        <!-- <DictSelect v-model="row.interest" dict-key="sys_interest" /> -->
+        <DictCheckbox v-model="row.interest" dict-key="sys_interest" />
       </el-form-item>
       <el-form-item label="生日" prop="birth">
         <el-date-picker
@@ -75,7 +73,6 @@
       <el-form-item label="单文件" prop="fileInput">
         <UploadFile
           v-model:file-info="row.fileInput"
-          :api="upload"
           :disabled="drawerProps.isView"
           :file-size="10"
           :file-type="['.txt']"
@@ -116,6 +113,8 @@ import UploadVideo from "@/components/Upload/Video.vue";
 import UploadImgs from "@/components/Upload/Imgs.vue";
 import UploadFiles from "@/components/Upload/Files.vue";
 import UploadFile from "@/components/Upload/File.vue";
+import DictSelect from "@/components/dict/DictSelect.vue";
+import DictCheckbox from "@/components/dict/DictCheckbox.vue";
 import { GenderEnum } from "@/enums/commonEnum";
 import { add, edit } from "./api";
 

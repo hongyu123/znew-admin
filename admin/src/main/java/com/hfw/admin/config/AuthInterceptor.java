@@ -7,6 +7,7 @@ import com.hfw.service.auth.AuthService;
 import com.hfw.service.dto.LoginUser;
 import com.hfw.service.sys.sysAuth.SysAuthService;
 import com.hfw.service.utils.RequestUtil;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
         LoginUser.setLoginUser(loginUser);
 
+        String uri = request.getRequestURI();
+        if(uri.startsWith("/auth") || uri.startsWith("/common")){
+            return true;
+        }
         if(!this.permissionAuth(loginUser, request)){
             RequestUtil.json(response, Result.result(ErrorCode.PERMISSION_DENIED) );
             return false;
@@ -54,14 +59,18 @@ public class AuthInterceptor implements HandlerInterceptor {
     private LoginUser loginAuth(HttpServletRequest request){
         String token = request.getHeader(AuthInterceptor.token);
         if(!StringUtils.hasText(token)){
-            token = request.getParameter(AuthInterceptor.token);
+            //token = request.getParameter(AuthInterceptor.token);
+            Cookie[] cookies = request.getCookies();
+            if(cookies!=null){
+                for (Cookie cookie : cookies) {
+                    if (AuthInterceptor.token.equals(cookie.getName())) {
+                        token = cookie.getValue();
+                        break;
+                    }
+                }
+            }
         }
-        try{
-            return authService.verifyToken(token);
-        }catch (Exception e){
-            log.error("verifyToken", e);
-        }
-        return null;
+        return authService.verifyToken(token);
         /*LoginUser loginUser = new LoginUser();
         loginUser.setId(1L);
         loginUser.setAccount("admin");

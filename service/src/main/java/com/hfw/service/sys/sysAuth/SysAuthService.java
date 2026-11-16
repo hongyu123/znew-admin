@@ -7,6 +7,7 @@ import com.hfw.model.enums.sys.SysAuthEnum;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.mybatis.Where;
 import com.hfw.model.po.sys.SysAuth;
+import com.hfw.model.utils.JsonMap;
 import com.hfw.model.utils.TreeUtil;
 import com.hfw.service.dto.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,4 +114,7 @@ public class SysAuthService {
                 (dto) -> dto.getParentId()==0 );
     }
 
+    public List<JsonMap> buttons(Long userId){
+        return sysAuthMapper.buttons(userId);
+    }
 }

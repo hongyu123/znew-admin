@@ -1,13 +1,13 @@
 package com.hfw.model.po.sys;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hfw.model.enums.sys.Gender;
 import com.hfw.model.excel.IEnumConverter;
 import com.hfw.model.mybatis.Column;
 import com.hfw.model.mybatis.anno.LogicDelete;
 import com.hfw.model.mybatis.anno.Table;
 import com.hfw.model.mybatis.anno.TableId;
-import com.hfw.model.utils.JsonList;
-import com.hfw.model.utils.JsonMap;
 import com.hfw.model.validation.ValidGroup;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -59,8 +59,8 @@ public class SysDemo {
     private Integer state;
 
     /** 兴趣(多选框) */
-    @ExcelProperty("兴趣")
-    private JsonList<String> interest;
+    @ExcelIgnore
+    private ArrayNode interest;
 
     /** 生日(日期) */
     @ExcelProperty("生日")
@@ -73,7 +73,7 @@ public class SysDemo {
 
     /** 头像(图片上传) */
     @ExcelProperty("头像")
-    @NotBlank(message = "头像(图片上传)不能为空", groups = ValidGroup.Add.class)
+    //@NotBlank(message = "头像(图片上传)不能为空", groups = ValidGroup.Add.class)
     @Length(max = 200,message = "头像(图片上传)最多200字符")
     private String avatar;
 
@@ -82,12 +82,12 @@ public class SysDemo {
     private String video;
 
     /** 照片(多图上传) */
-    @ExcelProperty("照片")
-    private JsonList<Map<String,Object>> photos;
+    @ExcelIgnore
+    private ArrayNode photos;
 
     /** 附件(文件上传) */
-    @ExcelProperty("附件")
-    private JsonList<Map<String,Object>> attachment;
+    @ExcelIgnore
+    private ArrayNode attachment;
 
     /** 简介(文本域) */
     @ExcelProperty("简介")
@@ -106,22 +106,22 @@ public class SysDemo {
     private String phone;
 
     /** 地址 */
-    @ExcelProperty("地址")
+    @ExcelIgnore
     private String location;
 
     /** 经度 */
-    @ExcelProperty("经度")
+    @ExcelIgnore
     //@NotNull(message = "经度不能为空", groups = ValidGroup.Add.class)
     private java.math.BigDecimal lng;
 
     /** 纬度 */
-    @ExcelProperty("纬度")
+    @ExcelIgnore
     //@NotNull(message = "纬度不能为空", groups = ValidGroup.Add.class)
     private java.math.BigDecimal lat;
 
     /** 文件输入 */
     @ExcelIgnore
-    private JsonMap fileInput;
+    private ObjectNode fileInput;
 
     /** user_id */
     @ExcelIgnore

@@ -34,20 +34,25 @@
         select r.*
         from sys_role r
         join sys_user_role ur on r.id = ur.role_id
-        <if test="po.name!=null and po.name!=''">
-            and name=#{po.name}
-        </if>
-        <if test="page.params.name_like!=null and page.params.name_like!=''">
-            and name like concat(#{page.params.name_like},'%')
-        </if>
-        <if test="po.code!=null and po.code!=''">
-            and code=#{po.code}
-        </if>
-        where r.state = 1
-        and ur.user_id=#{po.id}
+        <where>
+            <if test="po.name!=null and po.name!=''">
+                and r.name like concat(#{po.name},'%')
+            </if>
+            <if test="po.code!=null and po.code!=''">
+                and r.code like concat(#{po.code},'%')
+            </if>
+            <if test="po.state!=null">
+                and r.state=#{po.state}
+            </if>
+            and ur.user_id=#{po.id}
+        </where>
         order by r.sort
         union
-        select * from sys_role where state=1 and create_user=#{po.createUser}
+        select * from sys_role
+        where create_user=#{po.createUser}
+        <if test="po.state!=null">
+            and state=#{po.state}
+        </if>
     </select>
 
 </mapper>

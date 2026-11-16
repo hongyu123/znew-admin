@@ -3,7 +3,7 @@
     <ProTable ref="proTable" title="角色授权用户列表" :columns="columns" :requestApi="getTableList">
       <!-- 表格 header 按钮 -->
       <template #tableHeader="scope">
-        <el-button type="primary" :icon="CirclePlus" @click="openSelectUser">新增</el-button>
+        <el-button type="primary" icon="CirclePlus" @click="openSelectUser">新增</el-button>
         <el-button type="danger" plain @click="delsModel(scope.selectedListIds)" :disabled="!scope.isSelected">
           取消授权
         </el-button>
@@ -22,7 +22,6 @@
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
 import ProTable from "@/components/ProTable/index.vue";
-import { CirclePlus } from "@element-plus/icons-vue";
 import { users, allocateUsers, cancelUsers } from "./api";
 import { useHandleData } from "@/hooks/useHandleData";
 import { EnableStateEnum } from "@/enums/commonEnum";
@@ -51,17 +50,17 @@ const columns = [
   {
     prop: "account",
     label: "账号",
-    search: { el: "input", key: "account_like" }
+    search: { el: "input", key: "params[account_like]" }
   },
   {
     prop: "nickname",
     label: "昵称",
-    search: { el: "input", key: "nickname_like" }
+    search: { el: "input", key: "params[nickname_like]" }
   },
   {
     prop: "phone",
     label: "手机号码",
-    search: { el: "input", key: "phone_like" }
+    search: { el: "input", key: "params[phone_like]" }
   },
   {
     prop: "avatar",
@@ -77,8 +76,7 @@ const columns = [
   {
     prop: "state",
     label: "状态",
-    enum: EnableStateEnum,
-    search: { el: "select" }
+    enum: EnableStateEnum
   },
   { prop: "operation", label: "操作", fixed: "right", width: 220 }
 ];

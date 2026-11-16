@@ -115,7 +115,7 @@ public interface SingleMapper {
 ```
 ## 注解&核心功能
 
-映射json类型字段使用 `JsonMap`/`JsonList`/`JsonNode` 类型
+映射json类型字段使用 `DBMap`/`DBList`/`JsonNode` 类型
 
 @Table
 
@@ -244,6 +244,42 @@ service
     核心业务实现
 admin
     后台管理系统接口 启动配置
+```
+
+# 后端管理页面权限控制
+
+![image-20230113200504510](https://oscimg.oschina.net/oscnet/up-98dc0f77b993ff92d108d35109e6fcfb308.png)
+
+**参考增删改demo, 注意:权限编码前端被屏蔽了,需要的去数据库查看**
+
+**实现方式:基于spring security URL的权限控制, 实现请自行查看Authorization类.**
+
+**权限编码规则: 请求方法/请求url, 支持** /* /** **匹配**
+
+| 名称                        | 权限编码         | 前端按钮权限编码(web_code) |
+| --------------------------- | ---------------- |--------------------|
+| 分页列表(管理菜单)          | GET/sysDemo/page | sysDemo:page          |
+| 查看(按钮)                  | GET/sysDemo      | sysDemo:view          |
+| 新增(按钮)                  | POST/sysDemo     | sysDemo:add           |
+| 编辑 (按钮)                 | PUT/sysDemo      | sysDemo:edit          |
+| 删除(按钮)                  | DELETE/sysDemo   | sysDemo:del           |
+| 多url匹配(只匹配一级)       | GET/sysDemo/*    |                    |
+| sysDemo的所有权限(匹配多级) | /sysDemo/**      |                    |
+
+# 前端权限
+
+```vue
+<!-- 表格 header 按钮 -->
+<template #tableHeader="scope">
+    <el-button type="primary" :icon="CirclePlus" @click="openEditForm('新增')" v-auth="['sysDemo:add']">新增</el-button>
+    <el-button type="danger" :icon="Delete" plain @click="delsModel(scope.selectedListIds)" :disabled="!scope.isSelected" v-auth="['sysDemo:del']" >  批量删除 </el-button>
+</template>
+<!-- 表格操作 -->
+<template #operation="scope">
+    <el-button type="primary" icon="View" link @click="openEditForm('查看', scope.row)" v-auth="['sysDemo:view']">查看</el-button>
+    <el-button type="primary" icon="EditPen" link @click="openEditForm('编辑', scope.row)" v-auth="['sysDemo:edit']">编辑</el-button>
+    <el-button type="danger" :icon="Delete" link @click="delModel(scope.row)" v-auth="['sysDemo:del']">删除</el-button>
+</template>
 ```
 
 # 数据权限/多租户过滤

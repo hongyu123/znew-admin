@@ -3,6 +3,7 @@ package com.hfw.model.entity;
 import com.github.pagehelper.PageHelper;
 import com.hfw.model.mybatis.anno.Sort;
 import com.hfw.model.utils.LimitedParamMap;
+import com.hfw.model.utils.LocalDateUtil;
 import com.hfw.model.utils.StrUtil;
 
 import java.util.Map;
@@ -99,12 +100,21 @@ public class Page<T> {
             params.put(key, Long.valueOf(str));
         }
     }
+    public void paramToDateTime(String key){
+        Object obj = params.get(key);
+        if(obj instanceof String str && !str.isEmpty()){
+            params.put(key, LocalDateUtil.parseDateTime(str));
+        }
+    }
     public String getParam(String key){
         Object obj = params.get(key);
         if(obj==null){
             return null;
         }
         return obj.toString();
+    }
+    public Object get(String key){
+        return params.get(key);
     }
 
 

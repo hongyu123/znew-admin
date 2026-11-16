@@ -29,7 +29,7 @@ export const imp = params => {
  * @param {String|Number} id 系统示例id
  */
 export const detail = id => {
-  return http.get(`/sysDemo?id=${id}`);
+  return http.get("/sysDemo", { id });
 };
 
 /**
@@ -53,7 +53,7 @@ export const edit = params => {
  * @param {String|Number} id 系统示例id
  */
 export const del = id => {
-  return http.delete(`/sysDemo?id=${id}`);
+  return http.delete("/sysDemo", { id }, { headers: { "Content-Type": "application/x-www-form-urlencoded" } });
 };
 
 /**

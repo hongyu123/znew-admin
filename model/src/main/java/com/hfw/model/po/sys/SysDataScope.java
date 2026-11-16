@@ -1,10 +1,10 @@
 package com.hfw.model.po.sys;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.hfw.model.enums.sys.DataScope;
 import com.hfw.model.mybatis.Column;
 import com.hfw.model.mybatis.anno.Table;
 import com.hfw.model.mybatis.anno.TableId;
-import com.hfw.model.utils.JsonList;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,7 +39,7 @@ public class SysDataScope {
     }
 
     /** 自定义数据权限ids */
-    private JsonList<Long> customIds;
+    private ArrayNode customIds;
 
 
     public enum COLUMN implements Column<SysDataScope>{

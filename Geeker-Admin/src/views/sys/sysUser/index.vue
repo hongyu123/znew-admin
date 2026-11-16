@@ -13,13 +13,13 @@
       >
         <!-- 表格 header 按钮 -->
         <template #tableHeader>
-          <el-button type="primary" :icon="CirclePlus" @click="openEditForm()">新增</el-button>
+          <el-button type="primary" icon="CirclePlus" @click="openEditForm()">新增</el-button>
         </template>
         <!-- 表格操作 -->
         <template #operation="scope">
           <el-button type="primary" link @click="handleResetPassword(scope.row)">重置密码</el-button>
           <el-button type="primary" icon="EditPen" link @click="openEditForm(scope.row)">编辑</el-button>
-          <el-button type="danger" :icon="Delete" link @click="delModel(scope.row)">删除</el-button>
+          <!-- <el-button type="danger" icon="Delete" link @click="delModel(scope.row)">删除</el-button> -->
         </template>
       </ProTable>
 
@@ -30,7 +30,7 @@
 
 <script setup lang="jsx" name="useProTable">
 import { onMounted, reactive, ref } from "vue";
-import { Delete, CirclePlus } from "@element-plus/icons-vue";
+import { ElMessage, ElMessageBox } from "element-plus";
 import ProTable from "@/components/ProTable/index.vue";
 import TreeFilter from "@/components/TreeFilter/index.vue";
 import SysUserDrawer from "./edit.vue";
@@ -38,7 +38,7 @@ import SysUserDrawer from "./edit.vue";
 import { useHandleData } from "@/hooks/useHandleData";
 import { enums } from "@/api/modules/common";
 import { tree } from "../sysOrganization/api";
-import { page, detail, del, resetPassword } from "./api";
+import { page, detail, edit, del, resetPassword } from "./api";
 
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
 const proTable = ref();
@@ -99,7 +99,22 @@ const columns = [
     prop: "state",
     label: "状态",
     enum: () => enums("EnableState"),
-    search: { el: "select" }
+    search: { el: "select" },
+    render: scope => {
+      return (
+        <>
+          <el-switch
+            model-value={scope.row.state}
+            inline-prompt
+            active-text="启用"
+            active-value="Enable"
+            inactive-text="禁用"
+            inactive-value="Disable"
+            onClick={() => changeStatus(scope.row)}
+          />
+        </>
+      );
+    }
   },
   {
     prop: "createTime",
@@ -128,6 +143,29 @@ const delModel = async params => {
 };
 
 const handleResetPassword = async params => {
-  await useHandleData(resetPassword, { id: params.id }, `重置密码【${params.account}】`);
+  ElMessageBox.prompt("请输入重置密码", "系统提示", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    inputPattern: /^\w{6,16}$/,
+    inputErrorMessage: "密码格式错误"
+  })
+    .then(async ({ value }) => {
+      resetPassword({ id: params.id, password: value }).then(res => {
+        ElMessage({
+          type: "success",
+          message: `重置密码【${params.account}】成功!`
+        });
+      });
+    })
+    .catch(() => {});
+};
+
+const changeStatus = async row => {
+  if (row.state === "Enable") {
+    await useHandleData(edit, { id: row.id, state: "Disable" }, `禁用用户【${row.account}】`);
+  } else {
+    await useHandleData(edit, { id: row.id, state: "Enable" }, `启用用户【${row.account}】`);
+  }
+  proTable.value.getTableList();
 };
 </script>

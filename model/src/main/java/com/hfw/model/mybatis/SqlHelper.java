@@ -191,24 +191,38 @@ public class SqlHelper {
         }
         return columnName;
     }
-    private void applyWhere(TableInfo tableInfo, SQL sql, Where<?> where, String whereParams) throws SQLException {
+
+    /**
+     * @return true 需要用<script></script>包裹SQL
+     */
+    private boolean applyWhere(TableInfo tableInfo, SQL sql, Where<?> where, String whereParams) throws SQLException {
+        boolean script = false;
         Map<String, Object> params = where.getParams();
         List<? extends Where.Condition<?>> condList = where.getCondList();
         if(condList!=null && !condList.isEmpty()){
+            int repeatCnt = 0; //字段重复计数
             for(Where.Condition<?> cond : condList){
                 String columnName = this.columnName(cond.column(), tableInfo);
-                params.put(columnName, cond.value());
-                if(cond.operator().contains("in") && cond.value() instanceof Collection<?> values){
-                    StringJoiner joiner = new StringJoiner(",");
-                    for (int i = 0; i < values.size(); i++) {
-                        joiner.add("#{%sparams.%s[%s]}".formatted(whereParams, columnName, i));
-                    }
-                    sql.WHERE("%s %s (%s)".formatted(columnName, cond.operator(), joiner.toString()));
+                String attr = columnName;
+                if(params.containsKey(attr)){
+                    repeatCnt++;
+                    attr = columnName+repeatCnt;
+                }
+                params.put(attr, cond.value());
+                if(cond.operator().contains("in") /*&& cond.value() instanceof Collection<?> values*/){
+                    script = true;
+                    String foreach = """
+                            <foreach item="item" collection="%sparams.%s" separator="," open="(" close=")">
+                                #{item}
+                            </foreach>
+                            """.formatted(whereParams, attr);
+                    sql.WHERE("%s %s %s".formatted(columnName, cond.operator(), foreach));
                 }else{
-                    sql.WHERE("%s %s #{%sparams.%s}".formatted(columnName, cond.operator(), whereParams, columnName));
+                    sql.WHERE("%s %s #{%sparams.%s}".formatted(columnName, cond.operator(), whereParams, attr));
                 }
             }
         }
+        return script;
     }
 
     public String selectByPk(Class<?> tableClass) throws Exception {
@@ -230,7 +244,7 @@ public class SqlHelper {
         SQL sql = new SQL()
                 .SELECT(tableInfo.getSelectColumns())
                 .FROM(tableInfo.tableName());
-        this.applyWhere(tableInfo, sql, where, "where.");
+        boolean script = this.applyWhere(tableInfo, sql, where, "where.");
         ColumnInfo logicDelete = tableInfo.getLogicDelete();
         if(logicDelete!=null){
             sql.WHERE("%s=%s".formatted(logicDelete.getColumnName(), logicDelete.getBeforeValue()));
@@ -248,6 +262,9 @@ public class SqlHelper {
                 sql.OFFSET(where.getOffset());
             }
         }
+        if(script){
+            return "<script>"+sql.toString()+"</script>";
+        }
         return sql.toString();
     }
 
@@ -256,10 +273,13 @@ public class SqlHelper {
         SQL sql = new SQL()
                 .SELECT("count(*)")
                 .FROM(tableInfo.tableName());
-        this.applyWhere(tableInfo, sql, where,"where.");
+        boolean script = this.applyWhere(tableInfo, sql, where, "where.");
         ColumnInfo logicDelete = tableInfo.getLogicDelete();
         if(logicDelete!=null){
             sql.WHERE("%s=%s".formatted(logicDelete.getColumnName(), logicDelete.getBeforeValue()));
+        }
+        if(script){
+            return "<script>"+sql.toString()+"</script>";
         }
         return sql.toString();
     }
@@ -292,12 +312,12 @@ public class SqlHelper {
         return sql.toString();
     }
 
-    public String insertBatch(List<?> list) throws Exception{
-        Object entity = list.get(0);
-        TableInfo tableInfo = this.getTableInfo(entity.getClass());
+    public String insertBatch(Class<?> tableClass, Collection<?> list) throws Exception{
+        TableInfo tableInfo = this.getTableInfo(tableClass);
         SQL sql = new SQL()
                 .INSERT_INTO(tableInfo.tableName());
-        StringJoiner joiner = new StringJoiner(",");
+        List<String> valuesFields = new ArrayList<>();
+
         Collection<ColumnInfo> columnList = tableInfo.getColumnMap().values();
         Map<Field,Object> insertFills = new HashMap<>();
         for(ColumnInfo column : columnList){
@@ -308,32 +328,36 @@ public class SqlHelper {
                     if(column.insertFill()){
                         String insertValue = column.getInsertValue();
                         if(insertValue.startsWith("$")){
-                            joiner.add("#{list[0].%s}".formatted(column.getFieldName()));
+                            valuesFields.add("#{item.%s}".formatted(column.getFieldName()));
                             insertFills.put(field, MybatisGlobalConfig.getDynamic(insertValue, field.getType()));
                         }else{
-                            joiner.add(insertValue);
+                            valuesFields.add(insertValue);
                         }
                     }else{
-                        joiner.add("#{list[0].%s}".formatted(column.getFieldName()));
+                        valuesFields.add("#{item.%s}".formatted(column.getFieldName()));
                     }
                 }else{
                     throw new SQLException("%s 枚举列[%s]没有对应的映射字段".formatted(tableInfo.getTableClass(), column.getFieldName()));
                 }
             }
         }
-        String values = joiner.toString();
-        StringBuilder sqlBuilder = new StringBuilder(sql.toString());
-        sqlBuilder.append(" VALUES ");
-        sqlBuilder.append("(").append(values).append(")");
-        Set<Map.Entry<Field, Object>> entrySet = insertFills.entrySet();
-        for (int i = 1; i < list.size(); i++) {
-            for (Map.Entry<Field, Object> entry : entrySet){
-                entry.getKey().set(list.get(i), entry.getValue());
+        if(!insertFills.isEmpty()){
+            Set<Map.Entry<Field, Object>> entrySet = insertFills.entrySet();
+            for(Object obj : list){
+                for (Map.Entry<Field, Object> entry : entrySet){
+                    entry.getKey().set(obj, entry.getValue());
+                }
             }
-            String v = values.replaceAll("\\[0]", "[" + i + "]");
-            sqlBuilder.append(" ,(").append(v).append(")");
         }
-        return sqlBuilder.toString();
+        return """
+                <script>
+                %s
+                VALUES
+                <foreach collection="list" item="item" separator=",">
+                    (%s)
+                </foreach>
+                </script>
+                """.formatted(sql.toString(), String.join(", ", valuesFields));
     }
 
     private SQL update(TableInfo tableInfo, Object entity, UpdateStrategy updateStrategy, Set<String> nullUpdateFields) throws Exception{
@@ -396,10 +420,13 @@ public class SqlHelper {
     public String update(Object entity, Where<?> where) throws Exception {
         TableInfo tableInfo = this.getTableInfo(entity.getClass());
         SQL sql = this.update(tableInfo, entity, where.getUpdateStrategy(), this.nullUpdateFields(where.getNullUpdateColumns()));
-        this.applyWhere(tableInfo, sql, where, "where.");
+        boolean script = this.applyWhere(tableInfo, sql, where, "where.");
         ColumnInfo logicDelete = tableInfo.getLogicDelete();
         if(logicDelete!=null){
             sql.WHERE("%s=%s".formatted(logicDelete.getColumnName(), logicDelete.getBeforeValue()));
+        }
+        if(script){
+            return "<script>"+sql.toString()+"</script>";
         }
         return sql.toString();
     }
@@ -425,23 +452,24 @@ public class SqlHelper {
     public String deleteByPks(Class<?> tableClass, Collection<? extends Serializable> pks) throws Exception {
         TableInfo tableInfo = this.getTableInfo(tableClass);
         ColumnInfo pk = tableInfo.getPk();
-        StringJoiner joiner = new StringJoiner(",");
-        for (int i = 0; i < pks.size(); i++) {
-            joiner.add("#{pks[%s]}".formatted(i));
-        }
+        String foreach = """
+                <foreach item="pk" collection="pks" separator="," open="(" close=")">
+                    #{pk}
+                </foreach>
+                """;
         ColumnInfo logicDelete = tableInfo.getLogicDelete();
         if(logicDelete!=null){
             SQL sql = new SQL()
                     .UPDATE(tableInfo.tableName())
                     .SET("%s=%s".formatted(logicDelete.getColumnName(), logicDelete.getDeletedValue()))
-                    .WHERE("%s in (%s)".formatted(pk.getColumnName(), joiner.toString()));
+                    .WHERE("%s in %s".formatted(pk.getColumnName(), foreach));
             sql.WHERE("%s=%s".formatted(logicDelete.getColumnName(), logicDelete.getBeforeValue()));
-            return sql.toString();
+            return "<script>"+sql.toString()+"</script>";
         }
         SQL sql = new SQL()
                 .DELETE_FROM(tableInfo.tableName())
-                .WHERE("%s in (%s)".formatted(pk.getColumnName(), joiner.toString()));
-        return sql.toString();
+                .WHERE("%s in %s".formatted(pk.getColumnName(), foreach));
+        return "<script>"+sql.toString()+"</script>";
     }
 
     public String delete(Class<?> tableClass, Where<?> where) throws Exception{
@@ -451,13 +479,19 @@ public class SqlHelper {
             SQL sql = new SQL()
                     .UPDATE(tableInfo.tableName())
                     .SET("%s=%s".formatted(logicDelete.getColumnName(), logicDelete.getDeletedValue()));
-            this.applyWhere(tableInfo, sql, where, "where.");
+            boolean script = this.applyWhere(tableInfo, sql, where, "where.");
             sql.WHERE("%s=%s".formatted(logicDelete.getColumnName(), logicDelete.getBeforeValue()));
+            if(script){
+                return "<script>"+sql.toString()+"</script>";
+            }
             return sql.toString();
         }
         SQL sql = new SQL()
                 .DELETE_FROM(tableInfo.tableName());
-        this.applyWhere(tableInfo, sql, where, "where.");
+        boolean script = this.applyWhere(tableInfo, sql, where, "where.");
+        if(script){
+            return "<script>"+sql.toString()+"</script>";
+        }
         return sql.toString();
     }
 

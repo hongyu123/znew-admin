@@ -35,7 +35,7 @@
         <el-input v-model.trim="row.linkName" maxlength="20" show-word-limit clearable />
       </el-form-item>
       <el-form-item label="联系电话" prop="linkPhone">
-        <el-input v-model.trim="row.linkPhone" type="tel" clearable />
+        <el-input v-model.trim="row.linkPhone" type="tel" maxlength="11" clearable />
       </el-form-item>
       <el-form-item label="联系邮箱" prop="linkEmail">
         <el-input v-model.trim="row.linkEmail" type="email" clearable />

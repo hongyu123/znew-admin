@@ -7,6 +7,7 @@ import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.enums.sys.LogoutType;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.mybatis.Where;
+import com.hfw.model.mybatis.anno.UpdateStrategy;
 import com.hfw.model.po.sys.SysLoginLog;
 import com.hfw.model.po.sys.SysUser;
 import com.hfw.model.po.sys.SysUserRole;
@@ -161,11 +162,11 @@ public class SysUserService {
         return Result.success();
     }
 
-    public int resetPassword(Long userId){
+    public int resetPassword(Long userId, String password){
         SysUser up = new SysUser();
         up.setId(userId);
         //密码加密
-        String encodePassword = bCrypt.encode("123456");
+        String encodePassword = bCrypt.encode(password);
         up.setPassword(encodePassword);
         return sysUserMapper.updateByPk(up);
     }
@@ -191,10 +192,8 @@ public class SysUserService {
             sysLoginLogService.loginError(loginParam.getUsername(),"密码错误", request);
             throw new GeneralException("用户名/密码错误!");
         }
-        List<SysLoginLog> sysLoginLogs = sysLoginLogService.checkOnline(sysUser.getId());
-        if(!CollectionUtils.isEmpty(sysLoginLogs) && sysLoginLogs.size() >= maxLoginCount){
-            this.logout(sysLoginLogs.get(0), LogoutType.PushedOff);
-        }
+        // 被挤下线
+        this.pushedOff(sysUser.getId());
         LoginUser loginUser = LoginUser.of(sysUser);
         loginUser.setRoles(sysRoleService.userRoles(loginUser.getId()));
         loginUser.setPermissions(sysAuthService.userAuths(loginUser.getId()));
@@ -204,18 +203,33 @@ public class SysUserService {
         sysLoginLogService.login(loginUser, token, request);
         return loginUser;
     }
+    private void pushedOff(Long userId){
+        List<SysLoginLog> sysLoginLogs = sysLoginLogService.online(userId);
+        if(!CollectionUtils.isEmpty(sysLoginLogs) && sysLoginLogs.size() >= maxLoginCount){
+            for (SysLoginLog loginLog : sysLoginLogs){
+                if(this.logout(loginLog, LogoutType.PushedOff)){
+                    break;
+                }
+            }
+        }
+    }
 
     public void logout(Long userId, LogoutType logoutType){
-        List<SysLoginLog> sysLoginLogs = sysLoginLogService.checkOnline(userId);
+        List<SysLoginLog> sysLoginLogs = sysLoginLogService.online(userId);
         if(!CollectionUtils.isEmpty(sysLoginLogs)){
             for(SysLoginLog sysLoginLog : sysLoginLogs){
                 this.logout(sysLoginLog, logoutType);
             }
         }
     }
-    public void logout(SysLoginLog loginLog, LogoutType logoutType){
-        authService.delete(loginLog.getToken());
-        sysLoginLogService.logout(loginLog.getId(), logoutType);
+    public boolean logout(SysLoginLog loginLog, LogoutType logoutType){
+        boolean res = authService.delete(loginLog.getToken());
+        if(res){
+            sysLoginLogService.logout(loginLog.getId(), logoutType);
+        }else{
+            sysLoginLogService.logout(loginLog.getId(), LogoutType.Expire);
+        }
+        return res;
     }
 
     public SysUser userInfo(){
@@ -232,7 +246,16 @@ public class SysUserService {
         up.setEmail(sysUser.getEmail());
         up.setGender(sysUser.getGender());
         up.setRemark(sysUser.getRemark());
-        return sysUserMapper.updateByPk(up);
+        int res = sysUserMapper.updateStByPk(up, UpdateStrategy.NullUpdate, SysUser.COLUMN.email);
+        loginUser.setAvatar(sysUser.getAvatar());
+        loginUser.setNickname(sysUser.getNickname());
+        List<SysLoginLog> sysLoginLogs = sysLoginLogService.online(loginUser.getId());
+        if(!CollectionUtils.isEmpty(sysLoginLogs)){
+            for(SysLoginLog sysLoginLog : sysLoginLogs){
+                authService.updateToken(sysLoginLog.getToken(), loginUser);
+            }
+        }
+        return res;
     }
 
 }

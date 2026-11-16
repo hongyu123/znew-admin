@@ -9,7 +9,7 @@ public enum SysAuthEnum implements BaseEnum {
     Menu(1,"菜单")
     ,Dir(2, "目录")
     ,Button(3, "按钮")
-    ,Auth(4, "权限")
+//    ,Auth(4, "权限")
     ;
 
     private final int code;

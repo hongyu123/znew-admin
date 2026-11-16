@@ -2,6 +2,7 @@ package com.hfw.service.sys.sysAuth;
 
 import com.hfw.model.mybatis.BaseMapper;
 import com.hfw.model.po.sys.SysAuth;
+import com.hfw.model.utils.JsonMap;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -32,4 +33,5 @@ public interface SysAuthMapper extends BaseMapper<SysAuth> {
      */
     List<SysAuth> roleAuths(Long roleId);
 
+    List<JsonMap> buttons(Long userId);
 }

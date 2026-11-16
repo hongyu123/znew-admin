@@ -71,7 +71,7 @@ public class SysUserController {
         if(id==null){
             return Result.error("id不能为空");
         }
-        return Result.result(sysUserService.resetPassword(id));
+        return Result.result(sysUserService.resetPassword(id, info.getString("password")));
     }
 
     @GetMapping("/userInfo")

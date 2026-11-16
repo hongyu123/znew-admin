@@ -1,5 +1,6 @@
 package com.hfw.service.component;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.hfw.model.enums.sys.DataScope;
 import com.hfw.model.po.sys.SysDataScope;
 import com.hfw.service.dto.LoginUser;
@@ -26,8 +27,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Intercepts(
         {
@@ -41,7 +45,7 @@ public class DataScopeInterceptor implements Interceptor {
 
     private String dataScopeExpression(){
         LoginUser loginUser = LoginUser.getLoginUser();
-        if(loginUser==null || loginUser.getId()==1 || !StringUtils.hasText(loginUser.getDataScopeKey())){
+        if(loginUser==null || loginUser.isAdmin() || !StringUtils.hasText(loginUser.getDataScopeKey())){
             return null;
         }
         SysDataScopeService sysDataScopeService = AppHolder.getApplicationContext().getBean(SysDataScopeService.class);
@@ -52,15 +56,18 @@ public class DataScopeInterceptor implements Interceptor {
             // 无配置的话默认全部数据权限
             //return null;
         }
+        ArrayNode customIds = sysDataScope.getCustomIds();
         if(DataScope.User==sysDataScope.getDataScope()){
             return "user_id="+loginUser.getId();
         }else if(DataScope.Organization==sysDataScope.getDataScope()){
             return "org_id="+loginUser.getOrgId();
-        }else if(CollectionUtils.isEmpty(sysDataScope.getCustomIds())){
+        }else if(customIds==null || customIds.isEmpty()){
             //return null;
             return "org_id=0";
         }
-        return "org_id in (%s)".formatted(sysDataScope.getCustomIds());
+        List<String> ids = new ArrayList<>();
+        customIds.forEach(id->ids.add(id.asText()));
+        return "org_id in (%s)".formatted(String.join(",", ids));
     }
 
     private boolean containsTable(String sql){

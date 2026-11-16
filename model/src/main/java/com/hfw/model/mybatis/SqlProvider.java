@@ -53,11 +53,12 @@ public class SqlProvider {
         return sqlHelper.insert(entity);
     }
 
-    public String insertBatch(ProviderContext context, List<?> list) throws Exception{
+    public String insertBatch(ProviderContext context, Collection<?> list) throws Exception{
         if(list==null || list.isEmpty()){
             throw new SQLException(context.getMapperType()+" "+context.getMapperMethod().getName()+"参数为空");
         }
-        return sqlHelper.insertBatch(list);
+        Class<?> tableClass = this.getTableClass(context);
+        return sqlHelper.insertBatch(tableClass, list);
     }
 
     public String updateByPk(ProviderContext context, Map<String,Object> params) throws Exception{

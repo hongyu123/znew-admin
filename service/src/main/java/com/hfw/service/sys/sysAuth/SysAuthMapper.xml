@@ -30,4 +30,15 @@
         order by a.sort
     </select>
 
+    <select id="buttons">
+        select a.title,a.code,a.name, p.name pname
+        from sys_auth a
+        join sys_role_auth ra on a.id = ra.auth_id
+        join sys_user_role ur on ra.role_id = ur.role_id
+        join sys_role r on r.id = ur.role_id
+        join sys_auth p on a.parent_id = p.id
+        where a.state = 1 and r.state = 1
+        and ur.user_id = #{userId}
+    </select>
+
 </mapper>

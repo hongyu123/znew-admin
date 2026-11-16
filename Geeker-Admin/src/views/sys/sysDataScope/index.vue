@@ -54,9 +54,8 @@ const columns = [
     search: { el: "input" }
   },
   {
-    prop: "dataScope",
-    label: "数据权限",
-    enum: () => enums("DataScope")
+    prop: "dataScopeDesc",
+    label: "数据权限"
   },
   { prop: "operation", label: "操作", fixed: "right", width: 180 }
 ];

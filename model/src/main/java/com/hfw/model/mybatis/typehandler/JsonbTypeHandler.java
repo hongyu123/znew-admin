@@ -1,10 +1,9 @@
 package com.hfw.model.mybatis.typehandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hfw.model.utils.JsonList;
-import com.hfw.model.utils.JsonMap;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
@@ -18,15 +17,19 @@ import java.sql.*;
  * SysDemo selectByMap(Map<String,Object> map);
  * 1. 不要注册接口类型 Map.class,List.class, 因为mybatis ParameterMapping 会取实际的实现类类型,而不是接口类型
  * 2. 不要注册 HashMap.class,ArrayList.class, 因为用这两种类型做查询参数, mybatis会调用JsonbTypeHandler把他们视为一个参数,尝试转换json导致取不到正确的参数报错
- * 因此转换json类型建议用专有类型 JsonNode/JsonMap/JsonList
+ * 因此转换json类型建议用专有类型 ObjectNode/ArrayNode/DBMap/DBList
  */
-@MappedTypes({JsonNode.class, JsonMap.class, JsonList.class })
+@MappedTypes({ObjectNode.class, ArrayNode.class/*, DBMap.class, DBList.class*/ })
 @MappedJdbcTypes(JdbcType.OTHER)
 public class JsonbTypeHandler<T> extends BaseTypeHandler<T> {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
     private final Class<T> type;
 
     public JsonbTypeHandler(Class<T> type) {
+        objectMapper = new ObjectMapper();
+//        JavaTimeModule module = new JavaTimeModule();
+//        module.addSerializer(Long.class, ToStringSerializer.instance);
+//        objectMapper.registerModule(module);
         this.type = type;
     }
 

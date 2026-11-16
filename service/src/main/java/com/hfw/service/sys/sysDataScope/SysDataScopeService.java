@@ -1,13 +1,14 @@
 package com.hfw.service.sys.sysDataScope;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.hfw.model.enums.sys.DataScope;
 import com.hfw.model.enums.sys.EnableState;
+import com.hfw.model.jackson.ObjectMapperUtil;
 import com.hfw.model.mybatis.Where;
 import com.hfw.model.po.sys.SysDataScope;
 import com.hfw.model.po.sys.SysOrganization;
-import com.hfw.model.utils.JsonList;
 import com.hfw.service.dto.LoginUser;
 import com.hfw.service.sys.sysOrganization.SysOrganizationMapper;
 import com.hfw.service.sys.sysRole.SysRoleService;
@@ -113,8 +114,9 @@ public class SysDataScopeService {
             if (DataScope.OrganizationAndChildren==dataScope.getDataScope() && sysOrg!=null){
                 List<SysOrganization> orgTree = sysOrganizationMapper.orgTreeList(sysOrg.getAncestors(), EnableState.Enable);
                 orgTree.add(sysOrg);
-                List<Long> list = orgTree.stream().map(SysOrganization::getId).toList();
-                dataScope.setCustomIds(new JsonList<>(list));
+                ArrayNode arrayNode = ObjectMapperUtil.singleton().createArrayNode();
+                orgTree.forEach(org->arrayNode.add(org.getId()));
+                dataScope.setCustomIds(arrayNode);
             }
         }
         loginUser.setDataScopeKey(dataScopeKey);

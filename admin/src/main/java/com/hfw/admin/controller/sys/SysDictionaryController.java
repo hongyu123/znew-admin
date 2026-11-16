@@ -8,7 +8,6 @@ import com.hfw.model.mybatis.Where;
 import com.hfw.model.mybatis.anno.Sort;
 import com.hfw.model.po.sys.SysDictionary;
 import com.hfw.service.component.CommonService;
-import com.hfw.service.dto.LoginUser;
 import com.hfw.service.sys.sysDictionary.SysDictionaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -39,7 +38,7 @@ public class SysDictionaryController {
                 .eq(!dictKey && !dictValue, SysDictionary.COLUMN.pid, 0)
                 .like(dictKey, SysDictionary.COLUMN.dictKey, po.getDictKey() + "%")
                 .like(dictValue, SysDictionary.COLUMN.dictValue, po.getDictValue() + "%")
-                .orderBy(SysDictionary.COLUMN.sort, Sort.DESC);
+                .orderBy(SysDictionary.COLUMN.sort, Sort.ASC);
         return commonService.page(SysDictionary.class, where, page);
     }
 
@@ -79,17 +78,4 @@ public class SysDictionaryController {
         return Result.result(sysDictionaryService.dels(ids));
     }
 
-    // 根据key查询数据字典
-    @GetMapping("/dict")
-    public Result<?> dict(@RequestParam String key){
-        return Result.success( sysDictionaryService.dictList(key) );
-    }
-    @GetMapping("/dptDictList")
-    public Result<?> dptDictList(@RequestParam String key){
-        LoginUser loginUser = LoginUser.getLoginUser();
-        if(loginUser.isAdmin()){
-            return Result.success( sysDictionaryService.dictList(key) );
-        }
-        return Result.success( sysDictionaryService.dptDictList(key, loginUser.getOrgId()) );
-    }
 }

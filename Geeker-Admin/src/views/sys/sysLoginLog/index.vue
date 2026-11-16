@@ -4,13 +4,12 @@
       <!-- 展开行 -->
       <template #expand="scope">
         <el-descriptions title="">
-          <el-descriptions-item label="登出时间">{{ scope.row.logoutTime }}</el-descriptions-item>
           <el-descriptions-item label="浏览器">{{ scope.row.userAgent }}</el-descriptions-item>
         </el-descriptions>
       </template>
       <!-- 表格操作 -->
       <template #operation="scope">
-        <el-button v-if="scope.row.onlineFlag === 1" type="danger" link :icon="SwitchButton" @click="handleKickout(scope.row)">
+        <el-button v-if="scope.row.onlineFlag === 1" type="danger" link icon="SwitchButton" @click="handleKickout(scope.row)">
           强制下线
         </el-button>
       </template>
@@ -18,9 +17,8 @@
   </div>
 </template>
 
-<script setup name="SysLoginLog">
+<script lang="jsx" setup name="SysLoginLog">
 import { reactive, ref } from "vue";
-import { SwitchButton } from "@element-plus/icons-vue";
 
 import ProTable from "@/components/ProTable/index.vue";
 import { useHandleData } from "@/hooks/useHandleData";
@@ -58,19 +56,26 @@ const columns = reactive([
     prop: "loginTime",
     label: "登录时间",
     // sortable: true,
-    search: { el: "date-picker", key: "loginTime_gt", props: { type: "datetime", valueFormat: "YYYY-MM-DD HH:mm:ss" } },
+    search: { el: "date-picker", key: "params[loginTime_gt]", props: { type: "datetime", valueFormat: "YYYY-MM-DD HH:mm:ss" } },
     width: 180
   },
   {
     prop: "loginTime",
     label: "至",
-    search: { el: "date-picker", key: "loginTime_lt", props: { type: "datetime", valueFormat: "YYYY-MM-DD HH:mm:ss" } },
+    search: { el: "date-picker", key: "params[loginTime_lt]", props: { type: "datetime", valueFormat: "YYYY-MM-DD HH:mm:ss" } },
     isShow: false
   },
 
   { prop: "onlineFlag", label: "在线状态", width: 100, tag: true, enum: onlineFlagEnum, search: { el: "select" } },
   { prop: "logoutType", label: "登出类型", width: 100, tag: true, enum: () => enums("LogoutType") },
-  { prop: "logoutTime", label: "登出时间", width: 180 },
+  {
+    prop: "logoutTime",
+    label: "登出时间",
+    width: 180,
+    render: scope => {
+      return <span> {scope.row.logoutType === "Expire" ? "" : scope.row.logoutTime}</span>;
+    }
+  },
   // { prop: "expireTime", label: "失效时间", width: 180 },
   { prop: "operation", label: "操作", fixed: "right", width: 110 }
 ]);

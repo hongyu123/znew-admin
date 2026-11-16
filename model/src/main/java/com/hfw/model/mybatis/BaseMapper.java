@@ -32,7 +32,7 @@ public interface BaseMapper<T> {
 
     @InsertProvider(value = SqlProvider.class, method = "insertBatch")
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    int insertBatch(List<T> list);
+    int insertBatch(Collection<T> list);
 
     @UpdateProvider(value = SqlProvider.class, method = "updateByPk")
     int updateByPk(@Param("entity")T entity);

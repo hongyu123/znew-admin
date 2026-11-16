@@ -46,7 +46,7 @@ upload:
 gen:
   pack: com.hfw
   author: farkle
-  path: D:\\tmp\\admin
+  path: C:\\tmp\\admin
   table-prefix: t_
   schema: public
   project-name: znew

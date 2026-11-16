@@ -11,7 +11,7 @@ export const useUserStore = defineStore(
       token.value = newToken;
     };
 
-    const userInfo = ref<UserState["userInfo"]>({ name: "Geeker" });
+    const userInfo = ref<UserState["userInfo"]>({ nickname: "Geeker" });
     const setUserInfo = (newUserInfo: UserState["userInfo"]) => {
       userInfo.value = newUserInfo;
     };

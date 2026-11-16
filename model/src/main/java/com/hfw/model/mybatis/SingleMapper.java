@@ -32,7 +32,7 @@ public interface SingleMapper {
 
     @InsertProvider(value = SingleMapperSqlProvider.class, method = "insertBatch")
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    int insertBatch(List<?> list);
+    int insertBatch(Collection<?> list);
 
     @UpdateProvider(value = SingleMapperSqlProvider.class, method = "updateByPk")
     int updateByPk(@Param("entity")Object entity);

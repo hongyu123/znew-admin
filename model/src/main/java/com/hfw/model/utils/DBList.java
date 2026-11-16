@@ -3,11 +3,11 @@ package com.hfw.model.utils;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class JsonList<T> extends ArrayList<T> {
-    public JsonList() {
+public class DBList<T> extends ArrayList<T> {
+    public DBList() {
         super();
     }
-    public JsonList(Collection<? extends T> collection) {
+    public DBList(Collection<? extends T> collection) {
         super(collection);
     }
 }

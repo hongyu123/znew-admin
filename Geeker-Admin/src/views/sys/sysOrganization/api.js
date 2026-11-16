@@ -37,5 +37,5 @@ export const edit = data => {
  * @param {String|Number} id 组织机构id
  */
 export const del = id => {
-  return http.delete("/sysOrganization", { id });
+  return http.delete("/sysOrganization", { id }, { headers: { "Content-Type": "application/x-www-form-urlencoded" } });
 };

@@ -5,6 +5,8 @@ import com.hfw.model.enums.sys.BaseEnum;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.utils.JsonMap;
 import com.hfw.service.component.EnumScan;
+import com.hfw.service.dto.LoginUser;
+import com.hfw.service.sys.sysDictionary.SysDictionaryService;
 import com.hfw.service.sys.sysUpload.SysUploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ public class CommonController {
     private EnumScan enumScan;
     @Autowired
     private SysUploadService sysUploadService;
+    @Autowired
+    private SysDictionaryService sysDictionaryService;
 
     //获取枚举
     private List<JsonMap> getEnums(Class<?> clazz, String filter){
@@ -80,6 +84,20 @@ public class CommonController {
     @PostMapping(value = "/upload", produces = MediaType.APPLICATION_JSON_VALUE)
     public String upload(@RequestPart MultipartFile file) throws Exception {
         return ResultUtil.jsonData( sysUploadService.upload(file) ,"id","name","url");
+    }
+
+    // 根据key查询数据字典
+    @GetMapping("/dict")
+    public Result<?> dict(@RequestParam String key){
+        return Result.success( sysDictionaryService.dictList(key) );
+    }
+    @GetMapping("/dptDictList")
+    public Result<?> dptDictList(@RequestParam String key){
+        LoginUser loginUser = LoginUser.getLoginUser();
+        if(loginUser.isAdmin()){
+            return Result.success( sysDictionaryService.dictList(key) );
+        }
+        return Result.success( sysDictionaryService.dptDictList(key, loginUser.getOrgId()) );
     }
 
 }

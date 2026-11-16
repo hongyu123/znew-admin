@@ -7,6 +7,7 @@ import com.hfw.model.jackson.Result;
 import com.hfw.model.mybatis.Where;
 import com.hfw.model.mybatis.anno.Sort;
 import com.hfw.model.po.sys.SysLoginLog;
+import com.hfw.service.auth.AuthService;
 import com.hfw.service.component.CommonService;
 import com.hfw.service.dto.LoginUser;
 import com.hfw.service.sys.sysLoginLog.SysLoginLogService;
@@ -31,17 +32,21 @@ public class SysLoginLogController {
     private SysUserService sysUserService;
     @Autowired
     private SysLoginLogService sysLoginLogService;
+    @Autowired
+    private AuthService authService;
 
     @GetMapping("/page")
     public PageResult<SysLoginLog> page(Page<SysLoginLog> page, SysLoginLog po) {
+        page.paramToDateTime("loginTime_gt");
+        page.paramToDateTime("loginTime_lt");
         Where<SysLoginLog> where = Where.<SysLoginLog>where()
                 .eq(StringUtils.hasText(po.getAccount()), SysLoginLog.COLUMN.account, po.getAccount())
                 .like(StringUtils.hasText(po.getIp()), SysLoginLog.COLUMN.ip, po.getIp() + "%")
                 .like(StringUtils.hasText(po.getLocation()), SysLoginLog.COLUMN.location, "%" + po.getLocation() + "%")
                 .eq(po.getState() != null, SysLoginLog.COLUMN.state, po.getState())
                 .eq(po.getOnlineFlag() != null, SysLoginLog.COLUMN.onlineFlag, po.getOnlineFlag())
-                .ge(StringUtils.hasText(page.getParam("loginTime_gt")), SysLoginLog.COLUMN.loginTime, page.getParam("loginTime_gt"))
-                .le(StringUtils.hasText(page.getParam("loginTime_lt")), SysLoginLog.COLUMN.loginTime, page.getParam("loginTime_lt"))
+                .ge(page.get("loginTime_gt")!=null, SysLoginLog.COLUMN.loginTime, page.get("loginTime_gt"))
+                .le(page.get("loginTime_lt")!=null, SysLoginLog.COLUMN.loginTime, page.get("loginTime_lt"))
                 .eq(po.getLogoutType() != null, SysLoginLog.COLUMN.logoutType, po.getLogoutType());
         if(!where.orderBy(page, true)){
             where.orderBy(SysLoginLog.COLUMN.id, Sort.DESC);
@@ -50,7 +55,7 @@ public class SysLoginLogController {
         LocalDateTime ago = LocalDateTime.now().plusHours(-1);
         if(pageResult.getData()!=null){
             pageResult.getData().forEach(log->{
-                if(log.getOnlineFlag()==1 && log.getLoginTime().isBefore(ago)){
+                if(log.getOnlineFlag()==1 && log.getLoginTime().isBefore(ago) && !authService.exists(log.getToken())){
                     //登录失效
                     sysLoginLogService.logout(log.getId(), LogoutType.Expire);
                 }

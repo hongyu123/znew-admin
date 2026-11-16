@@ -7,16 +7,16 @@
     draggable
     @close="handleClose"
   >
-    <el-form :inline="true" :model="queryParams">
+    <el-form :inline="true" :model="queryParams" @submit.prevent="handleSearch">
       <el-form-item label="账号">
-        <el-input v-model.trim="queryParams.account_like" placeholder="请输入账号" clearable @keyup.enter="handleSearch" />
+        <el-input v-model.trim="queryParams.account" placeholder="请输入账号" clearable />
       </el-form-item>
       <el-form-item label="昵称">
-        <el-input v-model.trim="queryParams.nickname_like" placeholder="请输入昵称" clearable @keyup.enter="handleSearch" />
+        <el-input v-model.trim="queryParams.nickname" placeholder="请输入昵称" clearable />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" :icon="Search" @click="handleSearch">查询</el-button>
-        <el-button :icon="Refresh" @click="handleReset">重置</el-button>
+        <el-button type="primary" icon="Search" native-type="submit">查询</el-button>
+        <el-button icon="Refresh" @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -62,7 +62,6 @@
 <script lang="js" setup name="SysUserSelect">
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
-import { Refresh, Search } from "@element-plus/icons-vue";
 import { page } from "./api";
 
 // 弹窗状态

@@ -43,7 +43,6 @@ public class SysLoginLog {
 
     /** 在线状态 */
     private Integer onlineFlag;
-    private java.time.LocalDateTime expireTime;
 
     /** 登出类型 */
     private LogoutType logoutType;
@@ -62,6 +61,6 @@ public class SysLoginLog {
     public enum COLUMN implements Column<SysLoginLog>{
         id,
         account,ip,location,userAgent, message,loginTime,state,onlineFlag,logoutType,
-        logoutTime,token, userId,expireTime
+        logoutTime,token, userId
     }
 }

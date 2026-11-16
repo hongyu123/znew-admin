@@ -1,5 +1,5 @@
 <template>
-  <el-drawer v-model="drawerProps.visible" :destroy-on-close="true" size="50%" :title="drawerProps.title">
+  <el-drawer v-model="drawerProps.visible" :destroy-on-close="true" size="30%" :title="drawerProps.title">
     <el-form
       ref="ruleFormRef"
       label-width="100px"
@@ -43,7 +43,7 @@
         <el-input v-model.trim="row.nickname" maxlength="50" show-word-limit placeholder="请填写昵称" clearable></el-input>
       </el-form-item>
       <!-- <el-form-item label="头像" prop="avatar">
-        <UploadImg v-model:image-url="row.avatar" :api="upload" />
+        <UploadImg v-model:image-url="row.avatar"/>
       </el-form-item> -->
       <el-form-item label="邮箱" prop="email">
         <el-input v-model.trim="row.email" maxlength="50" show-word-limit placeholder="请填写邮箱" clearable></el-input>
@@ -79,7 +79,6 @@
 <script setup lang="js" name="SysUserDrawer">
 import { ref, reactive, onMounted } from "vue";
 import { ElMessage } from "element-plus";
-import { upload } from "@/api/modules/common";
 import UploadImg from "@/components/Upload/Img.vue";
 import { tree as reqOrgTree } from "../sysOrganization/api";
 import { page as reqRoleList } from "../sysRole/api";
@@ -89,7 +88,7 @@ const row = ref({});
 const rules = reactive({
   orgId: [{ required: true, message: "请选择部门", trigger: "change" }],
   account: [{ required: true, message: "请填写账号", trigger: "change" }],
-  password: [{ required: row.value.id ? true : false, pattern: /^\w{6,16}$/, message: "密码格式错误", trigger: "change" }],
+  password: [{ required: !row.value.id, pattern: /^\w{6,16}$/, message: "密码格式错误", trigger: "change" }],
   phone: [{ required: false, pattern: /^\d{11}$/, message: "手机号码格式错误", trigger: "change" }],
   email: [{ pattern: /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/, message: "邮箱格式错误", trigger: "change" }],
   state: [{ required: true, message: "请填写状态", trigger: "change" }],
@@ -122,7 +121,7 @@ const acceptParams = (rowData, refreshTable, isView) => {
   reqOrgTree().then(res => {
     orgTreeData.value = res.data;
   });
-  reqRoleList({ state: "Enable" }).then(res => {
+  reqRoleList({ state: "Enable", pageNumber: 1, pageSize: 100 }).then(res => {
     roleList.value = res.data;
   });
 };

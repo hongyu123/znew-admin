@@ -8,6 +8,7 @@ import com.hfw.model.jackson.Result;
 import com.hfw.model.mybatis.Where;
 import com.hfw.model.mybatis.anno.Sort;
 import com.hfw.model.po.sys.SysDemo;
+import com.hfw.model.utils.LocalDateUtil;
 import com.hfw.model.validation.ValidGroup;
 import com.hfw.service.component.CommonService;
 import com.hfw.service.dto.LoginUser;
@@ -50,14 +51,19 @@ public class SysDemoController {
     public PageResult<SysDemo> page(Page<SysDemo> page, SysDemo po) {
         LoginUser.enableDataScope("sys_demo");//开启数据权限
 
+        String registTimeArr = page.getParam("registTimeArr");
         Where<SysDemo> where = Where.<SysDemo>where()
                 .eq(StringUtils.hasText(po.getName()), SysDemo.COLUMN.name, po.getName())
                 .like(StringUtils.hasText(po.getPhone()), SysDemo.COLUMN.phone, po.getPhone())
                 .eq(po.getGender() != null, SysDemo.COLUMN.gender, po.getGender())
                 .eq(po.getState() != null, SysDemo.COLUMN.state, po.getState())
                 .eq(po.getBirth() != null, SysDemo.COLUMN.birth, po.getBirth())
-                .ge(StringUtils.hasText(page.getParam("registTime_gt")), SysDemo.COLUMN.birth, page.getParam("registTime_gt"))
-                .le(StringUtils.hasText(page.getParam("registTime_lt")), SysDemo.COLUMN.birth, page.getParam("registTime_lt"));
+                ;
+        if(StringUtils.hasText(registTimeArr)){
+            String[] arr = registTimeArr.split(",");
+            where.ge(SysDemo.COLUMN.registTime, LocalDateUtil.parseDate(arr[0]));
+            where.lt(SysDemo.COLUMN.registTime, LocalDateUtil.parseDate(arr[1]));
+        }
         if(!where.orderBy(page)){
             where.orderBy(SysDemo.COLUMN.id, Sort.DESC);
         }
@@ -74,6 +80,9 @@ public class SysDemoController {
     @PostMapping
     public Result<Void> add(@RequestBody @Validated(ValidGroup.Add.class) SysDemoDTO dto){
         SysDemo po = dto.toPo().saveFilter();
+        LoginUser loginUser = LoginUser.getLoginUser();
+        po.setUserId(loginUser.getId());
+        po.setOrgId(loginUser.getOrgId());
         return Result.result( commonService.insert(po) );
     }
 
@@ -122,7 +131,7 @@ public class SysDemoController {
         OutputStream os = response.getOutputStream();
         try(os){
             FesodSheet.write(os,SysDemo.class).autoCloseStream(false).excludeColumnFieldNames(List.of("id"))
-                    .sheet().doWrite(list);
+                    .sheet("Sheet1").doWrite(list);
         }
     }
     //模板文件导出

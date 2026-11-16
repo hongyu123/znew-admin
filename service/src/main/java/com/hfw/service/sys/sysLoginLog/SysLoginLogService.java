@@ -50,12 +50,10 @@ public class SysLoginLogService {
         log.setState(1);
         log.setOnlineFlag(1);
         log.setToken(token.uuid());
-        log.setExpireTime(token.expireTime());
         return sysLoginLogMapper.insert(log);
     }
 
-    public List<SysLoginLog> checkOnline(Long userId){
-        sysLoginLogMapper.expire(userId);
+    public List<SysLoginLog> online(Long userId){
         return sysLoginLogMapper.selectList(Where.<SysLoginLog>where().eq(SysLoginLog.COLUMN.userId, userId).eq(SysLoginLog.COLUMN.onlineFlag, 1).orderBy(SysLoginLog.COLUMN.id, Sort.ASC));
     }
     public int logout(Long id, LogoutType logoutType){

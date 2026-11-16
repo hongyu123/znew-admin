@@ -4,6 +4,8 @@
       <!-- 表格 header 按钮 -->
       <template #tableHeader="scope">
         <el-button type="primary" icon="CirclePlus" @click="openEditForm()" v-auth="['add']">新增</el-button>
+        <el-button type="primary" icon="Upload" plain @click="importFile" v-auth="['import']">导入</el-button>
+        <el-button type="primary" icon="Download" plain @click="exportFile" v-auth="['export']">导出</el-button>
         <el-button
           type="danger"
           icon="Delete"
@@ -24,6 +26,7 @@
     </ProTable>
 
     <SysDemoDrawer ref="editFormRef" />
+    <ImportExcel ref="importRef" />
   </div>
 </template>
 
@@ -31,9 +34,11 @@
 import { ref } from "vue";
 import ProTable from "@/components/ProTable/index.vue";
 import SysDemoDrawer from "./edit.vue";
-import { page, detail, del, dels } from "./api";
+import ImportExcel from "@/components/ImportExcel/index.vue";
+import { page, detail, del, dels, exp, imp } from "./api";
 import { useHandleData } from "@/hooks/useHandleData";
 import { GenderEnum } from "@/enums/commonEnum";
+import { useDownload, directDownload } from "@/hooks/useDownload";
 
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
 const proTable = ref();
@@ -41,6 +46,9 @@ const proTable = ref();
 // 如果你想在请求之前对当前请求参数做一些操作，可以自定义如下函数：params 为当前所有的请求参数（包括分页），最后返回请求列表接口
 // 默认不做操作就直接在 ProTable 组件上绑定	:requestApi="getUserList"
 const getTableList = params => {
+  if (params.registTimeArr) {
+    params.params = { registTimeArr: params.registTimeArr.join(",") };
+  }
   return page(params);
 };
 
@@ -83,7 +91,11 @@ const columns = [
     prop: "registTime",
     label: "注册时间",
     width: 180,
-    search: { el: "date-picker", key: "registTime", props: { format: "YYYY-MM-DD", valueFormat: "YYYY-MM-DD" } }
+    search: {
+      el: "date-picker",
+      key: "registTimeArr",
+      props: { type: "daterange", format: "YYYY-MM-DD", valueFormat: "YYYY-MM-DD" }
+    }
   },
   {
     prop: "avatar",
@@ -127,5 +139,23 @@ const delsModel = async ids => {
   await useHandleData(dels, ids, `删除${ids.length}条选中数据`);
   proTable.value.clearSelection();
   proTable.value.getTableList();
+};
+
+// 导出
+const exportFile = async () => {
+  directDownload("/sysDemo/export", proTable.value.searchParam);
+  //useDownload(exp, "导出示例", proTable.value.searchParam);
+};
+// 导入
+const importRef = ref();
+const importFile = () => {
+  let params = {
+    title: "导入示例",
+    template: "SysDemo",
+    tempApi: exp,
+    importApi: imp,
+    getTableList: proTable.value.getTableList
+  };
+  importRef.value.acceptParams(params);
 };
 </script>

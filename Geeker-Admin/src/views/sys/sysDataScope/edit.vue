@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="js" name="SysDataScopeDrawer">
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 
 import SysUserSelect from "../sysUser/select.vue";
@@ -106,25 +106,23 @@ const rules = reactive({
   customIds: [{ type: "array", required: true, message: "请选择自定义部门", trigger: "change" }]
 });
 
+onMounted(() => {
+  enums("DataScope").then(res => {
+    dataScopeEnum.value = res.data || [];
+  });
+});
+
 // 接收父组件传过来的参数
 const acceptParams = (rowData, refreshTable) => {
   row.value = { ...rowData, customIds: rowData.customIds || [] };
   drawerProps.value.refreshTable = refreshTable;
   drawerProps.value.title = rowData.id ? "编辑数据权限配置" : "新增数据权限配置";
   drawerProps.value.visible = true;
-  loadOptions();
-};
-
-// 加载下拉/树数据
-const loadOptions = () => {
   reqOrgTree().then(res => {
     orgTreeData.value = res.data || [];
   });
   currentUserRolesWithOwn().then(res => {
     roleList.value = res.data || [];
-  });
-  enums("DataScope").then(res => {
-    dataScopeEnum.value = res.data || [];
   });
 };
 

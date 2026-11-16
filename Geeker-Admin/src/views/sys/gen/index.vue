@@ -1,16 +1,16 @@
 <template>
   <div class="table-box">
-    <ProTable ref="proTable" title="代码生成列表" :columns="columns" :requestApi="getTableList" selectId="tableName">
+    <ProTable ref="proTable" title="代码生成列表" :columns="columns" :requestApi="getTableList" rowKey="tableName">
       <!-- 表格 header 按钮 -->
       <template #tableHeader="scope">
         <el-button type="primary" @click="handleBatchGenToPath(scope.selectedListIds)">配置路径生成</el-button>
-        <el-button type="primary" @click="handleBatchGenToProject(scope.selectedListIds)">项目路径生成</el-button>
+        <!-- <el-button type="primary" @click="handleBatchGenToProject(scope.selectedListIds)">项目路径生成</el-button> -->
       </template>
       <!-- 表格操作 -->
       <template #operation="scope">
         <el-button type="primary" icon="View" link @click="preview(scope.row)">预览</el-button>
         <el-button type="primary" link @click="handleGenToPath(scope.row)">配置路径生成</el-button>
-        <el-button type="primary" link @click="handleGenToProject(scope.row)">项目路径生成</el-button>
+        <!-- <el-button type="primary" link @click="handleGenToProject(scope.row)">项目路径生成</el-button> -->
         <el-button type="primary" link @click="formGen(scope.row)">表单生成</el-button>
       </template>
     </ProTable>
@@ -54,7 +54,7 @@ const columns = [
 ];
 
 //配置路径生成
-const handleGenToPath = async () => {
+const handleGenToPath = async row => {
   const res = await genToPath({ tableName: row.tableName });
   ElMessage({
     type: "success",
@@ -62,7 +62,7 @@ const handleGenToPath = async () => {
   });
 };
 
-const handleGenToProject = async () => {
+const handleGenToProject = async row => {
   const res = await genToProject({ tableName: row.tableName });
   ElMessage({
     type: "success",

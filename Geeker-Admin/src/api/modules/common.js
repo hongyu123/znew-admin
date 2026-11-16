@@ -13,3 +13,10 @@ export const upload = data => {
     }
   });
 };
+
+export const dict = key => {
+  return http.get("/common/dict", { key });
+};
+export const dptDictList = key => {
+  return http.get("/common/dptDictList", { key });
+};

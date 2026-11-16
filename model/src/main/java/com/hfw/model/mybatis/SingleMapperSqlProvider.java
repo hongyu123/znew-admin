@@ -36,11 +36,12 @@ public class SingleMapperSqlProvider {
         return sqlHelper.insert(entity);
     }
 
-    public String insertBatch(ProviderContext context, List<?> list) throws Exception{
+    public String insertBatch(ProviderContext context, Collection<?> list) throws Exception{
         if(list==null || list.isEmpty()){
             throw new SQLException(context.getMapperType()+" "+context.getMapperMethod().getName()+"参数为空");
         }
-        return sqlHelper.insertBatch(list);
+        Class<?> type = list.iterator().next().getClass();
+        return sqlHelper.insertBatch(type, list);
     }
 
     public String updateByPk(Map<String,Object> params) throws Exception{

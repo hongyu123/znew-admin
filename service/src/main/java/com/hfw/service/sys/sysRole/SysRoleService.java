@@ -42,7 +42,8 @@ public class SysRoleService {
         if(loginUser.getId() == 1){
             Where<SysRole> where = Where.<SysRole>where()
                     .like(StringUtils.hasText(po.getName()), SysRole.COLUMN.name, po.getName() + "%")
-                    .like(StringUtils.hasText(po.getCode()), SysRole.COLUMN.code, po.getCode() + "%");
+                    .like(StringUtils.hasText(po.getCode()), SysRole.COLUMN.code, po.getCode() + "%")
+                    .eq(po.getState() != null, SysRole.COLUMN.state, po.getState());
             List<SysRole> list = sysRoleMapper.selectList(where);
             return PageResult.of(list);
         }

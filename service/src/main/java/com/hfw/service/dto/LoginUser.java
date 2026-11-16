@@ -57,9 +57,7 @@ public class LoginUser {
     //数据权限key
     private String dataScopeKey;
     public static void enableDataScope(String key){
-//        StpUtil.checkLogin();
-//        LoginUser loginUser = (LoginUser) StpUtil.getSession().get(USER);
-//        loginUser.dataScopeKey = key;
+        LoginUser.getLoginUser().setDataScopeKey(key);
     }
 
 }

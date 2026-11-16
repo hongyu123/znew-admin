@@ -55,7 +55,7 @@ const columns = [
   {
     prop: "times",
     label: "耗时(ms)",
-    search: { el: "input", key: "times_gt" },
+    search: { el: "input", key: "times" },
     render: scope => {
       return scope.row.times > 3000 ? <el-tag type="danger"> {scope.row.times} </el-tag> : <el-tag> {scope.row.times} </el-tag>;
     }

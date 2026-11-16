@@ -1,4 +1,6 @@
 import { ElNotification } from "element-plus";
+import qs from "qs";
+import { useUserStore } from "@/stores/modules/user";
 
 /**
  * @description 接收数据流生成 blob，创建链接，下载文件
@@ -47,4 +49,11 @@ export const useDownload = async (
   } catch (error) {
     console.log(error);
   }
+};
+
+export const directDownload = (url: string, params: any) => {
+  const token = useUserStore().token;
+  document.cookie = `token=${token}; path=/; max-age=60`;
+  const down_url = import.meta.env.VITE_API_URL + url + "?" + qs.stringify(params);
+  window.open(down_url, "_blank");
 };

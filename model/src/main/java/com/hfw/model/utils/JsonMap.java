@@ -147,7 +147,9 @@ public class JsonMap extends HashMap<String, Object> {
                 throw new GeneralException(e);
             }
         } else if (value instanceof Map map) {
-            return new JsonMap(map);
+            JsonMap jsonMap = new JsonMap(map);
+            super.put(key, jsonMap);
+            return jsonMap;
         } else {
             throw new GeneralException("Can not cast '" + value.getClass() + "' to JsonMap");
         }

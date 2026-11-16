@@ -27,7 +27,7 @@ import SearchMenu from "./components/SearchMenu.vue";
 import ThemeSetting from "./components/ThemeSetting.vue";
 
 const userStore = useUserStore();
-const username = computed(() => userStore.userInfo.name);
+const username = computed(() => userStore.userInfo.nickname);
 </script>
 
 <style scoped lang="scss">

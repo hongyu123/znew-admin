@@ -38,7 +38,7 @@
     <el-form-item>
       <el-button type="primary" icon="View" @click="preview">预览</el-button>
       <el-button type="primary" @click="handleGenFormToPath">配置路径生成</el-button>
-      <el-button type="primary" @click="handleGenFormToProject">项目路径生成</el-button>
+      <!-- <el-button type="primary" @click="handleGenFormToProject">项目路径生成</el-button> -->
     </el-form-item>
 
     <FormPreview ref="formPreviewRef" />

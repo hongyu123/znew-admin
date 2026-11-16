@@ -21,10 +21,3 @@ export const del = id => {
 export const dels = ids => {
   return http.delete("/sysDictionary/dels", ids);
 };
-
-export const dict = key => {
-  return http.get("/sysDictionary/dict", { key });
-};
-export const dptDictList = key => {
-  return http.get("/sysDictionary/dptDictList", { key });
-};
