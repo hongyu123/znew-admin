@@ -9,9 +9,10 @@ import lombok.Setter;
 /**
  * 系统示例表
  * @author farkle
- * @date 2026-02-17
+ * @date 2026-11-17
  */
-@Getter @Setter
+@Getter
+@Setter
 @Table("sys_demo")
 public class SysDemo {
 
@@ -37,7 +38,7 @@ public class SysDemo {
     private Integer state;
 
     /** 兴趣(多选框) */
-    //private com.hfw.model.mybatis.typehandler.DBMap interest;
+    private com.fasterxml.jackson.databind.node.ArrayNode interest;
 
     /** 生日(日期) */
     private java.time.LocalDate birth;
@@ -52,10 +53,10 @@ public class SysDemo {
     private String video;
 
     /** 照片(多图上传) */
-    private String photos;
+    private  com.fasterxml.jackson.databind.node.ArrayNode photos;
 
     /** 附件(文件上传) */
-    private String attachment;
+    private  com.fasterxml.jackson.databind.node.ArrayNode attachment;
 
     /** 简介(文本域) */
     private String introduction;
@@ -76,7 +77,7 @@ public class SysDemo {
     private java.math.BigDecimal lat;
 
     /** 文件输入 */
-    private String fileInput;
+    private com.fasterxml.jackson.databind.node.ObjectNode fileInput;
 
     /** user_id */
     private Long userId;

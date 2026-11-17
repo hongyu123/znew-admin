@@ -31,7 +31,7 @@ public interface SysAuthMapper extends BaseMapper<SysAuth> {
      * @param roleId 角色id
      * @return 权限列表
      */
-    List<SysAuth> roleAuths(Long roleId);
+    List<Long> roleAuths(Long roleId);
 
     List<JsonMap> buttons(Long userId);
 }

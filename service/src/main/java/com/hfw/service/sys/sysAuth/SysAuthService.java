@@ -77,7 +77,7 @@ public class SysAuthService {
      * @param roleId 角色id
      * @return 权限列表
      */
-    public List<SysAuth> roleAuths(Long roleId){
+    public List<Long> roleAuths(Long roleId){
         return sysAuthMapper.roleAuths(roleId);
     }
 

@@ -148,7 +148,7 @@ import { ElMessage } from "element-plus";
 <#if pictures>import UploadImgMul from "@/components/Upload/Imgs.vue";</#if>
 <#if file>import UploadFile from "@/components/Upload/File.vue";</#if>
 <#if files>import UploadFiles from "@/components/Upload/Files.vue";</#if>
-<#if richtext>import WangEditor from "@/components/Editor/WangEditor.vue";</#if>
+<#if richtext>import WangEditor from "@/components/WangEditor/index.vue";</#if>
 
 import { add, edit } from "./api";
 <#list columnList as c>
@@ -188,14 +188,14 @@ const drawerProps = ref({
   title: "",
   isView: false,
   visible: false
-  //getTableList
+  //refreshTable
 });
 const row = ref({});
 
 // 接收父组件传过来的参数
-const acceptParams = (rowData, getTableList, isView) => {
+const acceptParams = (rowData, refreshTable, isView) => {
   row.value = rowData;
-  drawerProps.value.refreshTable = getTableList;
+  drawerProps.value.refreshTable = refreshTable;
   drawerProps.value.isView = isView;
   if (isView) {
     drawerProps.value.title = "查看${tableRemark}";

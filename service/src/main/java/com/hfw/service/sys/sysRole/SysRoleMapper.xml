@@ -24,11 +24,11 @@
         join sys_user_role ur on r.id = ur.role_id
         where r.state = 1
         and ur.user_id = #{userId}
-        order by r.sort
         <if test="unionOwn==1">
         union
         select * from sys_role where state = 1 and create_user = #{account}
         </if>
+        order by sort
     </select>
     <select id="userRoleList" resultType="com.hfw.model.po.sys.SysRole">
         select r.*
@@ -46,13 +46,13 @@
             </if>
             and ur.user_id=#{po.id}
         </where>
-        order by r.sort
         union
         select * from sys_role
         where create_user=#{po.createUser}
         <if test="po.state!=null">
             and state=#{po.state}
         </if>
+        order by sort
     </select>
 
 </mapper>

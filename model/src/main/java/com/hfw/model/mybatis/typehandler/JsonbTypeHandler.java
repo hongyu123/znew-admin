@@ -38,6 +38,7 @@ public class JsonbTypeHandler<T> extends BaseTypeHandler<T> {
         try {
             PGobject jsonObject = new PGobject();
             String json = objectMapper.writeValueAsString(parameter);
+            //ps.setString(i, json);
             ps.setObject(i, json, Types.OTHER);
         }catch (JsonProcessingException e){
             throw new SQLException("Error converting object to JSON", e);

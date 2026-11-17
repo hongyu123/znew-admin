@@ -68,10 +68,10 @@ public class SysRoleService {
         sysRoleMapper.insert(sysRole);
         //保存角色权限列表
         if(!CollectionUtils.isEmpty(sysRole.getAuthList())){
-            List<SysRoleAuth> ruleAuthList = sysRole.getAuthList().stream().map(auth -> {
+            List<SysRoleAuth> ruleAuthList = sysRole.getAuthList().stream().map(authId -> {
                 SysRoleAuth sysRoleAuth = new SysRoleAuth();
                 sysRoleAuth.setRoleId(sysRole.getId());
-                sysRoleAuth.setAuthId(auth.getId());
+                sysRoleAuth.setAuthId(authId);
                 return sysRoleAuth;
             }).collect(Collectors.toList());
             commonMapper.insertBatch(ruleAuthList);
@@ -93,10 +93,10 @@ public class SysRoleService {
         //更新角色分配的权限
         commonMapper.delete(SysRoleAuth.class, Where.<SysRoleAuth>where().eq(SysRoleAuth.COLUMN.roleId, sysRole.getId()));
         if(!CollectionUtils.isEmpty(sysRole.getAuthList())){
-            List<SysRoleAuth> ruleAuthList = sysRole.getAuthList().stream().map(auth -> {
+            List<SysRoleAuth> ruleAuthList = sysRole.getAuthList().stream().map(authId -> {
                 SysRoleAuth sysRoleAuth = new SysRoleAuth();
                 sysRoleAuth.setRoleId(sysRole.getId());
-                sysRoleAuth.setAuthId(auth.getId());
+                sysRoleAuth.setAuthId(authId);
                 return sysRoleAuth;
             }).collect(Collectors.toList());
             commonMapper.insertBatch(ruleAuthList);

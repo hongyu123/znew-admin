@@ -60,5 +60,5 @@ public class SysRole {
         name,code,sort,state,systemFlag, remark,createUser,createTime,updateUser,updateTime
     }
 
-    private List<SysAuth> authList;
+    private List<Long> authList;
 }

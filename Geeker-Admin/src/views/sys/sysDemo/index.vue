@@ -38,6 +38,7 @@ import ImportExcel from "@/components/ImportExcel/index.vue";
 import { page, detail, del, dels, exp, imp } from "./api";
 import { useHandleData } from "@/hooks/useHandleData";
 import { GenderEnum } from "@/enums/commonEnum";
+import { enums } from "@/api/modules/common";
 import { useDownload, directDownload } from "@/hooks/useDownload";
 
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）

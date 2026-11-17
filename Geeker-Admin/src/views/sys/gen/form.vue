@@ -20,6 +20,7 @@
             <el-option label="下拉框" value="select" />
             <el-option label="单选框" value="radio" />
             <el-option label="多选框" value="checkbox" />
+            <el-option label="枚举" value="enum" />
             <el-option label="日期" value="date" />
             <el-option label="日期时间" value="datetime" />
             <el-option label="图片上传" value="picture" />

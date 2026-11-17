@@ -83,7 +83,7 @@ CREATE TABLE "public"."sys_data_scope" (
 "config_name" varchar(100),
 "data_key" varchar(100),
 "data_scope" int2 NOT NULL,
-"custom_ids" custom_ids jsonb NULL,
+"custom_ids" jsonb NULL,
 CONSTRAINT "sys_data_scope_pkey" PRIMARY KEY ("id"));
 
 -- public.sys_demo DDL
@@ -101,8 +101,8 @@ CREATE TABLE "public"."sys_demo" (
 "regist_time" timestamptz(6) NOT NULL,
 "avatar" varchar(200) NOT NULL,
 "video" varchar(200),
-"photos" varchar(500),
-"attachment" varchar(500),
+"photos" json,
+"attachment" json,
 "introduction" varchar(255) NOT NULL,
 "detail" varchar(500),
 "phone" bpchar(11) NOT NULL,
@@ -491,9 +491,7 @@ INSERT INTO public.sys_auth (parent_id,title,code,"name",auth_type,sort,icon,"pa
 INSERT INTO "public"."sys_config" ("id","key","value","comment") VALUES (1,'phone','123456',NULL);
 -- public.sys_content DML
 -- public.sys_data_scope DML
-INSERT INTO "public"."sys_data_scope" ("id","config_type","config_id","config_name","data_key","data_scope","custom_ids") VALUES (1,2,5,'技术部','sys_demo',1,''),(2,2,3,'云南鸿运有限公司','sys_demo',4,'[5,6]'),(3,1,1,'系统管理员','sys_demo',1,'');
 -- public.sys_demo DML
-INSERT INTO "public"."sys_demo" ("id","name","age","score","gender","state","interest","deleted","birth","regist_time","avatar","video","photos","attachment","introduction","detail","phone","location","lng","lat","file_input","user_id","org_id") VALUES (5,'zzzzz',1,2.00,2,1,'["1", "2"]',0,'2023-01-06','2023-01-06 05:36:25','/202503/3537dae2-ee18-494d-ace3-a18f9e42f3dd.jpg','http://127.0.0.1:8081/upload/202301/4bc82364-2daa-4977-b982-25b1c67453d4.mp4','[{"id":15,"name":"QRqMK.jpg","url":"/202503/3022ce7a-1f54-4c65-a268-238b11b89eb4.jpg"}]','[{"id":17,"name":"hello.txt","url":"/202503/fbfd2430-ed50-4bf9-badf-b3485b4ac2e1.txt"}]','简介xxx','<p><span style="color: rgb(96, 98, 102); background-color: rgb(255, 255, 255); font-size: 14px;">详情123</span></p>','11111111111','云南省昆明市呈贡区七甸街道白泥洞',NULL,NULL,'http://127.0.0.1:8081/upload/202301/4bae2c0d-1f10-4b65-8fa1-a74fa1bc7e52.txt',NULL,3),(6,'farkle_4',20,100.00,1,1,'["2", "1"]',0,'2025-03-12','2025-03-12 12:25:13','/202503/85128da8-70a5-467c-a379-29a649cab949.gif',NULL,'','','简介xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx','','15288192183',NULL,NULL,NULL,NULL,NULL,4),(4,'farkle',20,100.00,1,1,'["1", "2"]',0,'2025-03-12','2025-03-11 12:25:13','/202601/a4b59912-fb83-4259-9cca-680eec190a38.jpg','','[{"id":2,"name":"b.jpg","url":"/202601/0f55ef26-a201-4c60-a4a8-5e74233cfacd.jpg"}]','[{"id":17,"name":"hello.txt","url":"/202503/fbfd2430-ed50-4bf9-badf-b3485b4ac2e1.txt"},{"id":16,"name":"test.txt","url":"/202503/e03f4fa8-c518-45fe-a0d8-89fe76d62e09.txt"}]','简介xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx','<p>详情<img src="http://localhost:8080/upload/202503/996db02c-0a2c-4588-ae6a-6f51d8e39881.jpeg" alt="" data-href="" style=""/></p>','15288192183','',NULL,NULL,'',NULL,1);
 -- public.sys_dictionary DML
 INSERT INTO public.sys_dictionary (pid,leaf_flag,children_num,state,dict_key,dict_value,sort,remark,create_user,create_time,update_user,update_time) VALUES
 	 (0,0,0,1,'sys_dict','系统字典',0,'','admin','2025-03-30 07:07:52.000','admin','2025-03-30 12:43:39.000'),

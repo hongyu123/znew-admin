@@ -20,6 +20,7 @@ import java.util.Set;
 @Slf4j
 public class AuthInterceptor implements HandlerInterceptor {
     private static final String token = "token";
+    private static final Set<String> IGNORE_AUTH = Set.of("/logout", "/auth/menus", "/auth/buttons");
 
     private final AuthService authService;
     private final SysAuthService sysAuthService;
@@ -45,14 +46,14 @@ public class AuthInterceptor implements HandlerInterceptor {
         LoginUser.setLoginUser(loginUser);
 
         String uri = request.getRequestURI();
-        if(uri.startsWith("/auth") || uri.startsWith("/common")){
+        if(IGNORE_AUTH.contains(uri) || uri.startsWith("/common")){
             return true;
         }
+        // 权限认证
         if(!this.permissionAuth(loginUser, request)){
             RequestUtil.json(response, Result.result(ErrorCode.PERMISSION_DENIED) );
             return false;
         }
-        // 权限认证
         return true;
     }
 

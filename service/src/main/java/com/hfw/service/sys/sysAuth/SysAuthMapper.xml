@@ -4,7 +4,7 @@
 <mapper namespace="com.hfw.service.sys.sysAuth.SysAuthMapper">
 
     <select id="userAuths" resultType="com.hfw.model.po.sys.SysAuth">
-        (select a.*
+        select a.*
         from sys_auth a
         join sys_role_auth ra on a.id = ra.auth_id
         join sys_user_role ur on ra.role_id = ur.role_id
@@ -14,15 +14,15 @@
         <if test="menu!=null and menu==1">
             and a.auth_type in(1,2)
         </if>
-        order by a.sort)
         <if test="unionOwn==1">
         union
         select * from sys_auth where state =1 and create_user = #{account}
         </if>
+        order by sort
     </select>
 
-    <select id="roleAuths" resultType="com.hfw.model.po.sys.SysAuth">
-        select a.*
+    <select id="roleAuths">
+        select a.id
         from sys_auth a
         join sys_role_auth ra on a.id = ra.auth_id
         where a.state = 1

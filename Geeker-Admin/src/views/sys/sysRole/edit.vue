@@ -29,7 +29,7 @@
         <el-tree
           node-key="id"
           ref="authTree"
-          :props="{ label: 'title', children: 'children', class: customNodeClass }"
+          :props="{ label: 'title', children: 'children' }"
           :data="authTreeData"
           show-checkbox
         />
@@ -68,12 +68,12 @@ const drawerProps = ref({
   isView: false,
   visible: false
 });
-const row = ref({});
+const row = ref({ authList: [] });
 
 const onopened = () => {
   if (row.value.authList && row.value.authList.length > 0) {
-    row.value.authList.forEach(ele => {
-      authTree.value.setChecked(ele.id, true, false);
+    row.value.authList.forEach(id => {
+      authTree.value.setChecked(id, true, false);
     });
   } else {
     authTree.value.setCheckedNodes([]);
@@ -102,7 +102,9 @@ const ruleFormRef = ref();
 const handleSubmit = () => {
   ruleFormRef.value.validate(async valid => {
     if (!valid) return;
-    row.value.authList = authTree.value.getCheckedNodes(false, true);
+    const checked = authTree.value.getCheckedKeys();
+    const half_checked = authTree.value.getHalfCheckedKeys();
+    row.value.authList = checked.concat(half_checked);
     const api = row.value && row.value.id ? edit : add;
     try {
       const { message } = await api(row.value);
@@ -118,21 +120,6 @@ const handleSubmit = () => {
 //权限树数据
 const authTree = ref();
 const authTreeData = ref([]);
-//自定义树class
-const customNodeClass = data => {
-  if (data.children && data.children.length > 0) {
-    let noChild = 0;
-    for (let i = 0; i < data.children.length; i++) {
-      if (data.children[i].children && data.children[i].children <= 0) {
-        noChild++;
-      }
-    }
-    if (noChild == data.children.length) {
-      return "is-penultimate";
-    }
-  }
-  return null;
-};
 //全选/取消
 const handleCheckedAllTree = () => {
   authTree.value.setCheckedNodes(row.value.checkedAll ? authTreeData.value : []);

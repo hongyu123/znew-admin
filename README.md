@@ -115,7 +115,7 @@ public interface SingleMapper {
 ```
 ## 注解&核心功能
 
-映射json类型字段使用 `DBMap`/`DBList`/`JsonNode` 类型
+映射json类型字段使用 `ObjectNode`/`ArrayNode` 类型
 
 @Table
 
