@@ -3,22 +3,29 @@ package com.hfw.model.po.znew;
 import com.hfw.model.mybatis.anno.*;
 import com.hfw.model.mybatis.Column;
 import com.hfw.model.enums.sys.Gender;
+import com.hfw.model.validation.ValidGroup;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 系统示例表
+ * 系统示例
  * @author farkle
- * @date 2026-11-17
+ * @date 2026-11-20
  */
 @Getter
 @Setter
 @Table("sys_demo")
 public class SysDemo {
 
+    @NotNull(message = "id不能为空",groups = ValidGroup.Update.class)
     @TableId
     private Long id;
 
+    @NotBlank(message = "名称(文本框)不能为空", groups = ValidGroup.Add.class)
+    @Length(max = 50,message = "名称(文本框)最多50字符")
     /** 名称(文本框) */
     private String name;
 
@@ -38,14 +45,17 @@ public class SysDemo {
     private Integer state;
 
     /** 兴趣(多选框) */
-    private com.fasterxml.jackson.databind.node.ArrayNode interest;
+    private String interest;
 
     /** 生日(日期) */
     private java.time.LocalDate birth;
 
+    @NotNull(message = "注册时间(日期时间)不能为空", groups = ValidGroup.Add.class)
     /** 注册时间(日期时间) */
     private java.time.LocalDateTime registTime;
 
+    @NotBlank(message = "头像(图片上传)不能为空", groups = ValidGroup.Add.class)
+    @Length(max = 200,message = "头像(图片上传)最多200字符")
     /** 头像(图片上传) */
     private String avatar;
 
@@ -53,17 +63,21 @@ public class SysDemo {
     private String video;
 
     /** 照片(多图上传) */
-    private  com.fasterxml.jackson.databind.node.ArrayNode photos;
+    private String photos;
 
     /** 附件(文件上传) */
-    private  com.fasterxml.jackson.databind.node.ArrayNode attachment;
+    private String attachment;
 
+    @NotBlank(message = "简介(文本域)不能为空", groups = ValidGroup.Add.class)
+    @Length(max = 255,message = "简介(文本域)最多255字符")
     /** 简介(文本域) */
     private String introduction;
 
     /** 详情(富文本) */
     private String detail;
 
+    @NotBlank(message = "手机不能为空", groups = ValidGroup.Add.class)
+    @Length(max = 11,message = "手机最多11字符")
     /** 手机 */
     private String phone;
 
@@ -77,7 +91,7 @@ public class SysDemo {
     private java.math.BigDecimal lat;
 
     /** 文件输入 */
-    private com.fasterxml.jackson.databind.node.ObjectNode fileInput;
+    private String fileInput;
 
     /** user_id */
     private Long userId;

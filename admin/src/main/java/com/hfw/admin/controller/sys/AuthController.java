@@ -47,7 +47,7 @@ public class AuthController {
     public Result<?> buttons(){
         LoginUser loginUser = LoginUser.getLoginUser();
         if(loginUser.isAdmin()){
-            return Result.success(JsonMap.create().putVal("admin",true));
+            return Result.success(JsonMap.create().putVal("__administrator",true));
         }
         List<JsonMap> buttons = sysAuthService.buttons(loginUser.getId());
         Map<String,List<String>> buttonMap = new HashMap<>();

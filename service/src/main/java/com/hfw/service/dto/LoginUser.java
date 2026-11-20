@@ -11,8 +11,6 @@ import java.util.Set;
 @Getter
 @Setter
 public class LoginUser {
-    private static final String USER = "login_user";
-
     private Long id;
     private Long orgId;
     private String avatar;

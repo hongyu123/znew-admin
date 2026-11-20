@@ -1,33 +1,36 @@
 package com.hfw.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hfw.model.po.sys.SysUpload;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 public class UploadFile {
+    //兼容前端element-plus上传组件
+    @JsonProperty("uid")
     private Long id;
     private String name;
+    /** 不带服务器地址的路径 */
+    private String path;
+    /** 带服务器地址的全路径url */
     private String url;
 
-    public static String removeServerPrefix(String url){
-        return SysUpload.removeServerPrefix(url);
-    }
-    public static void removeServerPrefix(List<UploadFile> list){
-        if(list!=null){
-            list.forEach(item->item.setUrl(SysUpload.removeServerPrefix(item.getUrl())));
+    public String getPath(){
+        if(path!=null){
+            return path;
         }
-    }
-    public static String addServerPrefix(String url){
-        return SysUpload.addServerPrefix(url);
-    }
-    public static void addServerPrefix(List<UploadFile> list){
-        if(list!=null){
-            list.forEach(item->item.setUrl(SysUpload.addServerPrefix(item.getUrl())));
+        if(url!=null){
+            return url.replace(SysUpload.SERVER,"");
         }
+        return null;
+    }
+    public String getUrl(){
+        if(path!=null){
+            return SysUpload.SERVER+path;
+        }
+        return url;
     }
 
 }

@@ -6,9 +6,11 @@ import com.hfw.model.utils.LocalDateUtil;
 import com.hfw.model.utils.SignUtil;
 import com.hfw.model.utils.StrUtil;
 import com.hfw.service.component.CommonMapper;
+import com.hfw.service.dto.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -38,8 +40,9 @@ public class SysUploadService {
         file.transferTo(filePath);
 
         SysUpload sysUpload = new SysUpload();
-        sysUpload.setUrl("/"+now+"/"+fileName);
-        sysUpload.setPath(filePath.toString());
+        sysUpload.setFilePath(filePath.toString());
+        sysUpload.setPath("/"+now+"/"+fileName);
+        sysUpload.setUrl(SysUpload.SERVER+sysUpload.getPath());
         sysUpload.setName(file.getOriginalFilename());
         sysUpload.setFileSuffix( StrUtil.getFilenameExtension(sysUpload.getName()) );
         sysUpload.setUploadTime(LocalDateTime.now());
@@ -47,15 +50,19 @@ public class SysUploadService {
         return sysUpload;
     }
 
-    public SysUpload upload(MultipartFile file) throws Exception {
+    public SysUpload upload(MultipartFile file, LoginUser loginUser) throws Exception {
         String md5 = SignUtil.md5(file.getBytes());
         SysUpload sysUpload = commonMapper.selectOne(SysUpload.class, Where.<SysUpload>where().eq(SysUpload.COLUMN.md5, md5));
         if(sysUpload==null){
             sysUpload = uploadLocal(file);
             sysUpload.setMd5(md5);
+            if(loginUser!=null){
+                sysUpload.setUploadUser(loginUser.getAccount());
+            }
             commonMapper.insert(sysUpload);
+        }else if(StringUtils.hasText(sysUpload.getPath())){
+            sysUpload.setUrl(SysUpload.SERVER+sysUpload.getPath());
         }
-        sysUpload.setUrl(SysUpload.addServerPrefix(sysUpload.getUrl()));
         return sysUpload;
     }
 

@@ -1,5 +1,6 @@
 package com.hfw.admin.config;
 
+import com.github.pagehelper.PageHelper;
 import com.hfw.model.enums.sys.ErrorCode;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.utils.StrUtil;
@@ -55,6 +56,12 @@ public class AuthInterceptor implements HandlerInterceptor {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        LoginUser.clear();
+        PageHelper.clearPage();
     }
 
     private LoginUser loginAuth(HttpServletRequest request){

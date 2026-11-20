@@ -86,7 +86,7 @@ const self_disabled = computed(() => {
   return props.disabled || formContext?.disabled;
 });
 
-const _fileList = ref<UploadUserFile[]>(props.fileList);
+const _fileList = ref<UploadUserFile[]>(props.fileList || []);
 
 // 监听 props.fileList 列表默认值改变
 watch(
@@ -197,9 +197,11 @@ const handleHttpUpload = async (options: UploadRequestOptions) => {
  * @param response 上传响应结果
  * @param uploadFile 上传的文件
  * */
-const uploadSuccess = (response: { url: string } | undefined, uploadFile: UploadFile) => {
+const uploadSuccess = (response: { id: number; name?: string; url?: string } | undefined, uploadFile: UploadFile) => {
   if (!response) return;
+  uploadFile.uid = response.id;
   uploadFile.url = response.url;
+  if (response.name) uploadFile.name = response.name;
   emit("update:fileList", _fileList.value);
   // 调用 el-form 内部的校验方法（可自动校验）
   if (formItemContext?.prop) {

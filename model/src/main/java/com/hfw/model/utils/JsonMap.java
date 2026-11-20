@@ -1,8 +1,7 @@
 package com.hfw.model.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hfw.model.entity.GeneralException;
-import com.hfw.model.jackson.ObjectMapperUtil;
+import com.hfw.model.jackson.JsonUtil;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -141,11 +140,7 @@ public class JsonMap extends HashMap<String, Object> {
         } else if (value instanceof JsonMap map) {
             return map;
         } else if (value instanceof String str) {
-            try {
-                return ObjectMapperUtil.singleton().readValue(str, JsonMap.class);
-            } catch (JsonProcessingException e) {
-                throw new GeneralException(e);
-            }
+            return JsonUtil.jsonMapper().readValue(str, JsonMap.class);
         } else if (value instanceof Map map) {
             JsonMap jsonMap = new JsonMap(map);
             super.put(key, jsonMap);
@@ -166,13 +161,8 @@ public class JsonMap extends HashMap<String, Object> {
         } else if (value instanceof Object[]) {
             return new ArrayList<>((List<T>)Arrays.asList(value));
         } else if (value instanceof String str){
-            try {
-                return ObjectMapperUtil.singleton().readValue(str, ArrayList.class);
-            } catch (JsonProcessingException e) {
-                throw new GeneralException(e);
-            }
-        }
-        else {
+            return JsonUtil.jsonMapper().readValue(str, ArrayList.class);
+        } else {
             throw new GeneralException("Can not cast '" + value.getClass() + "' to List");
         }
     }

@@ -25,8 +25,8 @@
       </el-form-item>
       <el-form-item label="启用状态" prop="state">
         <el-radio-group v-model="row.state">
-          <el-radio :value="1">是</el-radio>
-          <el-radio :value="0">否</el-radio>
+          <el-radio value="Enable">是</el-radio>
+          <el-radio value="Disable">否</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="兴趣" prop="interest">
@@ -52,18 +52,18 @@
           placeholder="请选择日期时间"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="头像" prop="avatarUrl">
-        <UploadImg v-model:image-url="row.avatarUrl"></UploadImg>
+      <el-form-item label="头像" prop="avatar">
+        <UploadImg v-model:image-url="row.avatar"></UploadImg>
       </el-form-item>
       <el-form-item label="视频" prop="video">
         <UploadVideo v-model:video-url="row.video" :disabled="drawerProps.isView"></UploadVideo>
       </el-form-item>
-      <el-form-item label="照片" prop="photosList">
-        <UploadImgs v-model:file-list="row.photosList"></UploadImgs>
+      <el-form-item label="照片" prop="photos">
+        <UploadImgs v-model:file-list="row.photos"></UploadImgs>
       </el-form-item>
-      <el-form-item label="附件" prop="attachmentList">
+      <el-form-item label="附件" prop="attachment">
         <UploadFiles
-          v-model:file-list="row.attachmentList"
+          v-model:file-list="row.attachment"
           :disabled="drawerProps.isView"
           :limit="5"
           :file-size="10"
@@ -121,9 +121,10 @@ import { add, edit } from "./api";
 const rules = reactive({
   name: [{ required: true, message: "请填写名称", trigger: "change" }],
   registTime: [{ required: true, message: "请填写注册时间", trigger: "change" }],
-  avatarUrl: [{ required: true, message: "请上传头像", trigger: "change" }],
+  avatar: [{ required: true, message: "请上传头像", trigger: "change" }],
   introduction: [{ required: true, message: "请填写简介", trigger: "change" }],
-  phone: [{ required: false, pattern: /^\d{11}$/, message: "手机格式错误", trigger: "change" }]
+  phone: [{ required: true, pattern: /^\d{11}$/, message: "手机格式错误", trigger: "change" }],
+  state: [{ required: true, message: "状态必填", trigger: "change" }]
 });
 
 // drawer框状态

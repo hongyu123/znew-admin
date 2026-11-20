@@ -1,7 +1,6 @@
 package com.hfw.admin.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hfw.model.jackson.ObjectMapperUtil;
+import com.hfw.model.jackson.JsonUtil;
 import com.hfw.model.mvc.LocalDateConverter;
 import com.hfw.model.mvc.LocalDateTimeConverter;
 import com.hfw.service.auth.AuthService;
@@ -15,9 +14,10 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
-public class MvcConfigurer implements WebMvcConfigurer {
+public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${upload.storage-path}")
     private String storagePath;
     @Autowired
@@ -29,7 +29,7 @@ public class MvcConfigurer implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
-        registry.addResourceHandler("/upload/**").addResourceLocations("file:"+storagePath);
+        registry.addResourceHandler("/file/**").addResourceLocations("file:"+storagePath);
     }
 
     @Override
@@ -40,8 +40,8 @@ public class MvcConfigurer implements WebMvcConfigurer {
 
     //jackson返回配置
     @Bean
-    public ObjectMapper objectMapper(){
-        return ObjectMapperUtil.singleton();
+    public JsonMapper jsonMapper(){
+        return JsonUtil.jsonMapper();
     }
 
     //跨域处理
@@ -60,7 +60,7 @@ public class MvcConfigurer implements WebMvcConfigurer {
         // Token 登录拦截
         registry.addInterceptor(new AuthInterceptor(authService, sysAuthService))
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login","/test","/upload/**");
+                .excludePathPatterns("/login","/test","/file/**");
     }
 
 }

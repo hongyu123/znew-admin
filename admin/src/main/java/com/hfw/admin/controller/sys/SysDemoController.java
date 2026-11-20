@@ -12,7 +12,6 @@ import com.hfw.model.utils.LocalDateUtil;
 import com.hfw.model.validation.ValidGroup;
 import com.hfw.service.component.CommonService;
 import com.hfw.service.dto.LoginUser;
-import com.hfw.service.sys.sysDemo.SysDemoDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.fesod.sheet.ExcelReader;
 import org.apache.fesod.sheet.ExcelWriter;
@@ -71,15 +70,15 @@ public class SysDemoController {
     }
 
     @GetMapping
-    public Result<SysDemoDTO> detail(@RequestParam Long id){
+    public Result<SysDemo> detail(@RequestParam Long id){
         SysDemo po = commonService.selectByPk(SysDemo.class, id);
-        return Result.success( SysDemoDTO.fromPo(po) );
+        return Result.success(po);
     }
 
     @AdminLog("新增系统示例表")
     @PostMapping
-    public Result<Void> add(@RequestBody @Validated(ValidGroup.Add.class) SysDemoDTO dto){
-        SysDemo po = dto.toPo().saveFilter();
+    public Result<Void> add(@RequestBody @Validated(ValidGroup.Add.class) SysDemo po){
+        po.saveFilter();
         LoginUser loginUser = LoginUser.getLoginUser();
         po.setUserId(loginUser.getId());
         po.setOrgId(loginUser.getOrgId());
@@ -88,8 +87,8 @@ public class SysDemoController {
 
     @AdminLog("编辑系统示例表")
     @PutMapping
-    public Result<Void> edit(@RequestBody @Validated(ValidGroup.Update.class) SysDemoDTO dto){
-        SysDemo po = dto.toPo().updateFilter();
+    public Result<Void> edit(@RequestBody @Validated(ValidGroup.Update.class) SysDemo po){
+        po.updateFilter();
         return Result.result( commonService.updateByPk(po) );
     }
 

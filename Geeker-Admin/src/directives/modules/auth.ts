@@ -10,7 +10,7 @@ const auth: Directive = {
   mounted(el: HTMLElement, binding: DirectiveBinding) {
     const { value } = binding;
     const authStore = useAuthStore();
-    if (authStore.authButtonListGet["admin"]) {
+    if (authStore.authButtonListGet["__administrator"]) {
       return;
     }
     const currentPageRoles = authStore.authButtonListGet[authStore.routeName] ?? [];

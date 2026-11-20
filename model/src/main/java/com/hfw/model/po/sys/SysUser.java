@@ -7,6 +7,7 @@ import com.hfw.model.mybatis.Column;
 import com.hfw.model.mybatis.anno.Table;
 import com.hfw.model.mybatis.anno.TableField;
 import com.hfw.model.mybatis.anno.TableId;
+import com.hfw.model.mybatis.typehandler.URLTypeHandler;
 import com.hfw.model.utils.ValidUtil;
 import com.hfw.model.validation.ValidGroup;
 import jakarta.validation.constraints.NotBlank;
@@ -44,17 +45,18 @@ public class SysUser {
     private Long orgId;
 
     /** 手机号码 */
-    @Pattern(regexp = ValidUtil.phoneReg_valid, message = "手机号码格式错误!")
+    @Pattern(regexp = ValidUtil.phoneReg, message = "手机号码格式错误!")
     private String phone;
 
     /** 昵称 */
     private String nickname;
 
     /** 头像 */
+    @TableField(typeHandler = URLTypeHandler.class)
     private String avatar;
 
     /** 邮箱 */
-    @Pattern(regexp = ValidUtil.emailReg_valid, message = "邮箱格式错误!")
+    @Pattern(regexp = ValidUtil.emailReg, message = "邮箱格式错误!")
     private String email;
 
     /** 性别 */

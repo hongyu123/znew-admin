@@ -1,13 +1,12 @@
 package com.hfw.service.component;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.hfw.model.enums.sys.DataScope;
-import com.hfw.model.po.sys.SysDataScope;
-import com.hfw.service.dto.LoginUser;
 import com.hfw.model.mybatis.jsqlparser.SqlExpressionVisitor;
 import com.hfw.model.mybatis.jsqlparser.SqlFromItemVisitor;
 import com.hfw.model.mybatis.jsqlparser.SqlSelectVisitor;
 import com.hfw.model.mybatis.jsqlparser.SqlStatementVisitor;
+import com.hfw.model.po.sys.SysDataScope;
+import com.hfw.service.dto.LoginUser;
 import com.hfw.service.sys.sysDataScope.SysDataScopeService;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -24,10 +23,8 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -56,7 +53,7 @@ public class DataScopeInterceptor implements Interceptor {
             // 无配置的话默认全部数据权限
             //return null;
         }
-        ArrayNode customIds = sysDataScope.getCustomIds();
+        List<Long> customIds = sysDataScope.getCustomIds();
         if(DataScope.User==sysDataScope.getDataScope()){
             return "user_id="+loginUser.getId();
         }else if(DataScope.Organization==sysDataScope.getDataScope()){
@@ -65,9 +62,8 @@ public class DataScopeInterceptor implements Interceptor {
             //return null;
             return "org_id=0";
         }
-        List<String> ids = new ArrayList<>();
-        customIds.forEach(id->ids.add(id.asText()));
-        return "org_id in (%s)".formatted(String.join(",", ids));
+        String ids = customIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        return "org_id in (%s)".formatted(ids);
     }
 
     private boolean containsTable(String sql){

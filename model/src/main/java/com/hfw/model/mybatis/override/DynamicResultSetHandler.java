@@ -11,6 +11,7 @@ import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
@@ -37,6 +38,7 @@ public class DynamicResultSetHandler extends DefaultResultSetHandler {
     public void handleRowValues(ResultSetWrapper rsw, ResultMap resultMap, ResultHandler<?> resultHandler, RowBounds rowBounds, ResultMapping parentMapping) throws SQLException {
         if(resultMap.getResultMappings().isEmpty()){
             Class<?> type = resultMap.getType();
+            // SingleMapper通用查询,返回的泛型实际类型为Object,需要替换成具体实体类类型
             if(type == Object.class){
                 try {
                     BoundSql boundSql = (BoundSql) boundSqlField.get(this);
@@ -46,19 +48,26 @@ public class DynamicResultSetHandler extends DefaultResultSetHandler {
                     }else if(parameterObject instanceof Map<?,?> paramMap && paramMap.containsKey("type")){
                         type = (Class<?>) paramMap.get("type");
                     }
+                    ResultMap dynamicResultMap = MybatisGlobalConfig.getDynamicResultMap(type);
+                    if(dynamicResultMap!=null){
+                        resultMap = dynamicResultMap;
+                    }
                 } catch (IllegalAccessException e) {
                     throw new SQLException(e);
                 }
             }
-            /*MapperBuilderAssistant assistant = new MapperBuilderAssistant(this.configuration, "");
-            List<ResultMapping> resultMappings = new ArrayList<>();
-            ResultMapping resultMapping = assistant.buildResultMapping(type, "createTime", "create_time", null, null, null, null, null, null, null, null);
-            resultMappings.add(resultMapping);
-            resultMap = (new ResultMap.Builder(this.configuration, resultMap.getId(), type, resultMappings, null)).discriminator(null).build();*/
+            // 其它类型在需要映射字段或TypeHandler的时候才替换ResultMap
+            else{
+                /*MapperBuilderAssistant assistant = new MapperBuilderAssistant(this.configuration, "");
+                List<ResultMapping> resultMappings = new ArrayList<>();
+                ResultMapping resultMapping = assistant.buildResultMapping(type, "createTime", "create_time", null, null, null, null, null, null, null, null);
+                resultMappings.add(resultMapping);
+                resultMap = (new ResultMap.Builder(this.configuration, resultMap.getId(), type, resultMappings, null)).discriminator(null).build();*/
 
-            ResultMap dynamicResultMap = MybatisGlobalConfig.getDynamicResultMap(type);
-            if(dynamicResultMap!=null){
-                resultMap = dynamicResultMap;
+                ResultMap dynamicResultMap = MybatisGlobalConfig.getDynamicResultMap(type);
+                if(dynamicResultMap!=null && !CollectionUtils.isEmpty(dynamicResultMap.getResultMappings())){
+                    resultMap = dynamicResultMap;
+                }
             }
         }
         super.handleRowValues(rsw, resultMap, resultHandler, rowBounds, parentMapping);

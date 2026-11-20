@@ -1,11 +1,9 @@
 package com.hfw.service.sys.sysDataScope;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.hfw.model.enums.sys.DataScope;
 import com.hfw.model.enums.sys.EnableState;
-import com.hfw.model.jackson.ObjectMapperUtil;
 import com.hfw.model.mybatis.Where;
 import com.hfw.model.po.sys.SysDataScope;
 import com.hfw.model.po.sys.SysOrganization;
@@ -114,9 +112,8 @@ public class SysDataScopeService {
             if (DataScope.OrganizationAndChildren==dataScope.getDataScope() && sysOrg!=null){
                 List<SysOrganization> orgTree = sysOrganizationMapper.orgTreeList(sysOrg.getAncestors(), EnableState.Enable);
                 orgTree.add(sysOrg);
-                ArrayNode arrayNode = ObjectMapperUtil.singleton().createArrayNode();
-                orgTree.forEach(org->arrayNode.add(org.getId()));
-                dataScope.setCustomIds(arrayNode);
+                List<Long> ids = orgTree.stream().map(SysOrganization::getId).toList();
+                dataScope.setCustomIds(ids);
             }
         }
         loginUser.setDataScopeKey(dataScopeKey);

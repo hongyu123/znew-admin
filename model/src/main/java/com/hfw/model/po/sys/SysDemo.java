@@ -1,13 +1,16 @@
 package com.hfw.model.po.sys;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.hfw.model.entity.UploadFile;
+import com.hfw.model.enums.sys.EnableState;
 import com.hfw.model.enums.sys.Gender;
 import com.hfw.model.excel.IEnumConverter;
 import com.hfw.model.mybatis.Column;
 import com.hfw.model.mybatis.anno.LogicDelete;
 import com.hfw.model.mybatis.anno.Table;
+import com.hfw.model.mybatis.anno.TableField;
 import com.hfw.model.mybatis.anno.TableId;
+import com.hfw.model.mybatis.typehandler.JacksonTypeHandler;
+import com.hfw.model.mybatis.typehandler.URLTypeHandler;
 import com.hfw.model.validation.ValidGroup;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +20,7 @@ import org.apache.fesod.sheet.annotation.ExcelIgnore;
 import org.apache.fesod.sheet.annotation.ExcelProperty;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * 系统示例表
@@ -56,11 +59,12 @@ public class SysDemo {
 
     /** 启用状态(单选框) */
     @ExcelProperty("状态")
-    private Integer state;
+    private EnableState state;
 
     /** 兴趣(多选框) */
     @ExcelIgnore
-    private ArrayNode interest;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<String> interest;
 
     /** 生日(日期) */
     @ExcelProperty("生日")
@@ -75,19 +79,23 @@ public class SysDemo {
     @ExcelProperty("头像")
     //@NotBlank(message = "头像(图片上传)不能为空", groups = ValidGroup.Add.class)
     @Length(max = 200,message = "头像(图片上传)最多200字符")
+    @TableField(typeHandler = URLTypeHandler.class)
     private String avatar;
 
     /** 视频(视频上传) */
     @ExcelProperty("视频")
+    @TableField(typeHandler = URLTypeHandler.class)
     private String video;
 
     /** 照片(多图上传) */
     @ExcelIgnore
-    private ArrayNode photos;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<UploadFile> photos;
 
     /** 附件(文件上传) */
     @ExcelIgnore
-    private ArrayNode attachment;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<UploadFile> attachment;
 
     /** 简介(文本域) */
     @ExcelProperty("简介")
@@ -121,7 +129,8 @@ public class SysDemo {
 
     /** 文件输入 */
     @ExcelIgnore
-    private ObjectNode fileInput;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private UploadFile fileInput;
 
     /** user_id */
     @ExcelIgnore
@@ -144,10 +153,6 @@ public class SysDemo {
         deleted
     }
 
-    public String avatarUrl;
-    public String getAvatarUrl(){
-        return SysUpload.addServerPrefix(this.avatar);
-    }
     public SysDemo saveFilter(){
         this.setId(null);
         /*this.setUpdator(null);

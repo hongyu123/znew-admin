@@ -123,6 +123,7 @@ public class Page<T> {
      */
     public void startPage(){
         PageHelper.startPage(this.pageNumber, this.pageSize, this.count);
+        // 在 AuthInterceptor 拦截器中清理 PageHelper.clearPage();
     }
 
 }

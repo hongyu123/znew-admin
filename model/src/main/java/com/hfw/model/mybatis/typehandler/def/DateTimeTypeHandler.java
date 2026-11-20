@@ -1,4 +1,4 @@
-package com.hfw.model.mybatis.typehandler;
+package com.hfw.model.mybatis.typehandler.def;
 
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;

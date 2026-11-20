@@ -38,6 +38,7 @@
         join sys_role r on r.id = ur.role_id
         join sys_auth p on a.parent_id = p.id
         where a.state = 1 and r.state = 1
+        and a.auth_type = 3
         and ur.user_id = #{userId}
     </select>
 

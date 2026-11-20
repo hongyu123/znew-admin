@@ -1,8 +1,8 @@
 package com.hfw.admin.controller.sys;
 
-import com.hfw.admin.utils.ResultUtil;
 import com.hfw.model.enums.sys.BaseEnum;
 import com.hfw.model.jackson.Result;
+import com.hfw.model.po.sys.SysUpload;
 import com.hfw.model.utils.JsonMap;
 import com.hfw.service.component.EnumScan;
 import com.hfw.service.dto.LoginUser;
@@ -83,7 +83,8 @@ public class CommonController {
      */
     @PostMapping(value = "/upload", produces = MediaType.APPLICATION_JSON_VALUE)
     public String upload(@RequestPart MultipartFile file) throws Exception {
-        return ResultUtil.jsonData( sysUploadService.upload(file) ,"id","name","url");
+        SysUpload upload = sysUploadService.upload(file, LoginUser.getLoginUser());
+        return Result.success(upload).includeJson(SysUpload.class, "id","name","path","url");
     }
 
     // 根据key查询数据字典

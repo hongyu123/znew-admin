@@ -2,7 +2,10 @@ package com.hfw.model.mybatis;
 
 import com.hfw.model.mybatis.anno.*;
 import com.hfw.model.utils.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.jdbc.SQL;
+import org.apache.ibatis.mapping.ResultMap;
+import org.apache.ibatis.type.TypeHandler;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -11,6 +14,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public class SqlHelper {
     private final static Map<Class<?>,TableInfo> TABLE_MAP = new ConcurrentHashMap<>();
     /** 表前缀 */
@@ -56,13 +60,27 @@ public class SqlHelper {
         tableInfo.setTableClass(tableClass);
         tableInfo.setColumnMap(new LinkedHashMap<>());
         this.resolveTableName(tableClass, tableInfo);
-        this.resolveColumns(tableInfo);
+        List<ColumnInfo> mapColumns = this.resolveColumns(tableInfo);
+        MybatisGlobalConfig.registerDynamicResultMap(tableClass, mapColumns);
         if(tableInfo.getPk()==null){
             throw new SQLException(tableClass.getName()+"没有指定主键字段!");
         }
         return tableInfo;
     }
-    private void resolveColumns(TableInfo tableInfo) throws Exception{
+    public ResultMap resultMap(Class<?> tableClass){
+        try {
+            TableInfo tableInfo = new TableInfo();
+            tableInfo.setTableClass(tableClass);
+            tableInfo.setColumnMap(new LinkedHashMap<>());
+            this.resolveTableName(tableClass, tableInfo);
+            List<ColumnInfo> mapColumns = this.resolveColumns(tableInfo);
+            return MybatisGlobalConfig.registerDynamicResultMap(tableClass, mapColumns);
+        }catch (Exception e){
+            log.error("resultMap",e);
+            return null;
+        }
+    }
+    private List<ColumnInfo> resolveColumns(TableInfo tableInfo) throws Exception{
         Class<?> tableClass = tableInfo.getTableClass();
         Map<String, ColumnInfo> columnMap = tableInfo.getColumnMap();
         Map<String, Field> fieldsMap = new HashMap<>();
@@ -111,17 +129,20 @@ public class SqlHelper {
                     }else {
                         dynamicFill(columnInfo);
                     }
+                    if(this.typeHandler(columnInfo)){
+                        mapColumns.add(columnInfo);
+                    }
                     columnMap.put(fieldName, columnInfo);
                     joiner.add(columnName);
                     if(!columnInfo.getColumnName().equals(StrUtil.humpToLine(columnInfo.getFieldName()))){
                         mapColumns.add(columnInfo);
                     }
                 }
-                MybatisGlobalConfig.registerDynamicResultMap(tableClass, mapColumns);
                 tableInfo.setSelectColumns(joiner.toString());
-                return;
+                return mapColumns;
             }
         }
+        return null;
     }
     private boolean isPK(ColumnInfo column){
         Field field = column.getField();
@@ -157,8 +178,23 @@ public class SqlHelper {
             column.setUpdateValue(tableField.updateValue());
         }
     }
+    private boolean typeHandler(ColumnInfo column){
+        Field field = column.getField();
+        if(field==null){
+            return false;
+        }
+        TableField tableField = field.getAnnotation(TableField.class);
+        if(tableField!=null){
+            Class<? extends TypeHandler> typeHandler = tableField.typeHandler();
+            if(typeHandler!=null && typeHandler!=TypeHandler.class){
+                column.setTypeHandlerClass(tableField.typeHandler());
+                return true;
+            }
+        }
+        return false;
+    }
 
-    private TableInfo getTableInfo(Class<?> tableClass) throws Exception {
+    public TableInfo getTableInfo(Class<?> tableClass) throws Exception {
         TableInfo tableInfo = TABLE_MAP.get(tableClass);
         if(tableInfo==null){
             tableInfo = this.resolveTable(tableClass);
@@ -294,13 +330,13 @@ public class SqlHelper {
             if(field!=null){
                 if(field.get(entity)!=null){
                     sql.INTO_COLUMNS(column.getColumnName());
-                    sql.INTO_VALUES("#{%s}".formatted(column.getFieldName()));
+                    sql.INTO_VALUES("#{%s%s}".formatted(column.getFieldName(), column.sqlSourceTypeHandler() ));
                 }else if(column.insertFill()){
                     sql.INTO_COLUMNS(column.getColumnName());
                     String insertValue = column.getInsertValue();
                     if(insertValue.startsWith("$")){
                         field.set(entity, MybatisGlobalConfig.getDynamic(insertValue, field.getType()));
-                        sql.INTO_VALUES("#{%s}".formatted(column.getFieldName()));
+                        sql.INTO_VALUES("#{%s%s}".formatted(column.getFieldName(), column.sqlSourceTypeHandler() ));
                     }else {
                         sql.INTO_VALUES(insertValue);
                     }
@@ -328,13 +364,13 @@ public class SqlHelper {
                     if(column.insertFill()){
                         String insertValue = column.getInsertValue();
                         if(insertValue.startsWith("$")){
-                            valuesFields.add("#{item.%s}".formatted(column.getFieldName()));
+                            valuesFields.add("#{item.%s%s}".formatted(column.getFieldName(), column.sqlSourceTypeHandler() ));
                             insertFills.put(field, MybatisGlobalConfig.getDynamic(insertValue, field.getType()));
                         }else{
                             valuesFields.add(insertValue);
                         }
                     }else{
-                        valuesFields.add("#{item.%s}".formatted(column.getFieldName()));
+                        valuesFields.add("#{item.%s%s}".formatted(column.getFieldName(), column.sqlSourceTypeHandler() ));
                     }
                 }else{
                     throw new SQLException("%s 枚举列[%s]没有对应的映射字段".formatted(tableInfo.getTableClass(), column.getFieldName()));
@@ -374,11 +410,11 @@ public class SqlHelper {
                 if(field!=null) {
                     Object value = field.get(entity);
                     if (value!=null && !(UpdateStrategy.NotEmpty==updateStrategy && value instanceof CharSequence str && str.isEmpty()) ) {
-                        sql.SET("%s=#{entity.%s}".formatted(column.getColumnName(), column.getFieldName()));
+                        sql.SET("%s=#{entity.%s%s}".formatted(column.getColumnName(), column.getFieldName(), column.sqlSourceTypeHandler() ));
                         set = true;
                     }else if(column.updateFill()){
                         field.set(entity, MybatisGlobalConfig.getDynamic(column.getUpdateValue(), field.getType()));
-                        sql.SET("%s=#{entity.%s}".formatted(column.getColumnName(), column.getFieldName()));
+                        sql.SET("%s=#{entity.%s%s}".formatted(column.getColumnName(), column.getFieldName(), column.sqlSourceTypeHandler() ));
                         set = true;
                     }else if(UpdateStrategy.NullUpdate==updateStrategy && nullUpdateFields.contains(column.getFieldName())){
                         sql.SET("%s=NULL".formatted(column.getColumnName()));

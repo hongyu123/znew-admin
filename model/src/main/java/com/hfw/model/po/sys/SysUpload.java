@@ -1,11 +1,10 @@
 package com.hfw.model.po.sys;
 
-import com.hfw.model.mybatis.anno.*;
 import com.hfw.model.mybatis.Column;
+import com.hfw.model.mybatis.anno.Table;
+import com.hfw.model.mybatis.anno.TableId;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 /**
  * 系统文件上传
@@ -15,6 +14,7 @@ import java.util.List;
 @Getter @Setter
 @Table("sys_upload")
 public class SysUpload {
+    public static final String SERVER = "http://localhost:8080/file";
 
     @TableId
     private Long id;
@@ -22,17 +22,23 @@ public class SysUpload {
     /** md5 */
     private String md5;
 
-    /** url */
-    private String url;
-
     /** 文件路径 */
+    private String filePath;
+
+    /** 不带服务器地址的url */
     private String path;
+
+    /** 带服务器地址的全路径url */
+    private String url;
 
     /** 文件名 */
     private String name;
 
     /** 文件后缀 */
     private String fileSuffix;
+
+    /** 上传用户 */
+    private String uploadUser;
 
     /** 上传时间 */
     private java.time.LocalDateTime uploadTime;
@@ -44,25 +50,6 @@ public class SysUpload {
     public enum COLUMN implements Column<SysUpload>{
         id,
         md5,url,path,name,fileSuffix, uploadTime,fileSize
-    }
-
-    public static final String SERVER = "http://localhost:8080/upload";
-
-    public static String removeServerPrefix(String url){
-        return url!=null ? url.replace(SERVER,"") : null;
-    }
-    public static void removeServerPrefix(List<SysUpload> list){
-        if(list!=null){
-            list.forEach(item->item.setUrl(removeServerPrefix(item.getUrl())));
-        }
-    }
-    public static String addServerPrefix(String url){
-        return url!=null ? SERVER+url : null;
-    }
-    public static void addServerPrefix(List<SysUpload> list){
-        if(list!=null){
-            list.forEach(item->item.setUrl(addServerPrefix(item.getUrl())));
-        }
     }
 
 }

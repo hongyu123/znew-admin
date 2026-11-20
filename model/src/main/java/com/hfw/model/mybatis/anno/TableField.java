@@ -1,5 +1,6 @@
 package com.hfw.model.mybatis.anno;
 
+import org.apache.ibatis.type.TypeHandler;
 
 import java.lang.annotation.*;
 
@@ -17,6 +18,8 @@ public @interface TableField {
 
     //更新自动填充
     String updateValue() default "";
+
+    Class<? extends TypeHandler> typeHandler() default TypeHandler.class;
 
 }
 

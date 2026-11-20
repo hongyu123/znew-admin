@@ -18,3 +18,10 @@ export const del = id => {
 export const dels = ids => {
   return http.delete("/sysDemo/dels", ids);
 };
+
+export const exp = params => {
+  return http.get("/sysDemo/export", params, { responseType: "blob" });
+};
+export const imp = params => {
+  return http.post("/sysDemo/import", params);
+};

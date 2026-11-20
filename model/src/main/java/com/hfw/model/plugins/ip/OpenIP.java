@@ -1,6 +1,6 @@
 package com.hfw.model.plugins.ip;
 
-import com.hfw.model.jackson.ObjectMapperUtil;
+import com.hfw.model.jackson.JsonUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -31,18 +31,19 @@ public class OpenIP {
     /**
      * 百度IP归属地查询的接口
      * @param ip
-     * @return
-     * @throws Exception
+     * @return 地址
+     * 其它免费查询接口
+     *  https://ip.useragentinfo.com/json?ip=220.163.124.202
+     *  https://api.vore.top/api/IPdata?ip=220.163.124.202
      */
     public static String baidu(String ip){
         String url = "https://opendata.baidu.com/api.php?query=" + ip + "&resource_id=6006&co=&oe=utf8";
-        try{
-            HttpClient client = HttpClient.newHttpClient();
+        try(HttpClient client = HttpClient.newHttpClient()){
             HttpRequest request = HttpRequest.newBuilder(URI.create(url)).GET().build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             String res = response.body();
-            BaiduApiResult result = ObjectMapperUtil.singleton().readValue(res, BaiduApiResult.class);
-            if ("0".equals(result.status) && result.data != null && result.data.size() > 0) {
+            BaiduApiResult result = JsonUtil.jsonMapper().readValue(res, BaiduApiResult.class);
+            if ("0".equals(result.status) && result.data!=null && !result.data.isEmpty()) {
                 return result.data.get(0).location;
             }
         }catch (Exception e){
@@ -51,9 +52,4 @@ public class OpenIP {
         return "";
     }
 
-    /**
-     * 其它免费查询接口
-     * https://ip.useragentinfo.com/json?ip=220.163.124.202
-     * https://api.vore.top/api/IPdata?ip=220.163.124.202
-     */
 }

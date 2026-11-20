@@ -87,8 +87,8 @@ public class GenService{
         COLUMN_FIELD_MAP.put("date","java.time.LocalDate");
         COLUMN_FIELD_MAP.put("timestamp","java.time.LocalDateTime");
         COLUMN_FIELD_MAP.put("timestamptz","java.time.LocalDateTime");
-        COLUMN_FIELD_MAP.put("json","com.fasterxml.jackson.databind.node.ObjectNode");
-        COLUMN_FIELD_MAP.put("jsonb","com.fasterxml.jackson.databind.node.ObjectNode");
+        COLUMN_FIELD_MAP.put("json","String");
+        COLUMN_FIELD_MAP.put("jsonb","String");
 
         COLUMN_FORM_MAP.put("int2","number");
         COLUMN_FORM_MAP.put("int4","number");

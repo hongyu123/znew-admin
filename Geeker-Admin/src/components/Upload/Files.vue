@@ -73,7 +73,7 @@ const acceptStr = computed(() => props.fileType.join(","));
 const tip = computed(() => `最多上传 ${props.limit} 个文件，单个文件不超过 ${props.fileSize}M`);
 
 // 文件列表（内部维护，与 el-upload 双向绑定）
-const _fileList = ref<UploadUserFile[]>(props.fileList);
+const _fileList = ref<UploadUserFile[]>(props.fileList || []);
 
 // 监听 props.fileList 列表默认值改变
 watch(
@@ -134,12 +134,10 @@ const beforeUpload: UploadProps["beforeUpload"] = rawFile => {
  * @param response 上传响应结果
  * @param uploadFile 上传的文件
  * */
-const uploadSuccess = (
-  response: { id?: number | string; name?: string; url?: string; fileUrl?: string } | undefined,
-  uploadFile: UploadFile
-) => {
+const uploadSuccess = (response: { id: number; name?: string; url?: string } | undefined, uploadFile: UploadFile) => {
   if (!response) return;
-  uploadFile.url = response.url ?? response.fileUrl ?? "";
+  uploadFile.uid = response.id;
+  uploadFile.url = response.url;
   if (response.name) uploadFile.name = response.name;
   emitFileList();
   // 调用 el-form 内部的校验方法（可自动校验）

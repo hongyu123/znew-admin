@@ -1,11 +1,11 @@
 package com.hfw.model.jackson;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import com.hfw.model.utils.NumberUtil;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
@@ -13,11 +13,11 @@ import java.math.BigDecimal;
  * @author farkle
  * @date 2022-11-10
  */
-public class BigDecimalSerializer extends JsonSerializer<BigDecimal> {
+public class BigDecimalSerializer extends ValueSerializer<BigDecimal> {
 
     @Override
-    public void serialize(BigDecimal bigDecimal, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeString(NumberUtil.scale2(bigDecimal));
+    public void serialize(BigDecimal value, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
+        gen.writeString(NumberUtil.scale2(value));
     }
 
 }

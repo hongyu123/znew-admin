@@ -1,6 +1,6 @@
 package com.hfw.service.utils;
 
-import com.hfw.model.jackson.ObjectMapperUtil;
+import com.hfw.model.jackson.JsonUtil;
 import com.hfw.model.utils.StrUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -65,7 +65,7 @@ public class RequestUtil {
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Content-type", "application/json;charset=UTF-8");
         try(PrintWriter printWriter = response.getWriter()){
-            printWriter.print(ObjectMapperUtil.singleton().writeValueAsString(obj));
+            printWriter.print(JsonUtil.jsonMapper().writeValueAsString(obj));
         }
     }
 

@@ -4,8 +4,8 @@ import com.hfw.model.enums.sys.LogoutType;
 import com.hfw.model.mybatis.BaseMapper;
 import com.hfw.model.po.sys.SysLoginLog;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 系统登录日志Mapper
@@ -16,6 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface SysLoginLogMapper extends BaseMapper<SysLoginLog> {
 
     @Update("update sys_login_log set logout_type=#{logoutType}, online_flag=0, logout_time=CURRENT_TIMESTAMP where id=#{id}")
-    int logout(@RequestParam("id") Long id, @RequestParam("logoutType")LogoutType logoutType);
+    int logout(@Param("id") Long id, @Param("logoutType")LogoutType logoutType);
 
 }

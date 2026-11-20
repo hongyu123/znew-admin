@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * JDK11 HttpClient 请求工具类
  */
 @Slf4j
-public class HttpUtil {
+public class HttpUtil implements AutoCloseable{
     public static final int TIMEOUT = 60;
 
     private Map<String,String> headers = new HashMap<>();
@@ -269,8 +269,15 @@ public class HttpUtil {
         return this.formData(url, formData, HttpResponse.BodyHandlers.ofString());
     }
 
+    @Override
+    public void close() {
+        this.httpClient.close();
+    }
+
     public static String get(String url) throws Exception {
-        return HttpUtil.init().get(url, HttpResponse.BodyHandlers.ofString()).body();
+        try (HttpUtil http = HttpUtil.init()){
+            return http.get(url, HttpResponse.BodyHandlers.ofString()).body();
+        }
     }
 
     public static String formToBody(Map<String, String> form){
@@ -286,10 +293,14 @@ public class HttpUtil {
     }
 
     public static String postJson(String url, String body) throws Exception {
-        return HttpUtil.init().setHeader("Content-Type","application/json").post(url,body).body();
+        try (HttpUtil http = HttpUtil.init()){
+            return http.setHeader("Content-Type","application/json").post(url,body).body();
+        }
     }
     public static String postForm(String url, String body) throws Exception {
-        return HttpUtil.init().setHeader("Content-Type","application/x-www-form-urlencoded").post(url,body).body();
+        try (HttpUtil http = HttpUtil.init()){
+            return http.setHeader("Content-Type","application/x-www-form-urlencoded").post(url,body).body();
+        }
     }
     public static String postForm(String url, Map<String,String> form) throws Exception {
         return HttpUtil.postForm(url, HttpUtil.formToBody(form) );
@@ -299,7 +310,9 @@ public class HttpUtil {
     }
 
     public static String formData(String url, FormData formData) throws Exception {
-        return HttpUtil.init().formData_str(url, formData).body();
+        try (HttpUtil http = HttpUtil.init()){
+            return http.formData_str(url, formData).body();
+        }
     }
 
     public static class FormData{

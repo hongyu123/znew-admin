@@ -102,7 +102,7 @@ const columns = [
     prop: "avatar",
     label: "头像",
     render: scope => {
-      return <el-avatar shape="square" fit="contain" src={scope.row.avatarUrl || scope.row.avatar}></el-avatar>;
+      return <el-avatar shape="square" fit="contain" src={scope.row.avatar}></el-avatar>;
     }
   },
   {

@@ -1,11 +1,11 @@
 package com.hfw.model.jackson;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hfw.model.enums.sys.BaseEnum;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.ser.std.SimpleBeanPropertyFilter;
+import tools.jackson.databind.ser.std.SimpleFilterProvider;
 
 /**
  * 返回结果实体
@@ -20,25 +20,16 @@ public class Result<T> {
     public static final String ERROR_MESSAGE = "操作失败";
     public static final Integer SUCCESS_CODE =  1;
     public static final Integer ERROR_CODE =  0;
-    public static final String INCLUDE_FILTER = "INCLUDE_FILTER";
 
     private int code;
     private String message;
     private T data;
-    @JsonIgnore
-    private DataType dataType;
 
     public Result(){}
     public Result(int code, String message, T data){
         this.code = code;
         this.message = message;
         this.data = data;
-    }
-    public Result(int code, String message, T data, DataType dataType){
-        this.code = code;
-        this.message = message;
-        this.data = data;
-        this.dataType = dataType;
     }
     public boolean successful(){
         return this.code == SUCCESS_CODE;
@@ -68,18 +59,32 @@ public class Result<T> {
         return updateCount>0 ?success() :error();
     }
 
-    // 日期 枚举 Integer等基本类型请自行处理null, 否则同一返回{}
     public static <T> Result<T> success(T t){
-        return new Result<>(SUCCESS_CODE,"",t, DataType.Obj);
-    }
-    public static <T> Result<T> success(int code, T t){
-        return new Result<>(code,"",t, DataType.Obj);
+        return new Result<>(SUCCESS_CODE,"",t);
     }
     public static Result<String> string(String data){
-        return new Result<>(SUCCESS_CODE,"",data, DataType.String);
-    }
-    public static <T> Result<List<T>> success(List<T> list){
-        return new Result<>(SUCCESS_CODE,"",list, DataType.List);
+        return new Result<>(SUCCESS_CODE,"",data);
     }
 
+
+    public String includeJson(Class<?> cls, String... fields){
+        return Result.includeJson(this,cls,fields);
+    }
+    public String excludeJson(Class<?> cls, String... fields){
+        return Result.excludeJson(this,cls,fields);
+    }
+    public static String includeJson(Object data, Class<?> cls, String... fields){
+        JsonMapper jsonMapper = JsonUtil.builder()
+                .addMixIn(cls, GlobalFilter.class)
+                .filterProvider(new SimpleFilterProvider().addFilter(GlobalFilter.FILTER, SimpleBeanPropertyFilter.filterOutAllExcept(fields)))
+                .build();
+        return jsonMapper.writeValueAsString(data);
+    }
+    public static String excludeJson(Object data, Class<?> cls, String... fields){
+        JsonMapper jsonMapper = JsonUtil.builder()
+                .addMixIn(cls, GlobalFilter.class)
+                .filterProvider(new SimpleFilterProvider().addFilter(GlobalFilter.FILTER, SimpleBeanPropertyFilter.serializeAllExcept(fields)))
+                .build();
+        return jsonMapper.writeValueAsString(data);
+    }
 }

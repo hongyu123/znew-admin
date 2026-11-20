@@ -1,6 +1,6 @@
 # 技术选型
-### SpringBoot3
-### JDK 17
+### SpringBoot4
+### JDK 21
 ### PostgreSQL 15
 ### 数据库访问: [mybatis](https://mybatis.org/)
 ### 前端框架选择: [Geeker-Admin](https://gitee.com/HalseySpicy/Geeker-Admin/)
@@ -115,36 +115,37 @@ public interface SingleMapper {
 ```
 ## 注解&核心功能
 
-映射json类型字段使用 `ObjectNode`/`ArrayNode` 类型
-
 @Table
 
 |   属性   |       说明       |
 |:------:|:--------------:|
-| value | 数据库对应的table名称 |
+| value  | 数据库对应的table名称  |
 | schema | 数据库对应的schema名称 |
 
 @TableId
 
-|   属性   |       说明       | 默认值 |
-|:------:|:--------------:|:---:|
-| value |     主键生成方式     |  IdType.AUTO_INCREMENT   |
+|  属性   |   说明   |          默认值          |
+|:-----:|:------:|:---------------------:|
+| value | 主键生成方式 | IdType.AUTO_INCREMENT |
 
 枚举类 IdType
 
-|   枚举   |       说明       |
-|:------:|:--------------:|
-| AUTO_INCREMENT  |     数据库自增加     |
-| INPUT | 用户自行设置 |
+|       枚举       |   说明   |
+|:--------------:|:------:|
+| AUTO_INCREMENT | 数据库自增加 |
+|     INPUT      | 用户自行设置 |
 
 @TableField
 
-|   属性   |     说明     |
-|:------:|:----------:|
-| value | 数据库对应的字段名  |
-| exist |   是否是表字段   |
-| insertValue | 新增时默认填充表达式 |
-| updateValue |    更新时默认填充表达式     |
+|     属性      |      说明      |
+|:-----------:|:------------:|
+|    value    |  数据库对应的字段名   |
+|    exist    |    是否是表字段    |
+| insertValue |  新增时默认填充表达式  |
+| updateValue |  更新时默认填充表达式  |
+| typeHandler | mybatis类型处理器 |
+
+json字段映射非String类型处理: `@TableField(typeHandler = JacksonTypeHandler.class)`, 支持泛型
 
 动态填充表达式
 
@@ -170,17 +171,17 @@ MybatisGlobalConfig.registerDynamic("$CURRENT_USER", type -> {
 
 @LogicDelete 逻辑删除
 
-|   属性   |         说明         |
-|:------:|:------------------:|
-| beforeValue |     删除前/未删除的值      |
+|      属性      |         说明         |
+|:------------:|:------------------:|
+| beforeValue  |     删除前/未删除的值      |
 | deletedValue | 删除后的值, 如 "1", "id" |
 
 更新策略枚举类 UpdateStrategy
 
-|   枚举   |            说明             |
-|:------:|:-------------------------:|
-| NotEmpty  |     字符串不为空串,其它非null更新     |
-| NotNull |         属性非null更新         |
+|     枚举     |            说明             |
+|:----------:|:-------------------------:|
+|  NotEmpty  |     字符串不为空串,其它非null更新     |
+|  NotNull   |         属性非null更新         |
 | NullUpdate | null字段也更新,需要指定需要更新的null字段 |
 
 ## 示例
@@ -256,14 +257,14 @@ admin
 
 **权限编码规则: 请求方法/请求url, 支持** /* /** **匹配**
 
-| 名称                        | 权限编码         | 前端按钮权限编码(web_code) |
-| --------------------------- | ---------------- |--------------------|
-| 分页列表(管理菜单)          | GET/sysDemo/page | sysDemo:page          |
-| 查看(按钮)                  | GET/sysDemo      | sysDemo:view          |
-| 新增(按钮)                  | POST/sysDemo     | sysDemo:add           |
-| 编辑 (按钮)                 | PUT/sysDemo      | sysDemo:edit          |
-| 删除(按钮)                  | DELETE/sysDemo   | sysDemo:del           |
-| 多url匹配(只匹配一级)       | GET/sysDemo/*    |                    |
+| 名称                 | 权限编码             | 前端按钮权限编码(web_code) |
+|--------------------|------------------|--------------------|
+| 分页列表(管理菜单)         | GET/sysDemo/page | demo               |
+| 查看(按钮)             | GET/sysDemo      | view               |
+| 新增(按钮)             | POST/sysDemo     | add                |
+| 编辑 (按钮)            | PUT/sysDemo      | edit               |
+| 删除(按钮)             | DELETE/sysDemo   | del                |
+| 多url匹配(只匹配一级)      | GET/sysDemo/*    |                    |
 | sysDemo的所有权限(匹配多级) | /sysDemo/**      |                    |
 
 # 前端权限
@@ -345,11 +346,14 @@ public class SqlFromItemVisitor extends FromItemVisitorAdapter<Void> {
 
 # 规范
 
-## 后端规范
+## 后端
 - 后端接口使用`@AdminLog` 注解进行日志记录
 - `LoginUser.getLoginUser();` //获取当前登录用户
 - `LoginUser.enableDataScope("sys_demo");` //开启数据权限隔离,参数为数据权限配置的key
 - GET方法查询时使用 `(Page<Entity> page, Entity po)` 接收查询参数, 非Entity字段均使用params[x]=xxx传入page.params中,使用page.getParam()或page.paramToXXX()获取或进行参数转换
+- json处理用`JsonUtil.jsonMapper()`单例JsonMapper, Result includeJson/excludeJson 可动态指定或排除指定字段
+- 类头像等url字段,用`@TableField(typeHandler = URLTypeHandler.class)`处理,去除服务器地址后存储. 前端用`components\Upload\Img.vue/Video.vue`组件
+- 文件上传,后端用 `@TableField(typeHandler = JacksonTypeHandler.class) private List<UploadFile> photos;`处理, 前端用`components\Upload\Imgs.vue/File.vue/Files.vue`组件
 - 后端允许使用 entity 和 dto(继承entity) 直接接收参数, 考虑实现 saveFilter 和 updateFilter 进行不接收的字段过滤
 - POST复杂请求参数强制使用`@RequestBody`
 - 属性拷贝推荐用 org.springframework.cglib.beans.BeanCopier, 工具类`BeanCopierUtil`
@@ -380,63 +384,23 @@ Response Headers(响应头设置)
 	推荐用枚举,见名知意(看见对应的单词就知道代表的状态)
 		disable(禁用) enable(启用)
 	标识是否状态的字段是推荐用1(是)0(否)标识
-接口变动
-	方案一：做文件记录对应的接口变动
-	方案二：接口加版版本区分
-	方案三：...
 接口日志
 	建议做接口日志，方便排查问题
 
 响应
 	1.后端不允许直接报错给前端,必须经过错误处理，返回code=0
-	2.返回的json数据不允许出现 null 类型，如果是空类型请按下列返回相应的"空数据"
-		空数组请返回： []
-		空字符串请返回： ""
-		空数值请返回：0
-		金额格式: 两位小数返回，为空返回 0
-		日期格式: 转成对应的字符格式返回，为空返回 ""
-
-	3.不推荐用复杂的数据类型返回（复杂类型,最多不超过3层）
-		列子(不推荐):
-			{
-				"name": "教师zyh",
-				"no": "教师001",
-				"student": {
-					"name": "学生zyh",
-					"no": "学生001"
-				}
-			}
-		错误返回示例：
-			{
-				"name": "教师zyh",
-				"no": "教师001",
-				"student": null
-			}
-		推荐返回：
-			 {
-				"name": "教师zyh",
-				"no": "教师001",
-				"studentName": "学生zyh",
-				"studentNo": "学生001"
-			}
-			{
-				"name": "教师zyh",
-				"no": "教师001",
-				"studentName": "",
-				"studentNo": ""
-			}
 
 标准成功相应格式
 	{
 		"code": 1,
-		"data":"",
-		"message": ""
+		"data":null,
+		"message": "xxx"
 	}
 标准失败响应格式
 	{
 		"code": 0,
-		"data":"",
-		"message": ""		
+		"data":null,
+		"message": "xxx"		
 	}
 标准带数据相应格式
 	字符数据
@@ -546,6 +510,8 @@ System.out.println( LocalDateUtil.parseDateTime("2026-05-11T15:53:19.268") );
 String proxyAuth = proxyUser + ":" + proxyPass;
 String encodedProxyAuth = Base64.getEncoder().encodeToString(proxyAuth.getBytes());
 .header("Proxy-Authorization", "Basic " + encodedProxyAuth) // 代理认证
+
+### JDK21后HttpClient注意close
 
 ### GET
 发送请求

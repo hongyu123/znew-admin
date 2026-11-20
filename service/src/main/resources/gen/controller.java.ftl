@@ -6,13 +6,14 @@ import com.hfw.model.entity.PageResult;
 import com.hfw.model.jackson.Result;
 import com.hfw.model.mybatis.Where;
 import com.hfw.model.mybatis.anno.Sort;
+import com.hfw.model.validation.ValidGroup;
 import com.hfw.service.component.CommonService;
 import ${packageName}.model.po.${projectName}.${className};
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * ${tableComment}Controller
@@ -27,7 +28,6 @@ public class ${className}Controller {
 
     @GetMapping("/page")
     public PageResult<${className}> page(Page<${className}> page, ${className} po) {
-        Map<String, String> params = page.getParams();
         Where<${className}> where = Where.<${className}>where()
                 .eq(po.getId()!=null, ${className}.COLUMN.id, po.getId());
         if(!where.orderBy(page)){
@@ -44,13 +44,13 @@ public class ${className}Controller {
 
     @AdminLog("新增${tableComment}")
     @PostMapping
-    public Result<Void> add(@RequestBody ${className} ${beanName}){
+    public Result<Void> add(@RequestBody @Validated(ValidGroup.Add.class) ${className} ${beanName}){
         return Result.result(commonService.insert(${beanName}));
     }
 
     @AdminLog("编辑${tableComment}")
     @PutMapping
-    public Result<Void> edit(@RequestBody ${className} ${beanName}){
+    public Result<Void> edit(@RequestBody @Validated(ValidGroup.Update.class) ${className} ${beanName}){
         return Result.result(commonService.updateByPk(${beanName}));
     }
 

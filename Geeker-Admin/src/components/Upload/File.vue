@@ -78,7 +78,7 @@ const handleHttpUpload = async (options: UploadRequestOptions) => {
   formData.append("file", options.file);
   const api = props.api ?? upload;
   const { data } = await api(formData);
-  emit("update:fileInfo", { id: data.id, name: data.name, url: data.url });
+  emit("update:fileInfo", data);
   // 调用 el-form 内部的校验方法（可自动校验）
   if (formItemContext?.prop) {
     formContext?.validateField([formItemContext.prop as string]);

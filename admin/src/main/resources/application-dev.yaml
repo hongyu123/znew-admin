@@ -2,14 +2,14 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://pgm-uf66s601uwkcex1a.pg.rds.aliyuncs.com:5432/test?currentSchema=public&timezone=Asia/Shanghai&client_encoding=UTF8&sslmode=disable&reWriteBatchedInserts=true
+    url: jdbc:postgresql://172.19.188.100:5432/db_test?currentSchema=public&timezone=Asia/Shanghai&client_encoding=UTF8&sslmode=disable&reWriteBatchedInserts=true
     username: postgres
-    password: PGwMQ59hKPbqHBxWIagZ
+    password: 123456
   data:
     redis:
-      host: 172.19.113.220
+      host: 127.0.0.1
       port: 6379
-      password: dx123
+      password: 123456
       #database: 0
       timeout: 10000  # 连接超时时间（毫秒）
 

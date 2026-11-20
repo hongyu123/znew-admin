@@ -7,6 +7,10 @@ import com.hfw.model.mybatis.Column;
 import ${c.enumClass};
     </#if>
 </#list>
+import com.hfw.model.validation.ValidGroup;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,10 +24,21 @@ import lombok.Setter;
 @Table("${tableName}")
 public class ${className} {
 
+    @NotNull(message = "id不能为空",groups = ValidGroup.Update.class)
     @TableId
     private ${pk.javaType} ${pk.fieldName};
 
 <#list columnList as c>
+    <#if "NO"==c.isNullable && !c.columnDefault??>
+        <#if "String"==c.javaType>
+    @NotBlank(message = "${c.columnComment}不能为空", groups = ValidGroup.Add.class)
+        <#else>
+    @NotNull(message = "${c.columnComment}不能为空", groups = ValidGroup.Add.class)
+        </#if>
+    </#if>
+    <#if "NO"==c.isNullable && "String"==c.javaType>
+    @Length(max = ${c.characterMaximumLength},message = "${c.columnComment}最多${c.characterMaximumLength}字符")
+    </#if>
     /** ${c.columnComment} */
     <#if c.columnName=='create_user'>
     @TableField(insertValue = "$CURRENT_USER")
